@@ -1,5 +1,8 @@
 import index from "./index.html";
 
+// Type assertion for HTML imports
+const indexContent = index as unknown as string;
+
 const server = Bun.serve({
   port: 3000,
   fetch(request) {
@@ -7,7 +10,7 @@ const server = Bun.serve({
     
     // Serve the main HTML file
     if (url.pathname === "/" || url.pathname === "/index.html") {
-      return new Response(index, {
+      return new Response(indexContent, {
         headers: {
           "Content-Type": "text/html",
         },
@@ -26,7 +29,7 @@ const server = Bun.serve({
     }
     
     // For all other routes, serve the index.html (SPA)
-    return new Response(index, {
+    return new Response(indexContent, {
       headers: {
         "Content-Type": "text/html",
       },
