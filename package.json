@@ -5,10 +5,15 @@
   "private": true,
   "scripts": {
     "dev": "bun --hot ./frontend/index.ts",
-    "build": "bun build ./frontend/index.ts --outdir ./dist --minify",
+    "build": "npm run build:clean && npm run build:frontend && npm run build:backend",
+    "build:clean": "rm -rf dist build",
+    "build:frontend": "bun build ./frontend/src/main.tsx --outdir ./dist/static --minify --splitting --format esm --target browser --public-path /static/",
+    "build:backend": "cd backend && python manage.py collectstatic --noinput",
+    "build:prod": "NODE_ENV=production npm run build",
     "test": "bun test",
     "typecheck": "tsc --noEmit",
-    "frontend:dev": "cd frontend && bun --hot ./src/main.tsx"
+    "frontend:dev": "cd frontend && bun --hot ./src/main.tsx",
+    "validate:build": "node scripts/validate-build.js"
   },
   "dependencies": {
     "react": "^18.2.0",
