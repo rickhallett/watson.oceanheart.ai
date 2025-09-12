@@ -1,12 +1,36 @@
 {
-"name": "watson.oceanheart.ai",
-"module": "index.ts",
-"type": "module",
-"private": true,
-"devDependencies": {
-  "@types/bun": "latest"
-},
-"peerDependencies": {
-  "typescript": "^5"
-}
+  "name": "watson.oceanheart.ai",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun --hot ./frontend/index.ts",
+    "build": "bun build ./frontend/index.ts --outdir ./dist --minify",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "frontend:dev": "cd frontend && bun --hot ./src/main.tsx"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@tiptap/core": "^2.1.0",
+    "@tiptap/pm": "^2.1.0",
+    "@tiptap/react": "^2.1.0",
+    "@tiptap/starter-kit": "^2.1.0",
+    "@tiptap/extension-collaboration": "^2.1.0",
+    "@tiptap/extension-placeholder": "^2.1.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.0.0"
+  },
+  "build": {
+    "target": "browser",
+    "outdir": "./dist",
+    "entryPoints": ["./frontend/src/main.tsx"],
+    "splitting": true,
+    "format": "esm"
+  }
 }

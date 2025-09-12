@@ -1,111 +1,144 @@
----
-description: Use Bun instead of Node.js, npm, pnpm, or vite.
-globs: "*.ts, *.tsx, *.html, *.css, *.js, *.jsx, package.json"
-alwaysApply: false
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 ---
 
-Default to using Bun instead of Node.js.
+## Project Overview
+
+**Watson** is a clinical LLM output review and curation tool for psychotherapy and well-being applications. It provides an environment for clinicians to review, edit, classify, and refine model-generated clinical summaries through a structured workflow: review → edit/classify → submit → diff → analytics → export.
+
+This is a multi-language project supporting:
+- **Backend**: Django 5 + DRF + HTMX (planned)
+- **Frontend**: TypeScript/React with TipTap editor (using Bun)
+- **Scripting**: Python with UV package manager
+- **Additional**: Ruby support
+
+---
+
+## Development Environment Setup
+
+### Python (UV)
+```bash
+# Activate the existing virtual environment
+source .venv/bin/activate  # or .venv\Scripts\activate on Windows
+# Install dependencies
+uv pip install -r requirements.txt  # when requirements.txt is created
+```
+
+### TypeScript/JavaScript (Bun)
+```bash
+# Install dependencies
+bun install
+# Development server (when TypeScript/frontend code is added)
+bun --hot ./index.ts
+```
+
+### Ruby
+```bash
+# Install gems
+bundle install
+```
+
+---
+
+## Commands
+
+### Bun (Primary JavaScript/TypeScript Runtime)
+
+**Always use Bun instead of Node.js, npm, pnpm, or vite.**
 
 - Use `bun <file>` instead of `node <file>` or `ts-node <file>`
-- Use `bun test` instead of `jest` or `vitest`
+- Use `bun test` to run tests
 - Use `bun build <file.html|file.ts|file.css>` instead of `webpack` or `esbuild`
 - Use `bun install` instead of `npm install` or `yarn install` or `pnpm install`
 - Use `bun run <script>` instead of `npm run <script>` or `yarn run <script>` or `pnpm run <script>`
-- Bun automatically loads .env, so don't use dotenv.
+- Bun automatically loads .env, so don't use dotenv
 
-## APIs
+### Python
+- Use `python main.py` to run the main Python script
+- UV is the preferred package manager for Python dependencies
 
-- `Bun.serve()` supports WebSockets, HTTPS, and routes. Don't use `express`.
-- `bun:sqlite` for SQLite. Don't use `better-sqlite3`.
-- `Bun.redis` for Redis. Don't use `ioredis`.
-- `Bun.sql` for Postgres. Don't use `pg` or `postgres.js`.
-- `WebSocket` is built-in. Don't use `ws`.
-- Prefer `Bun.file` over `node:fs`'s readFile/writeFile
-- Bun.$`ls` instead of execa.
+### Ruby
+- Use `bundle exec` to run Ruby commands with proper gem dependencies
 
-## Testing
+---
 
-Use `bun test` to run tests.
+## Architecture
 
-```ts#index.test.ts
+### Core Workflow
+1. **Seed**: Document + LLMOutput loaded
+2. **Edit**: Clinician edits in TipTap rich editor, applies classification labels
+3. **Submit**: Backend computes diffs (token + structural), stores immutable record
+4. **Review/Diff**: Diff viewer shows before/after changes  
+5. **Analytics**: Dashboard of change rates + label frequencies
+6. **Export**: Generate research datasets (JSONL/CSV bundles)
+
+### Data Model (Planned)
+- **Document** – source clinical note (raw JSON)
+- **LLMOutput** – model-generated summary tied to a Document
+- **Edit** – clinician revision with diffs, edited JSON, status
+- **Label** – taxonomy of issue types (hallucination, missing_risk, etc.)
+- **EditLabel** – join table for applied labels
+
+### Key Endpoints (Planned)
+- `GET /outputs/:id` → view output snapshot
+- `POST /edits` → create draft edit
+- `PUT /edits/:id` → save draft changes
+- `POST /edits/:id/submit` → finalize, compute diffs
+- `GET /edits/:id/diff` → return/render diff
+- `GET /analytics/basic` → JSON for dashboard
+- `POST /exports` → create export bundle
+
+---
+
+## Frontend Development (Bun + React)
+
+Use HTML imports with `Bun.serve()`. HTML imports fully support React, CSS, and Tailwind.
+
+### Bun APIs (Preferred)
+- `Bun.serve()` for HTTP server with WebSocket support (instead of Express)
+- `bun:sqlite` for SQLite (instead of better-sqlite3)
+- `Bun.redis` for Redis (instead of ioredis)  
+- `Bun.sql` for Postgres (instead of pg or postgres.js)
+- Built-in `WebSocket` (instead of ws library)
+- `Bun.file` over `node:fs` readFile/writeFile
+- `Bun.$` for shell commands (instead of execa)
+
+### Testing
+```ts
 import { test, expect } from "bun:test";
 
-test("hello world", () => {
+test("example test", () => {
   expect(1).toBe(1);
 });
 ```
 
-## Frontend
+### Frontend Structure
+HTML files can directly import .tsx, .jsx, .js files and Bun will handle transpilation and bundling automatically.
 
-Use HTML imports with `Bun.serve()`. Don't use `vite`. HTML imports fully support React, CSS, Tailwind.
+---
 
-Server:
+## TypeScript Configuration
 
-```ts#index.ts
-import index from "./index.html"
+The project uses modern TypeScript with:
+- ESNext target and lib
+- React JSX transform
+- Strict type checking enabled
+- Bundler module resolution
+- No emit (bundler handles compilation)
 
-Bun.serve({
-  routes: {
-    "/": index,
-    "/api/users/:id": {
-      GET: (req) => {
-        return new Response(JSON.stringify({ id: req.params.id }));
-      },
-    },
-  },
-  // optional websocket support
-  websocket: {
-    open: (ws) => {
-      ws.send("Hello, world!");
-    },
-    message: (ws, message) => {
-      ws.send(message);
-    },
-    close: (ws) => {
-      // handle close
-    }
-  },
-  development: {
-    hmr: true,
-    console: true,
-  }
-})
-```
+---
 
-HTML files can import .tsx, .jsx or .js files directly and Bun's bundler will transpile & bundle automatically. `<link>` tags can point to stylesheets and Bun's CSS bundler will bundle.
+## Authentication
 
-```html#index.html
-<html>
-  <body>
-    <h1>Hello, world!</h1>
-    <script type="module" src="./frontend.tsx"></script>
-  </body>
-</html>
-```
+**Centralized Auth** via `passport.oceanheart.ai` JWTs with RS256 verification middleware.
 
-With the following `frontend.tsx`:
+---
 
-```tsx#frontend.tsx
-import React from "react";
+## Documentation
 
-// import .css files directly and it works
-import './index.css';
-
-import { createRoot } from "react-dom/client";
-
-const root = createRoot(document.body);
-
-export default function Frontend() {
-  return <h1>Hello, world!</h1>;
-}
-
-root.render(<Frontend />);
-```
-
-Then, run index.ts
-
-```sh
-bun --hot ./index.ts
-```
-
-For more information, read the Bun API docs in `node_modules/bun-types/docs/**.md`.
+Project specifications and PRDs are located in `docs/specs/`. Current documentation includes:
+- Integration specifications for visual design systems
+- Oceanheart Passport integration
+- Style guide specifications
