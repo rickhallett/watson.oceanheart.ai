@@ -1,21 +1,17 @@
 # Watson Multi-Stage Docker Build
 # Supports Django backend, Bun frontend, and Ruby services
 
-FROM node:18-slim as frontend-builder
+FROM oven/bun:1.1 as frontend-builder
 WORKDIR /app
-
-# Install Bun
-RUN curl -fsSL https://bun.sh/install | bash
-ENV PATH="/root/.bun/bin:$PATH"
 
 # Copy frontend source
 COPY package.json bun.lock ./
 COPY frontend/ ./frontend/
 COPY tsconfig.json ./
 
-# Install dependencies and build frontend
+# Install dependencies and build frontend only
 RUN bun install
-RUN NODE_ENV=production bun run build:prod
+RUN bun run build:clean && bun run build:frontend
 
 # Python/Django stage
 FROM python:3.11-slim as backend-base
@@ -27,9 +23,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install UV
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-ENV PATH="/root/.cargo/bin:$PATH"
+# (Optional) Install tools; we'll use Python venv + pip for reliability
 
 WORKDIR /app
 
@@ -37,8 +31,10 @@ WORKDIR /app
 COPY pyproject.toml ./
 COPY backend/ ./backend/
 
-# Create virtual environment and install dependencies
-RUN cd backend && uv venv && uv pip install -r ../pyproject.toml
+# Create virtual environment and install dependencies from pyproject
+RUN python -m venv /app/backend/.venv \
+    && /app/backend/.venv/bin/pip install --upgrade pip \
+    && /app/backend/.venv/bin/pip install -e /app
 
 # Ruby services stage
 FROM ruby:3.4.5-slim as ruby-services
