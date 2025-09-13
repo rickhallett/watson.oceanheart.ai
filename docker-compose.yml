@@ -1,8 +1,6 @@
 # Watson Docker Compose Configuration
 # For local development and testing
 
-version: '3.8'
-
 services:
   database:
     image: postgres:15-alpine
@@ -42,6 +40,11 @@ services:
     environment:
       # Database
       DATABASE_URL: postgresql://watson:watson_dev_password@database:5432/watson_dev
+      DB_NAME: watson_dev
+      DB_USER: watson
+      DB_PASSWORD: watson_dev_password
+      DB_HOST: database
+      DB_PORT: 5432
       REDIS_URL: redis://redis:6379/0
       
       # Django
@@ -49,6 +52,7 @@ services:
       SECRET_KEY: "docker-dev-secret-key-change-in-production"
       ALLOWED_HOSTS: "localhost,127.0.0.1,watson"
       DJANGO_SETTINGS_MODULE: "watson.settings.production"
+      SECURE_SSL_REDIRECT: "false"  # disable HTTPS redirect in local compose
       
       # Authentication
       PASSPORT_JWKS_URL: "https://passport.oceanheart.ai/.well-known/jwks.json"
@@ -65,10 +69,22 @@ services:
       redis:
         condition: service_healthy
     volumes:
-      - ./backend:/app/backend:ro
-      - static_files:/app/backend/staticfiles
+      # Mount specific backend subdirectories to avoid overriding venv
+      - ./backend/core:/app/backend/core:ro
+      - ./backend/reviews:/app/backend/reviews:ro
+      - ./backend/scripts:/app/backend/scripts:ro
+      - ./backend/manage.py:/app/backend/manage.py:ro
+      # Mount specific watson app files to preserve static source directory but allow staticfiles to be writable
+      - ./backend/watson/settings:/app/backend/watson/settings:ro
+      - ./backend/watson/urls.py:/app/backend/watson/urls.py:ro
+      - ./backend/watson/wsgi.py:/app/backend/watson/wsgi.py:ro
+      - ./backend/watson/asgi.py:/app/backend/watson/asgi.py:ro
+      - ./backend/watson/__init__.py:/app/backend/watson/__init__.py:ro
+      - ./backend/watson/static:/app/backend/watson/static:ro
+      # Mount a separate, writable volume for the collectstatic destination
+      - static_files:/app/backend/watson/staticfiles
     healthcheck:
-      test: ["/healthcheck.sh"]
+      test: ["CMD", "/healthcheck.sh"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -95,6 +111,20 @@ services:
       - dev
     depends_on:
       - watson
+
+  caddy:
+    image: caddy:2
+    profiles:
+      - dev
+    ports:
+      - "3321:3321"
+    volumes:
+      - ./docker/caddy/Caddyfile.compose.local:/etc/caddy/Caddyfile:ro
+    depends_on:
+      watson:
+        condition: service_started
+      frontend-dev:
+        condition: service_started
 
 volumes:
   postgres_data:

@@ -4,12 +4,12 @@
 FROM oven/bun:1.1 as frontend-builder
 WORKDIR /app
 
-# Copy frontend source
+# Copy frontend source only
 COPY package.json bun.lock ./
-COPY frontend/ ./frontend/
 COPY tsconfig.json ./
+COPY frontend/ ./frontend/
 
-# Install dependencies and build frontend only
+# Install dependencies and build frontend assets
 RUN bun install
 RUN bun run build:clean && bun run build:frontend
 
@@ -71,9 +71,11 @@ RUN bundle config set --local path 'vendor/bundle' && \
 # Final production stage
 FROM python:3.11-slim
 
-# Install runtime dependencies
+# Install runtime and minimal build dependencies
 RUN apt-get update && apt-get install -y \
     libpq5 \
+    libpq-dev \
+    build-essential \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
@@ -83,8 +85,7 @@ RUN groupadd -g 999 app && \
 
 WORKDIR /app
 
-# Copy Python environment from backend-base
-COPY --from=backend-base /app/backend/.venv /app/backend/.venv
+# Copy backend source, venv, and project metadata from backend-base
 COPY --from=backend-base /app/backend /app/backend
 COPY --from=backend-base /app/pyproject.toml /app/
 
@@ -101,14 +102,37 @@ COPY --from=ruby-services /app/Gemfile* /app/
 COPY docker/entrypoint.sh /entrypoint.sh
 COPY docker/healthcheck.sh /healthcheck.sh
 
-# Set permissions
+# Set permissions and create log directory
 RUN chmod +x /entrypoint.sh /healthcheck.sh && \
-    chown -R app:app /app
+    mkdir -p /var/log/watson && \
+    # Create static directory if it doesn't exist
+    mkdir -p /app/backend/watson/static && \
+    chown -R app:app /app /var/log/watson && \
+    # Fix venv symlinks after chown (they point to system python)
+    ln -sf /usr/local/bin/python /app/backend/.venv/bin/python && \
+    ln -sf python /app/backend/.venv/bin/python3 && \
+    ln -sf python /app/backend/.venv/bin/python3.11 && \
+    chmod +x /app/backend/.venv/bin/*
 
 # Set environment variables
 ENV PATH="/app/backend/.venv/bin:$PATH"
 ENV DJANGO_SETTINGS_MODULE=watson.settings.production
 ENV PYTHONPATH=/app/backend
+
+# Fix venv permissions and install globally as fallback
+RUN chmod +x /app/backend/.venv/bin/* 2>/dev/null || true && \
+    pip install -e /app && \
+    pip install "django>=5.0" "djangorestframework>=3.14.0" "django-cors-headers>=4.0.0" "psycopg2-binary>=2.9.0" "python-jose[cryptography]>=3.3.0" "requests>=2.28.0" "factory-boy>=3.3.0" "faker>=21.0.0" "coverage>=7.3.0" "django-coverage-plugin>=3.1.0" "gunicorn>=21.2.0" "whitenoise>=6.6.0"
+
+# Pre-collect static files during build for production
+RUN cd /app/backend && \
+    # Set minimal environment variables needed for collectstatic
+    export SECRET_KEY="build-time-secret" && \
+    export DEBUG="false" && \
+    export ALLOWED_HOSTS="localhost" && \
+    export DJANGO_SETTINGS_MODULE="watson.settings.base" && \
+    # Run collectstatic without requiring database - use base settings to avoid production constraints
+    /app/backend/.venv/bin/python manage.py collectstatic --noinput --clear || true
 
 # Switch to non-root user
 USER app
