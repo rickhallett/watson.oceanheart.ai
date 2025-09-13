@@ -1,0 +1,132 @@
+/**
+ * Watson Application Global Styles
+ * Imports TailwindCSS and defines custom styles for clinical application
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import Inter font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* Base styles for clinical application */
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply font-sans text-clinical-800 bg-clinical-50 antialiased;
+    @apply selection:bg-primary-100 selection:text-primary-800;
+  }
+  
+  /* Ensure proper focus outlines for accessibility */
+  *:focus {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+  }
+  
+  /* Button focus states */
+  button:focus,
+  [role="button"]:focus {
+    @apply ring-2 ring-primary-500 ring-offset-2;
+  }
+}
+
+/* Component layer for reusable patterns */
+@layer components {
+  /* Clinical card styling */
+  .watson-card {
+    @apply bg-white border border-clinical-200 rounded-lg shadow-sm;
+    @apply hover:shadow-md transition-shadow duration-200;
+  }
+  
+  /* Primary button styling */
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 text-white;
+    @apply px-4 py-2 rounded-md font-medium;
+    @apply focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+    @apply transition-colors duration-200;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  /* Secondary button styling */
+  .btn-secondary {
+    @apply bg-white border border-clinical-300 text-clinical-700;
+    @apply hover:bg-clinical-50 hover:border-clinical-400;
+    @apply px-4 py-2 rounded-md font-medium;
+    @apply focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+    @apply transition-colors duration-200;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  /* Clinical input styling */
+  .input-clinical {
+    @apply block w-full px-3 py-2 border border-clinical-300 rounded-md;
+    @apply focus:ring-2 focus:ring-primary-500 focus:border-primary-500;
+    @apply placeholder-clinical-400 text-clinical-900;
+    @apply transition-colors duration-200;
+  }
+  
+  /* Navigation link styling */
+  .nav-link {
+    @apply text-clinical-600 hover:text-primary-600;
+    @apply px-3 py-2 rounded-md text-sm font-medium;
+    @apply transition-colors duration-200;
+  }
+  
+  .nav-link.active {
+    @apply text-primary-600 bg-primary-50;
+  }
+  
+  /* Clinical status indicators */
+  .status-success {
+    @apply bg-success-50 text-success-800 border border-success-200;
+    @apply px-2 py-1 rounded-full text-xs font-medium;
+  }
+  
+  .status-warning {
+    @apply bg-warning-50 text-warning-800 border border-warning-200;
+    @apply px-2 py-1 rounded-full text-xs font-medium;
+  }
+  
+  .status-error {
+    @apply bg-error-50 text-error-800 border border-error-200;
+    @apply px-2 py-1 rounded-full text-xs font-medium;
+  }
+}
+
+/* Utility layer for custom utilities */
+@layer utilities {
+  /* Clinical spacing utilities */
+  .section-padding {
+    @apply py-12 px-4 sm:px-6 lg:px-8;
+  }
+  
+  .container-clinical {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Loading spinner */
+  .spinner {
+    @apply animate-spin rounded-full border-2 border-clinical-200 border-t-primary-600;
+  }
+  
+  /* Glassmorphism effect for modern UI */
+  .glass {
+    @apply backdrop-blur-sm bg-white/80 border border-white/20;
+  }
+  
+  /* Text gradient for branding */
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent;
+  }
+}
+
+/* Dark mode support (for future enhancement) */
+@media (prefers-color-scheme: dark) {
+  .dark {
+    @apply bg-clinical-900 text-clinical-100;
+  }
+}
