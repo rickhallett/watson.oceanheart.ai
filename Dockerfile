@@ -34,7 +34,20 @@ COPY backend/ ./backend/
 # Create virtual environment and install dependencies from pyproject
 RUN python -m venv /app/backend/.venv \
     && /app/backend/.venv/bin/pip install --upgrade pip \
-    && /app/backend/.venv/bin/pip install -e /app
+    && /app/backend/.venv/bin/pip install -e /app \
+    && /app/backend/.venv/bin/pip install \
+        "django>=5.0" \
+        "djangorestframework>=3.14.0" \
+        "django-cors-headers>=4.0.0" \
+        "psycopg2-binary>=2.9.0" \
+        "python-jose[cryptography]>=3.3.0" \
+        "requests>=2.28.0" \
+        "factory-boy>=3.3.0" \
+        "faker>=21.0.0" \
+        "coverage>=7.3.0" \
+        "django-coverage-plugin>=3.1.0" \
+        "gunicorn>=21.2.0" \
+        "whitenoise>=6.6.0"
 
 # Ruby services stage
 FROM ruby:3.4.5-slim as ruby-services
@@ -109,4 +122,4 @@ EXPOSE 8000
 
 # Use entrypoint script
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "watson.wsgi:application"]
+CMD ["/app/backend/.venv/bin/gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "watson.wsgi:application"]
