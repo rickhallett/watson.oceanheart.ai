@@ -35,8 +35,8 @@ fi
 
 echo ""
 echo -e "${BLUE}📋 Services to start:${NC}"
-echo -e "  • Django Backend (port 8000)"
-echo -e "  • React Frontend (port 3000)"
+echo -e "  • Django Backend (port 8888)"
+echo -e "  • React Frontend (port 8881)"
 echo ""
 
 # Start Django backend in background
@@ -46,13 +46,13 @@ source ../.venv/bin/activate
 
 # Check and run migrations
 echo -e "${BLUE}🔄 Checking for pending migrations...${NC}"
-python manage.py migrate --check || {
+uv run python manage.py migrate --check || {
     echo -e "${YELLOW}📝 Running migrations...${NC}"
-    python manage.py migrate
+    uv run python manage.py migrate
 }
 
 # Start Django development server
-python manage.py runserver 0.0.0.0:8000 &
+uv run python manage.py runserver 0.0.0.0:8888 &
 BACKEND_PID=$!
 cd ..
 
@@ -72,9 +72,9 @@ sleep 3
 echo ""
 echo -e "${GREEN}🎉 Watson Development Environment Ready!${NC}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo -e "${BLUE}📍 Frontend:${NC} http://localhost:3000"
-echo -e "${BLUE}📍 Backend API:${NC} http://localhost:8000"
-echo -e "${BLUE}📍 Django Admin:${NC} http://localhost:8000/admin"
+echo -e "${BLUE}📍 Frontend:${NC} http://localhost:8881"
+echo -e "${BLUE}📍 Backend API:${NC} http://localhost:8888"
+echo -e "${BLUE}📍 Django Admin:${NC} http://localhost:8888/admin"
 echo ""
 echo -e "${YELLOW}🛑 Press Ctrl+C to stop all servers${NC}"
 echo ""

@@ -18,7 +18,7 @@ export default {
   // Advanced optimization
   define: {
     'process.env.NODE_ENV': '"production"',
-    'process.env.API_URL': 'process.env.API_URL || "http://localhost:8000"',
+    'process.env.API_URL': 'process.env.API_URL || "http://localhost:8888"',
   },
   
   // Bundle splitting for better caching

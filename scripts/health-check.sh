@@ -83,18 +83,18 @@ TOTAL_CHECKS=$((TOTAL_CHECKS + 1))
 
 # Port availability check
 echo -e "\n${BLUE}🔌 Port Availability${NC}"
-if ! lsof -i :8000 &>/dev/null; then
-    echo -e "Port 8000 (Django)      : ${GREEN}✅ Available${NC}"
+if ! lsof -i :8888 &>/dev/null; then
+    echo -e "Port 8888 (Django)      : ${GREEN}✅ Available${NC}"
     SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
 else
-    echo -e "Port 8000 (Django)      : ${YELLOW}⚠️  In use${NC}"
+    echo -e "Port 8888 (Django)      : ${YELLOW}⚠️  In use${NC}"
 fi
 
-if ! lsof -i :3000 &>/dev/null; then
-    echo -e "Port 3000 (Frontend)    : ${GREEN}✅ Available${NC}"
+if ! lsof -i :8881 &>/dev/null; then
+    echo -e "Port 8881 (Frontend)    : ${GREEN}✅ Available${NC}"
     SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
 else
-    echo -e "Port 3000 (Frontend)    : ${YELLOW}⚠️  In use${NC}"
+    echo -e "Port 8881 (Frontend)    : ${YELLOW}⚠️  In use${NC}"
 fi
 TOTAL_CHECKS=$((TOTAL_CHECKS + 2))
 

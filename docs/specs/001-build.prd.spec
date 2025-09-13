@@ -301,7 +301,7 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 
 # Bun/Frontend
 NODE_ENV=development
-VITE_API_URL=http://localhost:8000
+VITE_API_URL=http://localhost:8888
 ```
 
 #### 5.3.2 Production Environment Variables

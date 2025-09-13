@@ -6,8 +6,8 @@ This folder contains ready‑to‑use Caddyfiles for local development and produ
 - File: `docker/caddy/Caddyfile.local`
 - Domain: `http://watson.lvh.me:3321`
 - Routes:
-  - `/api/*`, `/admin/*` → `localhost:8000` (Django)
-  - everything else → `localhost:3000` (Bun dev server)
+  - `/api/*`, `/admin/*` → `localhost:8888` (Django)
+  - everything else → `localhost:8881` (Bun dev server)
 
 Run locally (assuming Caddy is installed):
 
@@ -16,6 +16,7 @@ caddy run --config docker/caddy/Caddyfile.local --adapter caddyfile
 
 Notes:
 - The local Caddyfile disables automatic HTTPS and binds to HTTP on port 3321 to avoid ACME lookups.
+- Proxies frontend to :8881 and API to :8888.
 - Visit: http://watson.lvh.me:3321
 ```
 
@@ -24,7 +25,7 @@ Notes:
 - Domain: `https://watson.oceanheart.ai` (TLS via Let’s Encrypt)
 - Expects:
   - Frontend static at `/srv/www/dist/static`
-  - Django reachable as host `django:8000` (e.g., Docker network)
+- Django reachable as host `django:8000` (e.g., Docker network)
   - Optional Django static at `/srv/backend/staticfiles`
 
 Example Docker Compose service:

@@ -21,8 +21,16 @@
     "coverage": "./scripts/coverage-report.sh",
     "ci:local": "./scripts/ci-local.sh",
     "pre-commit": "./scripts/pre-commit-hook.sh",
+    "deploy": "./deploy/deploy.sh",
+    "migrate": "./scripts/migrate.sh",
+    "monitor": "./scripts/monitor.sh",
+    "rollback": "./scripts/rollback.sh",
+    "docker:build": "docker build -t watson-oceanheart-ai .",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
     "typecheck": "tsc --noEmit",
-    "frontend:dev": "cd frontend && bun --hot ./src/main.tsx",
+    "frontend:dev": "cd frontend && bun --hot ./index.ts",
     "validate:build": "node scripts/validate-build.js"
   },
   "dependencies": {

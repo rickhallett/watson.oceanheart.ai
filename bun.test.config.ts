@@ -2,7 +2,7 @@ import { GlobalWindow } from "happy-dom";
 
 // Setup DOM environment for React component tests
 const window = new GlobalWindow({
-  url: 'http://localhost:3000',
+  url: 'http://localhost:8881',
   width: 1024,
   height: 768,
 });

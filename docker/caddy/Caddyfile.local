@@ -1,9 +1,9 @@
 # Local reverse proxy for developer workflow
 # Domain: http://watson.lvh.me:3321 (HTTP only; no TLS for local)
 # Routes:
-#   - /            -> Bun dev server (frontend) on :3000
-#   - /api/*       -> Django API on :8000
-#   - /admin/*     -> Django admin on :8000
+#   - /            -> Bun dev server (frontend) on :8881
+#   - /api/*       -> Django API on :8888
+#   - /admin/*     -> Django admin on :8888
 
 {
   auto_https off
@@ -14,14 +14,14 @@ http://watson.lvh.me:3321 {
 
   # API/Admin to Django
   handle_path /api/* {
-    reverse_proxy localhost:8000
+    reverse_proxy localhost:8888
   }
   handle_path /admin/* {
-    reverse_proxy localhost:8000
+    reverse_proxy localhost:8888
   }
 
   # Everything else to the frontend dev server
   handle {
-    reverse_proxy localhost:3000
+    reverse_proxy localhost:8881
   }
 }

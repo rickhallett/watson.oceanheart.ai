@@ -15,6 +15,9 @@ dependencies = [
     "faker>=21.0.0",
     "coverage>=7.3.0",
     "django-coverage-plugin>=3.1.0",
+    # Production dependencies
+    "gunicorn>=21.2.0",
+    "whitenoise>=6.6.0",
 ]
 
 [build-system]

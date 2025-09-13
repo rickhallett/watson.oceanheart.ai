@@ -25,16 +25,16 @@ We need a cohesive, low‑friction path from local dev to production: consistent
 
 ## Implementation Phases
 ### Phase 1: Local development
-- Run DB/Redis/Django via `docker-compose up -d` (ports 5432, 6379, 8000).
+- Run DB/Redis/Django via `docker-compose up -d` (ports 5432, 6379, 8888).
 - Start frontend: `npm run dev` (bun dev). Use Caddy to expose http://watson.lvh.me:3321 and route:
-  - `/` → `localhost:3000` (Bun dev server)
-  - `/api/*` → `localhost:8000` (Django)
+  - `/` → `localhost:8881` (Bun dev server)
+  - `/api/*` → `localhost:8888` (Django)
 
 Example Caddyfile (local):
 ```
 watson.lvh.me:3321 {
-  reverse_proxy /api/* localhost:8000
-  reverse_proxy localhost:3000
+  reverse_proxy /api/* localhost:8888
+  reverse_proxy localhost:8881
 }
 ```
 
@@ -77,4 +77,3 @@ watson.oceanheart.ai {
 - Blue/green deploys with traffic switching.
 - Automated DB backups and PITR; read replicas for analytics.
 - Observability: logs, metrics, tracing (e.g., OpenTelemetry) with alerts.
-

@@ -1,0 +1,50 @@
+{
+  "name": "watson-oceanheart-ai",
+  "description": "Watson Clinical LLM Review Platform",
+  "services": {
+    "web": {
+      "dockerfile": "Dockerfile",
+      "healthcheck": "/health/",
+      "environment": {
+        "DJANGO_SETTINGS_MODULE": "watson.settings.production",
+        "PORT": 8000
+      },
+      "variables": {
+        "DATABASE_URL": "${{Postgres.DATABASE_URL}}",
+        "REDIS_URL": "${{Redis.REDIS_URL}}",
+        "SECRET_KEY": "${{SECRET_KEY}}",
+        "ALLOWED_HOSTS": "${{RAILWAY_STATIC_URL}},watson-oceanheart-ai.up.railway.app",
+        "DEBUG": "False",
+        "PASSPORT_JWKS_URL": "https://passport.oceanheart.ai/.well-known/jwks.json",
+        "JWT_ALGORITHM": "RS256"
+      }
+    },
+    "postgres": {
+      "image": "postgres:15-alpine",
+      "environment": {
+        "POSTGRES_DB": "watson_production",
+        "POSTGRES_USER": "watson",
+        "POSTGRES_PASSWORD": "${{POSTGRES_PASSWORD}}"
+      },
+      "volumes": [
+        {
+          "mountPath": "/var/lib/postgresql/data",
+          "name": "postgres_data"
+        }
+      ]
+    },
+    "redis": {
+      "image": "redis:7-alpine",
+      "volumes": [
+        {
+          "mountPath": "/data",
+          "name": "redis_data"
+        }
+      ]
+    }
+  },
+  "volumes": {
+    "postgres_data": {},
+    "redis_data": {}
+  }
+}

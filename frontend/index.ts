@@ -4,7 +4,7 @@ import index from "./index.html";
 const indexContent = index as unknown as string;
 
 const server = Bun.serve({
-  port: 3000,
+  port: 8881,
   fetch(request) {
     const url = new URL(request.url);
     
@@ -20,7 +20,7 @@ const server = Bun.serve({
     // Handle other routes (SPA routing)
     if (url.pathname.startsWith("/api/")) {
       // Proxy API requests to Django backend
-      const backendUrl = `http://localhost:8000${url.pathname}${url.search}`;
+      const backendUrl = `http://localhost:8888${url.pathname}${url.search}`;
       return fetch(backendUrl, {
         method: request.method,
         headers: request.headers,
@@ -43,5 +43,5 @@ const server = Bun.serve({
 
 console.log(`🚀 Watson Frontend Server running at http://localhost:${server.port}`);
 console.log(`🔄 Hot Module Reloading enabled`);
-console.log(`🔗 API proxy to Django backend at http://localhost:8000`);
+console.log(`🔗 API proxy to Django backend at http://localhost:8888`);
 console.log(`🛑 Press Ctrl+C to stop the server`);

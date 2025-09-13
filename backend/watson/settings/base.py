@@ -169,8 +169,8 @@ REST_FRAMEWORK = {
 
 # CORS configuration for development
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Bun frontend default port
-    "http://127.0.0.1:3000",
+    "http://localhost:8881",  # Bun frontend dev port
+    "http://127.0.0.1:8881",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
