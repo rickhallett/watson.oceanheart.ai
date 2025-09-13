@@ -1,0 +1,44 @@
+# Production reverse proxy for watson.oceanheart.ai
+#
+# Assumptions:
+# - Frontend static files are deployed to /srv/www/dist/static
+# - Django app is reachable at host "django" on port 8000 (e.g., via Docker network)
+# - Optional: Django staticfiles mounted at /srv/backend/staticfiles
+#
+# Notes:
+# - Caddy will manage TLS via Let's Encrypt automatically for the domain.
+# - Adjust origins and paths as needed for your deployment layout.
+
+watson.oceanheart.ai {
+  encode gzip zstd
+
+  # Security headers (adjust CSP as your frontend requires)
+  header {
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "DENY"
+    Referrer-Policy "strict-origin-when-cross-origin"
+    Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+  }
+
+  # API and Admin routed to Django
+  @api path /api/*
+  handle @api {
+    reverse_proxy django:8000
+  }
+  @admin path /admin/*
+  handle @admin {
+    reverse_proxy django:8000
+  }
+
+  # Optional: serve Django static files directly if mounted
+  handle_path /static/* {
+    root * /srv/backend/staticfiles
+    file_server
+  }
+
+  # Frontend SPA static files
+  root * /srv/www/dist/static
+  try_files {path} /index.html
+  file_server
+}
+
