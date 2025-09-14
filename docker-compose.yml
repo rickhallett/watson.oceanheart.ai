@@ -1,11 +1,8 @@
-# Watson Docker Compose Configuration
-# For local development and testing
-
 services:
   database:
     image: postgres:15-alpine
     environment:
-      POSTGRES_DB: watson_dev
+      POSTG-RES_DB: watson_dev
       POSTGRES_USER: watson
       POSTGRES_PASSWORD: watson_dev_password
     ports:
@@ -14,10 +11,10 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U watson -d watson_dev"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -d watson_dev -U watson"]
+      interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
 
   redis:
     image: redis:7-alpine
@@ -35,54 +32,36 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    command: >
+      sh -c "/entrypoint.sh /app/backend/.venv/bin/python /app/backend/manage.py runserver 0.0.0.0:8000"
     ports:
       - "8888:8000"
     environment:
-      # Database
       DATABASE_URL: postgresql://watson:watson_dev_password@database:5432/watson_dev
-      DB_NAME: watson_dev
-      DB_USER: watson
-      DB_PASSWORD: watson_dev_password
-      DB_HOST: database
-      DB_PORT: 5432
       REDIS_URL: redis://redis:6379/0
-      
-      # Django
-      DEBUG: "false"
+      DEBUG: "true"
       SECRET_KEY: "docker-dev-secret-key-change-in-production"
       ALLOWED_HOSTS: "localhost,127.0.0.1,watson"
-      DJANGO_SETTINGS_MODULE: "watson.settings.production"
-      SECURE_SSL_REDIRECT: "false"  # disable HTTPS redirect in local compose
-      
-      # Authentication
-      PASSPORT_JWKS_URL: "https://passport.oceanheart.ai/.well-known/jwks.json"
-      JWT_ALGORITHM: "RS256"
-      
-      # Superuser creation
+      # --- Use base settings for development ---
+      DJANGO_SETTINGS_MODULE: "watson.settings.base"
+      # --- Add USE_X_FORWARDED_HOST for Caddy proxy ---
+      USE_X_FORWARDED_HOST: "True"
+      SECURE_SSL_REDIRECT: "false"
       DJANGO_SUPERUSER_USERNAME: "admin"
       DJANGO_SUPERUSER_EMAIL: "admin@watson.local"
       DJANGO_SUPERUSER_PASSWORD: "admin123"
-      
     depends_on:
       database:
         condition: service_healthy
       redis:
         condition: service_healthy
     volumes:
-      # Mount specific backend subdirectories to avoid overriding venv
-      - ./backend/core:/app/backend/core:ro
-      - ./backend/reviews:/app/backend/reviews:ro
-      - ./backend/scripts:/app/backend/scripts:ro
-      - ./backend/manage.py:/app/backend/manage.py:ro
-      # Mount specific watson app files to preserve static source directory but allow staticfiles to be writable
-      - ./backend/watson/settings:/app/backend/watson/settings:ro
-      - ./backend/watson/urls.py:/app/backend/watson/urls.py:ro
-      - ./backend/watson/wsgi.py:/app/backend/watson/wsgi.py:ro
-      - ./backend/watson/asgi.py:/app/backend/watson/asgi.py:ro
-      - ./backend/watson/__init__.py:/app/backend/watson/__init__.py:ro
-      - ./backend/watson/static:/app/backend/watson/static:ro
-      # Mount a separate, writable volume for the collectstatic destination
-      - static_files:/app/backend/watson/staticfiles
+      # --- THE CRITICAL FIX ---
+      # 1. Mount the local backend code into the container for live reloading.
+      - ./backend:/app/backend
+      # 2. Use a NAMED volume for the .venv. This "overlays" the venv from the
+      #    image on top of the mounted code, preserving the dependencies.
+      - venv_volume:/app/backend/.venv
     healthcheck:
       test: ["CMD", "/healthcheck.sh"]
       interval: 30s
@@ -90,25 +69,24 @@ services:
       retries: 3
       start_period: 30s
 
-  # Development services
   frontend-dev:
-    image: node:18-slim
-    working_dir: /app
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    profiles:
+      - dev
     ports:
       - "8881:3000"
     environment:
-      NODE_ENV: development
-      VITE_API_URL: http://localhost:8888
+      VITE_API_URL: "http://watson:8000"
     volumes:
-      - .:/app:ro
-      - frontend_node_modules:/app/node_modules
-    command: >
-      sh -c "curl -fsSL https://bun.sh/install | bash &&
-             export PATH=\"/root/.bun/bin:$PATH\" &&
-             bun install &&
-             bun run dev"
-    profiles:
-      - dev
+      - ./frontend:/app/frontend
+      - ./package.json:/app/package.json
+      - ./bun.lock:/app/bun.lock
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./vite.config.ts:/app/vite.config.ts
+      - ./components.json:/app/components.json
+      - node_modules:/app/node_modules
     depends_on:
       - watson
 
@@ -129,9 +107,7 @@ services:
 volumes:
   postgres_data:
   redis_data:
-  static_files:
-  frontend_node_modules:
-
-networks:
-  default:
-    driver: bridge
+  # --- Define the named volume for the venv ---
+  venv_volume:
+  # --- Define the named volume for node_modules ---
+  node_modules:

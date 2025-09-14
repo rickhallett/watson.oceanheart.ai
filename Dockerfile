@@ -4,9 +4,11 @@
 FROM oven/bun:1.1 as frontend-builder
 WORKDIR /app
 
-# Copy frontend source only
+# Copy frontend source and configurations
 COPY package.json bun.lock ./
 COPY tsconfig.json ./
+COPY vite.config.ts ./
+COPY components.json ./
 COPY frontend/ ./frontend/
 
 # Install dependencies and build frontend assets
@@ -31,42 +33,29 @@ WORKDIR /app
 COPY pyproject.toml ./
 COPY backend/ ./backend/
 
-# Create virtual environment and install dependencies from pyproject
+# Create virtual environment and install all dependencies from pyproject.toml
 RUN python -m venv /app/backend/.venv \
     && /app/backend/.venv/bin/pip install --upgrade pip \
-    && /app/backend/.venv/bin/pip install -e /app \
-    && /app/backend/.venv/bin/pip install \
-        "django>=5.0" \
-        "djangorestframework>=3.14.0" \
-        "django-cors-headers>=4.0.0" \
-        "psycopg2-binary>=2.9.0" \
-        "python-jose[cryptography]>=3.3.0" \
-        "requests>=2.28.0" \
-        "factory-boy>=3.3.0" \
-        "faker>=21.0.0" \
-        "coverage>=7.3.0" \
-        "django-coverage-plugin>=3.1.0" \
-        "gunicorn>=21.2.0" \
-        "whitenoise>=6.6.0"
+    && /app/backend/.venv/bin/pip install -e /app
 
-# Ruby services stage
-FROM ruby:3.4.5-slim as ruby-services
+# # Ruby services stage
+# FROM ruby:3.4.5-slim as ruby-services
 
-WORKDIR /app
+# WORKDIR /app
 
-# Install system dependencies for Ruby
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+# # Install system dependencies for Ruby
+# RUN apt-get update && apt-get install -y \
+#     build-essential \
+#     && rm -rf /var/lib/apt/lists/*
 
-# Copy Ruby configuration
-COPY Gemfile Gemfile.lock ./
-COPY lib/ ./lib/
-COPY scripts/ ./scripts/
+# # Copy Ruby configuration
+# COPY Gemfile Gemfile.lock ./
+# COPY lib/ ./lib/
+# COPY scripts/ ./scripts/
 
-# Install Ruby dependencies
-RUN bundle config set --local path 'vendor/bundle' && \
-    bundle install --jobs 4 --retry 3
+# # Install Ruby dependencies
+# RUN bundle config set --local path 'vendor/bundle' && \
+#     bundle install --jobs 4 --retry 3
 
 # Final production stage
 FROM python:3.11-slim
@@ -92,11 +81,11 @@ COPY --from=backend-base /app/pyproject.toml /app/
 # Copy built frontend assets
 COPY --from=frontend-builder /app/dist /app/backend/staticfiles/
 
-# Copy Ruby services
-COPY --from=ruby-services /app/vendor /app/vendor
-COPY --from=ruby-services /app/lib /app/lib
-COPY --from=ruby-services /app/scripts /app/scripts
-COPY --from=ruby-services /app/Gemfile* /app/
+# Copy Ruby services (commented out until Ruby stage is enabled)
+# COPY --from=ruby-services /app/vendor /app/vendor
+# COPY --from=ruby-services /app/lib /app/lib
+# COPY --from=ruby-services /app/scripts /app/scripts
+# COPY --from=ruby-services /app/Gemfile* /app/
 
 # Copy configuration files
 COPY docker/entrypoint.sh /entrypoint.sh
@@ -118,11 +107,6 @@ RUN chmod +x /entrypoint.sh /healthcheck.sh && \
 ENV PATH="/app/backend/.venv/bin:$PATH"
 ENV DJANGO_SETTINGS_MODULE=watson.settings.production
 ENV PYTHONPATH=/app/backend
-
-# Fix venv permissions and install globally as fallback
-RUN chmod +x /app/backend/.venv/bin/* 2>/dev/null || true && \
-    pip install -e /app && \
-    pip install "django>=5.0" "djangorestframework>=3.14.0" "django-cors-headers>=4.0.0" "psycopg2-binary>=2.9.0" "python-jose[cryptography]>=3.3.0" "requests>=2.28.0" "factory-boy>=3.3.0" "faker>=21.0.0" "coverage>=7.3.0" "django-coverage-plugin>=3.1.0" "gunicorn>=21.2.0" "whitenoise>=6.6.0"
 
 # Pre-collect static files during build for production
 RUN cd /app/backend && \

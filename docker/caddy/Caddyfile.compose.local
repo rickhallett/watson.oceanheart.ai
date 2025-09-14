@@ -1,0 +1,28 @@
+# Caddyfile for Docker Compose local development
+# Listens on port 3321 and proxies to other services in the Docker network.
+
+{
+  # Disable automatic HTTPS for local development to avoid ACME certificate errors.
+  auto_https off
+}
+
+# Define the server block for the proxy.
+# The address http://:3321 listens on port 3321 on all network interfaces inside the container.
+http://:3321 {
+  encode gzip
+
+  # Route API and Admin requests to the 'watson' (Django) service on its internal port 8000.
+  # Caddy uses Docker's internal DNS to resolve 'watson' to the correct container IP.
+  handle_path /api/* {
+    reverse_proxy watson:8000
+  }
+  handle_path /admin/* {
+    reverse_proxy watson:8000
+  }
+
+  # Route all other requests to the 'frontend-dev' (Bun) service on its internal port 3000.
+  # This assumes you have made the recommended fix to run the Bun server on port 3000.
+  handle {
+    reverse_proxy frontend-dev:3000
+  }
+}

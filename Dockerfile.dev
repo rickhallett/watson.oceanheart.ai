@@ -1,0 +1,21 @@
+# Use the official Bun image as a base
+FROM oven/bun:1.2
+
+# Set the working directory
+WORKDIR /app
+
+# Copy dependency manifests and config files
+COPY package.json bun.lock ./
+COPY tsconfig.json ./
+COPY vite.config.ts ./
+COPY components.json ./
+
+# Install dependencies -- this layer will be cached
+RUN bun install
+
+# Copy the rest of the source code
+COPY frontend/ ./frontend/
+
+# The command to run when the container starts
+# Use Vite development server with Docker-specific host configuration
+CMD ["bun", "run", "dev", "--host", "0.0.0.0"]

@@ -14,22 +14,25 @@ if [ ! -x "$VENV_PY" ]; then
   VENV_PY="python"
 fi
 
-# Wait for database to be ready
-echo "📊 Waiting for database connection..."
 cd /app/backend
-"$VENV_PY" manage.py check --database default
+
+# --- NEW: Wait-for-it loop ---
+# This loop will attempt to connect to the database until it succeeds.
+echo "📊 Waiting for database to be ready..."
+until "$VENV_PY" manage.py check --database default; do
+  >&2 echo "Postgres is unavailable - sleeping"
+  sleep 1
+done
+>&2 echo "Postgres is up - continuing..."
+# --- END NEW ---
 
 # Run database migrations
 echo "🔄 Running database migrations..."
 "$VENV_PY" manage.py migrate --noinput
 
-# Collect static files (skip if already done during build)
-if [ ! -d "/app/backend/watson/staticfiles" ] || [ -z "$(ls -A /app/backend/watson/staticfiles)" ]; then
-    echo "📁 Collecting static files..."
-    "$VENV_PY" manage.py collectstatic --noinput --clear
-else
-    echo "📁 Static files already collected during build"
-fi
+# Collect static files
+echo "📁 Collecting static files..."
+"$VENV_PY" manage.py collectstatic --noinput --clear
 
 # Create superuser if specified
 if [[ $DJANGO_SUPERUSER_EMAIL ]]; then
@@ -40,14 +43,8 @@ if [[ $DJANGO_SUPERUSER_EMAIL ]]; then
         --email $DJANGO_SUPERUSER_EMAIL || true
 fi
 
-# Run any additional setup commands
-if [[ -f /app/scripts/setup.sh ]]; then
-    echo "⚙️ Running additional setup..."
-    bash /app/scripts/setup.sh
-fi
-
-echo "✅ Watson application ready!"
+echo "✅ Watson application setup complete!"
 echo ""
 
-# Execute the main command
+# Execute the main command passed to the container
 exec "$@"
