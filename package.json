@@ -32,7 +32,9 @@
     "typecheck": "tsc --noEmit",
     "frontend:dev": "vite",
     "validate:build": "node scripts/validate-build.js",
-    "dev-docker": "vite --host 0.0.0.0"
+    "dev-docker": "vite --host 0.0.0.0",
+    "build:vercel": "vite build",
+    "preview:vercel": "vite preview"
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.16",
@@ -66,7 +68,11 @@
     "react-hotkeys-hook": "^5.1.0",
     "react-textarea-autosize": "^8.5.9",
     "tailwind-merge": "^3.3.1",
-    "tailwindcss": "^4.1.13"
+    "tailwindcss": "^4.1.13",
+    "@tsparticles/engine": "^3.9.1",
+    "@tsparticles/react": "^3.0.0",
+    "@tsparticles/slim": "^3.9.1",
+    "motion": "^12.23.12"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",

@@ -1,0 +1,12 @@
+{
+  "buildCommand": "bun install && bun run build:frontend",
+  "outputDirectory": "dist/static",
+  "framework": "vite",
+  "installCommand": "curl -fsSL https://bun.sh/install | bash && bun install",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
