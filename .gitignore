@@ -118,3 +118,5 @@ logs/
 *.exe
 *.o
 *.so
+
+backend/watson/staticfiles/*

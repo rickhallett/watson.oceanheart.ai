@@ -1,0 +1,395 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+caddy/
+  Caddyfile.compose.local
+  Caddyfile.local
+  Caddyfile.prod
+  README.md
+entrypoint.sh
+gunicorn.conf.py
+healthcheck.sh
+init-db.sql
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="caddy/Caddyfile.compose.local">
+# Caddyfile for Docker Compose local development
+# Listens on port 3321 and proxies to other services in the Docker network.
+
+{
+  # Disable automatic HTTPS for local development to avoid ACME certificate errors.
+  auto_https off
+}
+
+# Define the server block for the proxy.
+# The address http://:3321 listens on port 3321 on all network interfaces inside the container.
+http://:3321 {
+  encode gzip
+
+  # Route API and Admin requests to the 'watson' (Django) service on its internal port 8000.
+  # Caddy uses Docker's internal DNS to resolve 'watson' to the correct container IP.
+  handle_path /api/* {
+    reverse_proxy watson:8000
+  }
+  handle_path /admin/* {
+    reverse_proxy watson:8000
+  }
+
+  # Route all other requests to the 'frontend-dev' (Bun) service on its internal port 3000.
+  # This assumes you have made the recommended fix to run the Bun server on port 3000.
+  handle {
+    reverse_proxy frontend-dev:3000
+  }
+}
+</file>
+
+<file path="caddy/Caddyfile.local">
+# Local reverse proxy for developer workflow
+# Domain: http://watson.lvh.me:3321 (HTTP only; no TLS for local)
+# Routes:
+#   - /            -> Bun dev server (frontend) on :8881
+#   - /api/*       -> Django API on :8888
+#   - /admin/*     -> Django admin on :8888
+
+{
+  auto_https off
+}
+
+http://watson.lvh.me:3321 {
+  encode gzip
+
+  # API/Admin to Django
+  handle_path /api/* {
+    reverse_proxy localhost:8888
+  }
+  handle_path /admin/* {
+    reverse_proxy localhost:8888
+  }
+
+  # Everything else to the frontend dev server
+  handle {
+    reverse_proxy localhost:8881
+  }
+}
+</file>
+
+<file path="caddy/Caddyfile.prod">
+# Production reverse proxy for watson.oceanheart.ai
+#
+# Assumptions:
+# - Frontend static files are deployed to /srv/www/dist/static
+# - Django app is reachable at host "django" on port 8000 (e.g., via Docker network)
+# - Optional: Django staticfiles mounted at /srv/backend/staticfiles
+#
+# Notes:
+# - Caddy will manage TLS via Let's Encrypt automatically for the domain.
+# - Adjust origins and paths as needed for your deployment layout.
+
+watson.oceanheart.ai {
+  encode gzip zstd
+
+  # Security headers (adjust CSP as your frontend requires)
+  header {
+    X-Content-Type-Options "nosniff"
+    X-Frame-Options "DENY"
+    Referrer-Policy "strict-origin-when-cross-origin"
+    Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+  }
+
+  # API and Admin routed to Django
+  @api path /api/*
+  handle @api {
+    reverse_proxy django:8000
+  }
+  @admin path /admin/*
+  handle @admin {
+    reverse_proxy django:8000
+  }
+
+  # Optional: serve Django static files directly if mounted
+  handle_path /static/* {
+    root * /srv/backend/staticfiles
+    file_server
+  }
+
+  # Frontend SPA static files
+  root * /srv/www/dist/static
+  try_files {path} /index.html
+  file_server
+}
+</file>
+
+<file path="caddy/README.md">
+# Caddy Reverse Proxy
+
+This folder contains ready‑to‑use Caddyfiles for local development and production.
+
+## Local
+- File: `docker/caddy/Caddyfile.local`
+- Domain: `http://watson.lvh.me:3321`
+- Routes:
+  - `/api/*`, `/admin/*` → `localhost:8888` (Django)
+  - everything else → `localhost:8881` (Bun dev server)
+
+Run locally (assuming Caddy is installed):
+
+```
+caddy run --config docker/caddy/Caddyfile.local --adapter caddyfile
+
+Notes:
+- The local Caddyfile disables automatic HTTPS and binds to HTTP on port 3321 to avoid ACME lookups.
+- Proxies frontend to :8881 and API to :8888.
+- Visit: http://watson.lvh.me:3321
+```
+
+## Production
+- File: `docker/caddy/Caddyfile.prod`
+- Domain: `https://watson.oceanheart.ai` (TLS via Let’s Encrypt)
+- Expects:
+  - Frontend static at `/srv/www/dist/static`
+- Django reachable as host `django:8000` (e.g., Docker network)
+  - Optional Django static at `/srv/backend/staticfiles`
+
+Example Docker Compose service:
+
+```yaml
+services:
+  caddy:
+    image: caddy:2
+    ports: ["80:80", "443:443"]
+    volumes:
+      - ./docker/caddy/Caddyfile.prod:/etc/caddy/Caddyfile:ro
+      - ./dist/static:/srv/www/dist/static:ro
+      - ./backend/staticfiles:/srv/backend/staticfiles:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - watson
+volumes:
+  caddy_data:
+  caddy_config:
+```
+
+Adjust paths and service names to match your environment.
+</file>
+
+<file path="entrypoint.sh">
+#!/bin/bash
+# Watson Docker Entrypoint Script
+
+set -e
+
+echo "🚀 Starting Watson Application"
+echo "================================"
+
+# Ensure venv binaries are preferred
+export PATH="/app/backend/.venv/bin:$PATH"
+VENV_PY="/app/backend/.venv/bin/python"
+if [ ! -x "$VENV_PY" ]; then
+  echo "⚠️  Venv python not found at $VENV_PY, using system python"
+  VENV_PY="python"
+fi
+
+# Wait for database to be ready
+echo "📊 Waiting for database connection..."
+cd /app/backend
+"$VENV_PY" manage.py check --database default
+
+# Run database migrations
+echo "🔄 Running database migrations..."
+"$VENV_PY" manage.py migrate --noinput
+
+# Collect static files (skip if already done during build)
+if [ ! -d "/app/backend/watson/staticfiles" ] || [ -z "$(ls -A /app/backend/watson/staticfiles)" ]; then
+    echo "📁 Collecting static files..."
+    "$VENV_PY" manage.py collectstatic --noinput --clear
+else
+    echo "📁 Static files already collected during build"
+fi
+
+# Create superuser if specified
+if [[ $DJANGO_SUPERUSER_EMAIL ]]; then
+    echo "👤 Creating superuser..."
+    "$VENV_PY" manage.py createsuperuser \
+        --noinput \
+        --username $DJANGO_SUPERUSER_USERNAME \
+        --email $DJANGO_SUPERUSER_EMAIL || true
+fi
+
+# Run any additional setup commands
+if [[ -f /app/scripts/setup.sh ]]; then
+    echo "⚙️ Running additional setup..."
+    bash /app/scripts/setup.sh
+fi
+
+echo "✅ Watson application ready!"
+echo ""
+
+# Execute the main command
+exec "$@"
+</file>
+
+<file path="gunicorn.conf.py">
+# Gunicorn configuration for Watson production deployment
+
+import os
+
+# Server socket
+bind = "0.0.0.0:8000"
+backlog = 2048
+
+# Worker processes
+workers = int(os.environ.get('GUNICORN_WORKERS', 3))
+worker_class = "sync"
+worker_connections = 1000
+timeout = 30
+keepalive = 2
+
+# Restart workers after this many requests, to control memory usage
+max_requests = 1000
+max_requests_jitter = 100
+
+# Logging
+accesslog = "-"
+errorlog = "-"
+loglevel = "info"
+access_log_format = '%({x-forwarded-for}i)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s" %(D)s'
+
+# Process naming
+proc_name = 'watson'
+
+# Server mechanics
+daemon = False
+pidfile = '/tmp/watson.pid'
+user = None
+group = None
+tmp_upload_dir = None
+
+# SSL (if needed)
+# keyfile = '/path/to/keyfile'
+# certfile = '/path/to/certfile'
+
+# Preload application for better memory usage
+preload_app = True
+
+# Application module and variable name
+wsgi_module = 'watson.wsgi'
+</file>
+
+<file path="healthcheck.sh">
+#!/bin/bash
+# Watson Health Check Script
+
+set -e
+
+# Check if Django application is responding
+echo "🏥 Performing health check..."
+
+# Test database connection
+python manage.py check --database default >/dev/null 2>&1
+if [[ $? -eq 0 ]]; then
+    echo "✅ Database connection: OK"
+else
+    echo "❌ Database connection: FAILED"
+    exit 1
+fi
+
+# Test HTTP response
+if command -v curl >/dev/null 2>&1; then
+    response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8000/health/ || echo "000")
+    if [[ $response -eq 200 ]]; then
+        echo "✅ HTTP health endpoint: OK"
+    else
+        echo "❌ HTTP health endpoint: FAILED (${response})"
+        exit 1
+    fi
+else
+    echo "⚠️ curl not available, skipping HTTP check"
+fi
+
+# Test static files
+if [[ -d /app/backend/staticfiles ]]; then
+    echo "✅ Static files: OK"
+else
+    echo "❌ Static files: MISSING"
+    exit 1
+fi
+
+# Test Ruby services (if needed)
+if [[ -d /app/lib ]]; then
+    echo "✅ Ruby services: Available"
+fi
+
+echo "🎉 Health check passed!"
+exit 0
+</file>
+
+<file path="init-db.sql">
+-- Watson Database Initialization
+-- Creates additional databases for testing and staging
+
+-- Create test database
+CREATE DATABASE watson_test;
+GRANT ALL PRIVILEGES ON DATABASE watson_test TO watson;
+
+-- Create staging database (if needed)
+CREATE DATABASE watson_staging;
+GRANT ALL PRIVILEGES ON DATABASE watson_staging TO watson;
+
+-- Set up extensions that might be needed
+\c watson_dev;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pg_trgm";
+
+\c watson_test;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pg_trgm";
+
+\c watson_staging;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pg_trgm";
+</file>
+
+</files>

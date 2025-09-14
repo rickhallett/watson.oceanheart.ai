@@ -46,11 +46,11 @@ bundle install
 
 ### Bun (Primary JavaScript/TypeScript Runtime)
 
-**Always use Bun instead of Node.js, npm, pnpm, or vite.**
+**Use Bun as the primary runtime with Vite for frontend development.**
 
 - Use `bun <file>` instead of `node <file>` or `ts-node <file>`
 - Use `bun test` to run tests
-- Use `bun build <file.html|file.ts|file.css>` instead of `webpack` or `esbuild`
+- Use `vite` for frontend development server and builds
 - Use `bun install` instead of `npm install` or `yarn install` or `pnpm install`
 - Use `bun run <script>` instead of `npm run <script>` or `yarn run <script>` or `pnpm run <script>`
 - Bun automatically loads .env, so don't use dotenv
@@ -92,11 +92,16 @@ bundle install
 
 ---
 
-## Frontend Development (Bun + React)
+## Frontend Development (Vite + React + Bun)
 
-Use HTML imports with `Bun.serve()`. HTML imports fully support React, CSS, and Tailwind.
+Use Vite for frontend development and building with Bun as the JavaScript runtime. This provides optimal integration with Tailwind CSS, component libraries, and modern tooling.
 
-### Bun APIs (Preferred)
+### Development Commands
+- `bun run dev` - Start Vite development server with HMR
+- `bun run build` - Build production assets with Vite
+- `vite` - Direct Vite command for development server
+
+### Bun APIs (Preferred for Backend/Scripts)
 - `Bun.serve()` for HTTP server with WebSocket support (instead of Express)
 - `bun:sqlite` for SQLite (instead of better-sqlite3)
 - `Bun.redis` for Redis (instead of ioredis)  
@@ -115,7 +120,10 @@ test("example test", () => {
 ```
 
 ### Frontend Structure
-HTML files can directly import .tsx, .jsx, .js files and Bun will handle transpilation and bundling automatically.
+- Vite handles TypeScript/JSX transpilation and bundling
+- Tailwind CSS integration through PostCSS
+- Component library support with proper build pipeline
+- API proxy configuration for backend integration
 
 ---
 

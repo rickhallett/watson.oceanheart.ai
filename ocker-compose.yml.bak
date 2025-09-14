@@ -1,0 +1,129 @@
+# Watson Docker Compose Configuration
+# For local development and testing
+
+services:
+  database:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: watson_dev
+      POSTGRES_USER: watson
+      POSTGRES_PASSWORD: watson_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U watson -d watson_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  watson:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8000"
+    environment:
+      # Database
+      DATABASE_URL: postgresql://watson:watson_dev_password@database:5432/watson_dev
+      DB_NAME: watson_dev
+      DB_USER: watson
+      DB_PASSWORD: watson_dev_password
+      DB_HOST: database
+      DB_PORT: 5432
+      REDIS_URL: redis://redis:6379/0
+      
+      # Django
+      DEBUG: "false"
+      SECRET_KEY: "docker-dev-secret-key-change-in-production"
+      ALLOWED_HOSTS: "localhost,127.0.0.1,watson"
+      DJANGO_SETTINGS_MODULE: "watson.settings.production"
+      SECURE_SSL_REDIRECT: false  # disable HTTPS redirect in local compose
+      
+      # Authentication
+      PASSPORT_JWKS_URL: "https://passport.oceanheart.ai/.well-known/jwks.json"
+      JWT_ALGORITHM: "RS256"
+      
+      # Superuser creation
+      DJANGO_SUPERUSER_USERNAME: "admin"
+      DJANGO_SUPERUSER_EMAIL: "admin@watson.local"
+      DJANGO_SUPERUSER_PASSWORD: "admin123"
+      
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      # Mount specific backend subdirectories to avoid overriding venv
+      - ./backend/core:/app/backend/core:ro
+      - ./backend/reviews:/app/backend/reviews:ro
+      - ./backend/scripts:/app/backend/scripts:ro
+      - ./backend/manage.py:/app/backend/manage.py:ro
+      # Mount the entire watson app directory as read-write for development
+      - ./backend/watson:/app/backend/watson:rw
+    healthcheck:
+      test: ["CMD", "/healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Development services
+  frontend-dev:
+    image: node:18-slim
+    working_dir: /app
+    ports:
+      - "8881:3000"
+    environment:
+      NODE_ENV: development
+      VITE_API_URL: http://localhost:8888
+    volumes:
+      - .:/app:ro
+      - frontend_node_modules:/app/node_modules
+    command: >
+      sh -c "curl -fsSL https://bun.sh/install | bash &&
+             export PATH=\"/root/.bun/bin:$PATH\" &&
+             bun install &&
+             bun run dev"
+    profiles:
+      - dev
+    depends_on:
+      - watson
+
+  caddy:
+    image: caddy:2
+    profiles:
+      - dev
+    ports:
+      - "3321:3321"
+    volumes:
+      - ./docker/caddy/Caddyfile.compose.local:/etc/caddy/Caddyfile:ro
+    depends_on:
+      watson:
+        condition: service_started
+      frontend-dev:
+        condition: service_started
+
+volumes:
+  postgres_data:
+  redis_data:
+  frontend_node_modules:
+
+networks:
+  default:
+    driver: bridge
