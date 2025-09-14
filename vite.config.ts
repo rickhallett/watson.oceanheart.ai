@@ -30,6 +30,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './frontend/src')
-    }
+    },
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json']
+  },
+  optimizeDeps: {
+    include: ['@tsparticles/react', '@tsparticles/slim', '@tsparticles/engine']
   }
 });
