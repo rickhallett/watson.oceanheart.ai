@@ -1,4 +1,4 @@
-"use client";
+;
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "motion/react";
 import { useState, useEffect } from "react";
@@ -69,7 +69,7 @@ const LoaderCore = ({
                   className={cn(
                     "text-black dark:text-white",
                     value === index &&
-                      "text-black dark:text-lime-500 opacity-100"
+                    "text-black dark:text-lime-500 opacity-100"
                   )}
                 />
               )}

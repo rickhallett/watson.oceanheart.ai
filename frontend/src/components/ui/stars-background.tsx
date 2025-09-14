@@ -1,4 +1,4 @@
-"use client";
+;
 import { cn } from "@/lib/utils";
 import React, {
   useState,
@@ -51,7 +51,7 @@ export const StarsBackground: React.FC<StarBackgroundProps> = ({
           opacity: Math.random() * 0.5 + 0.5,
           twinkleSpeed: shouldTwinkle
             ? minTwinkleSpeed +
-              Math.random() * (maxTwinkleSpeed - minTwinkleSpeed)
+            Math.random() * (maxTwinkleSpeed - minTwinkleSpeed)
             : null,
         };
       });

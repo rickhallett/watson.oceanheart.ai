@@ -1,12 +1,11 @@
-"use client";
 import { SparklesCore } from "./sparkles";
-import Image from "next/image";
+
 
 export function SparklesPreview() {
   return (
     <div className="h-[40rem] w-full bg-black flex flex-col items-center justify-center overflow-hidden rounded-md">
       <h1 className="md:text-7xl text-3xl lg:text-9xl font-bold text-center text-white relative z-20">
-        Preflight <span className="text-primary-500">AI</span> <span className="text-primary-500 font-normal text-4xl">v1.0</span>
+        Watson <span className="text-primary-500">AI</span> <span className="text-primary-500 font-normal text-4xl">v1.0</span>
       </h1>
       <div className="w-[40rem] h-40 relative">
         {/* Gradients */}
@@ -27,14 +26,6 @@ export function SparklesPreview() {
 
         {/* Radial Gradient to prevent sharp edges */}
         <div className="absolute inset-0 w-full h-full bg-black [mask-image:radial-gradient(350px_200px_at_top,transparent_20%,white)]">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-"use client";
+;
 
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";

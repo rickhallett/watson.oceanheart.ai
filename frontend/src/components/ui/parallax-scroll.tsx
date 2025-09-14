@@ -1,4 +1,4 @@
-"use client";
+;
 import { useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 import { motion } from "motion/react";

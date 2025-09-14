@@ -1,4 +1,4 @@
-"use client"
+
 
 import * as React from "react"
 import "@/components/tiptap-ui-primitive/label/label.scss"

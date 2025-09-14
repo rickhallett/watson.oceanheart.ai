@@ -1,4 +1,4 @@
-"use client"
+
 
 import * as React from "react"
 
@@ -25,7 +25,7 @@ import { Badge } from "@/components/tiptap-ui-primitive/badge"
 
 export interface UndoRedoButtonProps
   extends Omit<ButtonProps, "type">,
-    UseUndoRedoConfig {
+  UseUndoRedoConfig {
   /**
    * Optional text to display alongside the icon.
    */

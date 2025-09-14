@@ -1,4 +1,4 @@
-"use client";
+;
 
 import { cn } from "@/lib/utils";
 import { motion, stagger, useAnimate, useInView } from "motion/react";

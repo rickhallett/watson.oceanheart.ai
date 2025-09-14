@@ -1,4 +1,4 @@
-"use client"
+
 
 import * as React from "react"
 
@@ -19,7 +19,7 @@ import { Badge } from "@/components/tiptap-ui-primitive/badge"
 
 export interface MarkButtonProps
   extends Omit<ButtonProps, "type">,
-    UseMarkConfig {
+  UseMarkConfig {
   /**
    * Optional text to display alongside the icon.
    */

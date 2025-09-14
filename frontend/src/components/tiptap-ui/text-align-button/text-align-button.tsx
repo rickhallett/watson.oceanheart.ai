@@ -1,4 +1,4 @@
-"use client"
+
 
 import * as React from "react"
 
@@ -28,7 +28,7 @@ type IconComponent = ({ className, ...props }: IconProps) => React.ReactElement
 
 export interface TextAlignButtonProps
   extends Omit<ButtonProps, "type">,
-    UseTextAlignConfig {
+  UseTextAlignConfig {
   /**
    * Optional text to display alongside the icon.
    */

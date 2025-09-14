@@ -1,4 +1,4 @@
-"use client";
+;
 
 import React, { useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
@@ -64,12 +64,10 @@ export const Lens: React.FC<LensProps> = ({
             transition={{ duration: 0.3, ease: "easeOut" }}
             className="absolute inset-0 overflow-hidden"
             style={{
-              maskImage: `radial-gradient(circle ${lensSize / 2}px at ${
-                position.x
-              }px ${position.y}px, black 100%, transparent 100%)`,
-              WebkitMaskImage: `radial-gradient(circle ${lensSize / 2}px at ${
-                position.x
-              }px ${position.y}px, black 100%, transparent 100%)`,
+              maskImage: `radial-gradient(circle ${lensSize / 2}px at ${position.x
+                }px ${position.y}px, black 100%, transparent 100%)`,
+              WebkitMaskImage: `radial-gradient(circle ${lensSize / 2}px at ${position.x
+                }px ${position.y}px, black 100%, transparent 100%)`,
               transformOrigin: `${position.x}px ${position.y}px`,
             }}
           >
@@ -95,14 +93,11 @@ export const Lens: React.FC<LensProps> = ({
                 transition={{ duration: 0.3, ease: "easeOut" }}
                 className="absolute inset-0 overflow-hidden"
                 style={{
-                  maskImage: `radial-gradient(circle ${lensSize / 2}px at ${
-                    mousePosition.x
-                  }px ${mousePosition.y}px, black 100%, transparent 100%)`,
-                  WebkitMaskImage: `radial-gradient(circle ${
-                    lensSize / 2
-                  }px at ${mousePosition.x}px ${
-                    mousePosition.y
-                  }px, black 100%, transparent 100%)`,
+                  maskImage: `radial-gradient(circle ${lensSize / 2}px at ${mousePosition.x
+                    }px ${mousePosition.y}px, black 100%, transparent 100%)`,
+                  WebkitMaskImage: `radial-gradient(circle ${lensSize / 2
+                    }px at ${mousePosition.x}px ${mousePosition.y
+                    }px, black 100%, transparent 100%)`,
                   transformOrigin: `${mousePosition.x}px ${mousePosition.y}px`,
                   zIndex: 50,
                 }}

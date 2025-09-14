@@ -1,4 +1,4 @@
-"use client";
+;
 import { cn } from "@/lib/utils";
 import React, { useRef, useState, useEffect } from "react";
 import {
@@ -128,7 +128,7 @@ export const DraggableCardBody = ({
 
         const velocityMagnitude = Math.sqrt(
           currentVelocityX * currentVelocityX +
-            currentVelocityY * currentVelocityY,
+          currentVelocityY * currentVelocityY,
         );
         const bounce = Math.min(0.8, velocityMagnitude / 1000);
 

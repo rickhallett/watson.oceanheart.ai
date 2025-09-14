@@ -1,4 +1,4 @@
-"use client"
+
 
 import * as React from "react"
 import type { Editor } from "@tiptap/react"
@@ -62,7 +62,7 @@ export interface LinkMainProps {
 
 export interface LinkPopoverProps
   extends Omit<ButtonProps, "type">,
-    UseLinkPopoverConfig {
+  UseLinkPopoverConfig {
   /**
    * Callback for when the popover opens or closes.
    */

@@ -29,7 +29,10 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'frontend/src')
+      '@': resolve(__dirname, 'frontend/src'),
+      '@tsparticles/react': resolve(__dirname, 'node_modules/@tsparticles/react'),
+      '@tsparticles/slim': resolve(__dirname, 'node_modules/@tsparticles/slim'),
+      '@tsparticles/engine': resolve(__dirname, 'node_modules/@tsparticles/engine')
     }
   }
 });

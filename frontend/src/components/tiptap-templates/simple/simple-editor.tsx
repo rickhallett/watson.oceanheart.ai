@@ -1,4 +1,4 @@
-"use client"
+
 
 import * as React from "react"
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react"
@@ -251,8 +251,8 @@ export function SimpleEditor() {
           style={{
             ...(isMobile
               ? {
-                  bottom: `calc(100% - ${height - rect.y}px)`,
-                }
+                bottom: `calc(100% - ${height - rect.y}px)`,
+              }
               : {}),
           }}
         >

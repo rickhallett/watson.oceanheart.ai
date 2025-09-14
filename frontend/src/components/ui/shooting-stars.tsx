@@ -1,4 +1,4 @@
-"use client";
+;
 import { cn } from "@/lib/utils";
 import React, { useEffect, useState, useRef } from "react";
 
@@ -75,7 +75,7 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
 
     createStar();
 
-    return () => {};
+    return () => { };
   }, [minSpeed, maxSpeed, minDelay, maxDelay]);
 
   useEffect(() => {
@@ -127,9 +127,8 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
           width={starWidth * star.scale}
           height={starHeight}
           fill="url(#gradient)"
-          transform={`rotate(${star.angle}, ${
-            star.x + (starWidth * star.scale) / 2
-          }, ${star.y + starHeight / 2})`}
+          transform={`rotate(${star.angle}, ${star.x + (starWidth * star.scale) / 2
+            }, ${star.y + starHeight / 2})`}
         />
       )}
       <defs>
