@@ -32,7 +32,7 @@ echo "🔄 Running database migrations..."
 
 # Collect static files
 echo "📁 Collecting static files..."
-"$VENV_PY" manage.py collectstatic --noinput --clear
+"$VENV_PY" manage.py collectstatic --noinput --clear --verbosity 0
 
 # Create superuser if specified
 if [[ $DJANGO_SUPERUSER_EMAIL ]]; then
