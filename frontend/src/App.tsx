@@ -4,8 +4,10 @@ import { SparklesPreview } from './components/ui/sparkles-preview';
 
 function App() {
   return (
-    <div className="app">
-      <SparklesPreview />
+    <div className="min-h-screen flex items-center justify-center bg-black">
+      <main className="w-full">
+        <SparklesPreview />
+      </main>
     </div>
   );
 }
