@@ -1,7 +1,3 @@
-Here’s a README tailored to the Watson project as you just scoped it — **review → edit/classify → submit → diff → basic analytics → export**.
-
----
-
 # Watson
 
 **Clinical LLM Output Review & Curation Tool**
