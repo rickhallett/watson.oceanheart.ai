@@ -11,8 +11,13 @@ COPY vite.config.ts ./
 COPY components.json ./
 COPY frontend/ ./frontend/
 
-# Install dependencies and build frontend assets
+# Install dependencies 
 RUN bun install
+
+# Create symlink so frontend can find node_modules (since vite root is ./frontend)
+RUN ln -sf /app/node_modules /app/frontend/node_modules
+
+# Build frontend assets
 RUN bun run build:clean && bun run build:frontend
 
 # Python/Django stage
