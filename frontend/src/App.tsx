@@ -1,5 +1,5 @@
 import React from 'react';
-import TipTapEditor from './components/TipTapEditor';
+import { SimpleEditor } from './components/tiptap-templates/simple/simple-editor';
 
 function App() {
   return (
@@ -8,12 +8,9 @@ function App() {
         <h1>Watson - Clinical LLM Review Tool</h1>
         <p>Review and curate LLM outputs for clinical applications</p>
       </header>
-      
+
       <main className="app-main">
-        <div className="editor-container">
-          <h2>Rich Text Editor</h2>
-          <TipTapEditor />
-        </div>
+        <SimpleEditor />
       </main>
     </div>
   );
