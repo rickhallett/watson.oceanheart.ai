@@ -1,15 +1,32 @@
-import React from 'react';
-import { SimpleEditor } from './components/tiptap-templates/simple/simple-editor';
-import { SparklesPreview } from './components/ui/sparkles-preview';
+import React, { useEffect, useState } from 'react';
+import { LandingPage } from './pages/LandingPage';
+import { AppLayout } from './pages/AppLayout';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 function App() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-black">
-      <main className="w-full">
-        <SparklesPreview />
-      </main>
-    </div>
-  );
+  const [currentPath, setCurrentPath] = useState(window.location.pathname);
+
+  useEffect(() => {
+    // Handle browser navigation
+    const handlePopState = () => {
+      setCurrentPath(window.location.pathname);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  // Simple routing based on pathname
+  if (currentPath === '/app' || currentPath.startsWith('/app/')) {
+    return (
+      <ProtectedRoute>
+        <AppLayout />
+      </ProtectedRoute>
+    );
+  }
+
+  // Default to landing page
+  return <LandingPage />;
 }
 
 export default App;
