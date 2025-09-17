@@ -186,8 +186,8 @@ REST_FRAMEWORK = {
 
 # CORS configuration for development
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8881",  # Bun frontend dev port
-    "http://127.0.0.1:8881",
+    "http://localhost:3001",  # Vite frontend dev port
+    "http://127.0.0.1:3001",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
