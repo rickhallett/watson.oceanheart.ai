@@ -167,7 +167,7 @@ deploy_docker() {
     docker-compose up -d
     
     print_status "Docker deployment completed"
-    print_info "Application available at: http://localhost:8888"
+    print_info "Application available at: http://localhost:8001"
 }
 
 run_health_check() {

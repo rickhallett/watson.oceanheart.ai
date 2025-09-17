@@ -251,7 +251,7 @@ test_rollback_procedures() {
     echo ""
     
     # Test health check endpoint
-    if curl -s http://localhost:8888/health/ >/dev/null 2>&1; then
+    if curl -s http://localhost:8001/health/ >/dev/null 2>&1; then
         print_status "Health check endpoint: Accessible"
     else
         print_warning "Health check endpoint: Not accessible"

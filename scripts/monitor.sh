@@ -13,7 +13,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-BASE_URL="${BASE_URL:-http://localhost:8888}"
+BASE_URL="${BASE_URL:-http://localhost:8001}"
 TIMEOUT=10
 ALERT_EMAIL="${ALERT_EMAIL:-admin@watson.local}"
 LOG_FILE="/var/log/watson/monitoring.log"

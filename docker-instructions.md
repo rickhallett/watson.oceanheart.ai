@@ -22,15 +22,15 @@ docker-compose down
 
 | Service | URL | Description |
 |---------|-----|-------------|
-| **Unified Proxy (Caddy)** | http://localhost:3321 | Main development URL with unified frontend/backend |
-| **Django Backend (Direct)** | http://localhost:8888 | Direct Django API access |
-| **Vite Frontend (Direct)** | http://localhost:8881 | Direct Vite dev server access |
-| **PostgreSQL Database** | localhost:5432 | Database connection |
-| **Redis** | localhost:6379 | Cache/queue service |
+| **Unified Proxy (Caddy)** | http://localhost:7001 | Main development URL with unified frontend/backend |
+| **Django Backend (Direct)** | http://localhost:8001 | Direct Django API access |
+| **Vite Frontend (Direct)** | http://localhost:3001 | Direct Vite dev server access |
+| **PostgreSQL Database** | localhost:5001 | Database connection |
+| **Redis** | localhost:6001 | Cache/queue service |
 
 ### Proxy Configuration
 
-The Caddy proxy (port 3321) routes requests as follows:
+The Caddy proxy (port 7001) routes requests as follows:
 - `/api/*` → Django backend (watson:8000)
 - `/admin/*` → Django admin (watson:8000)
 - `/*` → Vite frontend (frontend-dev:3000)
@@ -42,7 +42,7 @@ Services communicate internally using these hostnames:
 - `frontend-dev` - Vite dev server (port 3000 internally)
 - `database` - PostgreSQL (port 5432)
 - `redis` - Redis (port 6379)
-- `caddy` - Reverse proxy (port 3321)
+- `caddy` - Reverse proxy (port 3321 internal, exposed on 7001)
 
 ## Environment Variables
 
@@ -58,8 +58,8 @@ Services communicate internally using these hostnames:
 
 ### Vite Proxy Configuration
 The Vite dev server (vite.config.ts) proxies:
-- `/api` → `VITE_API_URL` or http://localhost:8888
-- `/admin` → `VITE_API_URL` or http://localhost:8888
+- `/api` → `VITE_API_URL` or http://localhost:8001
+- `/admin` → `VITE_API_URL` or http://localhost:8001
 
 ## Development Workflows
 
@@ -69,7 +69,7 @@ The Vite dev server (vite.config.ts) proxies:
 docker-compose --profile dev up -d
 
 # Access the application at:
-# http://localhost:3321
+# http://localhost:7001
 ```
 
 ### Backend-Only Development
@@ -78,8 +78,8 @@ docker-compose --profile dev up -d
 docker-compose up -d watson database redis
 
 # Access Django at:
-# http://localhost:8888/admin
-# http://localhost:8888/api
+# http://localhost:8001/admin
+# http://localhost:8001/api
 ```
 
 ### Frontend-Only Development (Local)
@@ -90,7 +90,7 @@ docker-compose up -d watson database redis
 # Run frontend locally
 bun run dev
 
-# Frontend will proxy API calls to http://localhost:8888
+# Frontend will proxy API calls to http://localhost:8001
 ```
 
 ## Database Access
@@ -98,7 +98,7 @@ bun run dev
 ### PostgreSQL Connection
 ```
 Host: localhost
-Port: 5432
+Port: 5001
 Database: watson_dev
 Username: watson
 Password: watson_dev_password
@@ -106,8 +106,8 @@ Password: watson_dev_password
 
 ### Django Admin
 ```
-URL: http://localhost:8888/admin (direct)
-     http://localhost:3321/admin (via proxy)
+URL: http://localhost:8001/admin (direct)
+     http://localhost:7001/admin (via proxy)
 Username: admin
 Password: admin123
 ```
@@ -133,7 +133,7 @@ Password: admin123
 If ports are already in use:
 ```bash
 # Check what's using a port
-lsof -i :3321  # or 8888, 8881, 5432, 6379
+lsof -i :7001  # or 8001, 3001, 5001, 6001
 
 # Stop conflicting service or change ports in docker-compose.yml
 ```
@@ -172,7 +172,7 @@ docker-compose logs -f frontend-dev
 ## Service Dependencies
 
 ```
-caddy (3321)
+caddy (7001)
 ├── frontend-dev (3000 internal)
 └── watson (8000 internal)
     ├── database (5432)

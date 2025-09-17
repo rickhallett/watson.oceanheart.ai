@@ -4,10 +4,10 @@ This folder contains ready‑to‑use Caddyfiles for local development and produ
 
 ## Local
 - File: `docker/caddy/Caddyfile.local`
-- Domain: `http://watson.lvh.me:3321`
+- Domain: `http://watson.lvh.me:7001`
 - Routes:
-  - `/api/*`, `/admin/*` → `localhost:8888` (Django)
-  - everything else → `localhost:8881` (Bun dev server)
+  - `/api/*`, `/admin/*` → `localhost:8001` (Django)
+  - everything else → `localhost:3001` (Bun dev server)
 
 Run locally (assuming Caddy is installed):
 
@@ -15,9 +15,9 @@ Run locally (assuming Caddy is installed):
 caddy run --config docker/caddy/Caddyfile.local --adapter caddyfile
 
 Notes:
-- The local Caddyfile disables automatic HTTPS and binds to HTTP on port 3321 to avoid ACME lookups.
-- Proxies frontend to :8881 and API to :8888.
-- Visit: http://watson.lvh.me:3321
+- The local Caddyfile disables automatic HTTPS and binds to HTTP on port 7001 to avoid ACME lookups.
+- Proxies frontend to :3001 and API to :8001.
+- Visit: http://watson.lvh.me:7001
 ```
 
 ## Production
