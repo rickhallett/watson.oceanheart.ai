@@ -1,8 +1,6 @@
 /* Watson Frontend Styles */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
+@import "tailwindcss";
+@import './styles/monochrome.css';
 @import './styles/_variables.scss';
 @import './styles/_keyframe-animations.scss';
 
