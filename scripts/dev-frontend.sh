@@ -20,9 +20,9 @@ cd frontend
 
 # Start Bun development server with HMR
 echo "🔥 Starting Bun development server with Hot Module Reloading..."
-echo "📍 Frontend will be available at: http://localhost:8881"
-echo "🔗 API proxy to Django backend at: http://localhost:8888"
+echo "📍 Frontend will be available at: http://localhost:3001"
+echo "🔗 API proxy to Django backend at: http://localhost:8001"
 echo "🛑 Press Ctrl+C to stop the server"
 echo ""
 
-bun --hot ./index.ts
+bun run dev -- --port 3001

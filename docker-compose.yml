@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: watson
       POSTGRES_PASSWORD: watson_dev_password
     ports:
-      - "5432:5432"
+      - "5001:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
@@ -19,7 +19,7 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - "6001:6379"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -35,7 +35,7 @@ services:
     command: >
       sh -c "/entrypoint.sh /app/backend/.venv/bin/python /app/backend/manage.py runserver 0.0.0.0:8000"
     ports:
-      - "8888:8000"
+      - "8001:8000"
     environment:
       DATABASE_URL: postgresql://watson:watson_dev_password@database:5432/watson_dev
       REDIS_URL: redis://redis:6379/0
@@ -76,7 +76,7 @@ services:
     profiles:
       - dev
     ports:
-      - "8881:3000"
+      - "3001:3000"
     environment:
       VITE_API_URL: "http://watson:8000"
     volumes:
@@ -95,7 +95,7 @@ services:
     profiles:
       - dev
     ports:
-      - "3321:3321"
+      - "7001:3321"
     volumes:
       - ./docker/caddy/Caddyfile.compose.local:/etc/caddy/Caddyfile:ro
     depends_on:

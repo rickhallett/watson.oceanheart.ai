@@ -30,8 +30,8 @@ python manage.py migrate --check || {
 
 # Start development server with hot reload
 echo "🔥 Starting Django development server with hot reload..."
-echo "📍 Server will be available at: http://localhost:8888"
+echo "📍 Server will be available at: http://localhost:8001"
 echo "🛑 Press Ctrl+C to stop the server"
 echo ""
 
-python manage.py runserver 0.0.0.0:8888
+python manage.py runserver 0.0.0.0:8001
