@@ -96,18 +96,18 @@ export function LandingPage() {
             <p className="text-neutral-400 text-lg mb-12">
               Experience the power of AI-assisted clinical documentation
             </p>
-            <Button
-              borderRadius="1.75rem"
-              className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white border-none px-12 py-4 text-lg transition-all"
+            <MonochromeButton
+              variant="primary"
+              size="lg"
+              icon={<LogIn className="w-5 h-5" />}
               onClick={() => {
                 // Set localStorage flag and redirect to app
                 localStorage.setItem('isAuthenticated', 'true');
                 window.location.href = '/app';
               }}
             >
-              <LogIn className="w-5 h-5 mr-2" />
               Sign In to Watson
-            </Button>
+            </MonochromeButton>
           </div>
         </div>
 
