@@ -3,7 +3,7 @@
 Date: 2025-09-12
 
 ## Executive Summary
-Define a pragmatic deployment for watson.oceanheart.ai with clean separation of dev/prod databases, simple reverse proxying, and smooth local development at watson.lvh.me:3321. Prefer managed Postgres and a developer‑friendly proxy (Caddy) for TLS and routing.
+Define a pragmatic deployment for watson.oceanheart.ai with clean separation of dev/prod databases, simple reverse proxying, and smooth local development at watson.lvh.me:7001. Prefer managed Postgres and a developer-friendly proxy (Caddy) for TLS and routing.
 
 ## Problem Statement
 We need a cohesive, low‑friction path from local dev to production: consistent URLs, secure env config, separate DBs, and repeatable deployment using existing scripts (deploy/, docker/).
@@ -11,7 +11,7 @@ We need a cohesive, low‑friction path from local dev to production: consistent
 ## Requirements
 ### User requirements
 - Access production at https://watson.oceanheart.ai with HTTPS.
-- Local dev at http://watson.lvh.me:3321 with frontend hot‑reload and API routing.
+- Local dev at http://watson.lvh.me:7001 with frontend hot-reload and API routing.
 
 ### Technical requirements
 - Separate Postgres instances for dev and prod; migrations tracked and automated.
@@ -25,16 +25,16 @@ We need a cohesive, low‑friction path from local dev to production: consistent
 
 ## Implementation Phases
 ### Phase 1: Local development
-- Run DB/Redis/Django via `docker-compose up -d` (ports 5432, 6379, 8888).
-- Start frontend: `npm run dev` (bun dev). Use Caddy to expose http://watson.lvh.me:3321 and route:
-  - `/` → `localhost:8881` (Bun dev server)
-  - `/api/*` → `localhost:8888` (Django)
+- Run DB/Redis/Django via `docker-compose up -d` (ports 5001, 6001, 8001).
+- Start frontend: `npm run dev` (bun dev). Use Caddy to expose http://watson.lvh.me:7001 and route:
+  - `/` → `localhost:3001` (Vite dev server)
+  - `/api/*` → `localhost:8001` (Django)
 
 Example Caddyfile (local):
 ```
-watson.lvh.me:3321 {
-  reverse_proxy /api/* localhost:8888
-  reverse_proxy localhost:8881
+watson.lvh.me:7001 {
+  reverse_proxy /api/* localhost:8001
+  reverse_proxy localhost:3001
 }
 ```
 

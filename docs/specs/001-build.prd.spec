@@ -288,7 +288,7 @@ watson.oceanheart.ai/
 ```bash
 # Database
 DATABASE_URL=postgresql://localhost:5432/watson_dev
-REDIS_URL=redis://localhost:6379/0
+REDIS_URL=redis://localhost:6001/0
 
 # Authentication
 PASSPORT_JWKS_URL=https://passport.oceanheart.ai/.well-known/jwks.json
@@ -301,7 +301,7 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 
 # Bun/Frontend
 NODE_ENV=development
-VITE_API_URL=http://localhost:8888
+VITE_API_URL=http://localhost:8001
 ```
 
 #### 5.3.2 Production Environment Variables

@@ -159,7 +159,7 @@ feat(frontend): add React frontend with TipTap editor and Bun HMR server
 - Implement TipTap rich text editor for clinical review workflow
 - Add Bun development server with Hot Module Reloading
 - Include frontend development script with environment loading
-- Configure API proxy to Django backend on localhost:8888
+- Configure API proxy to Django backend on localhost:8001
 - Add responsive CSS styling for clinical review interface
 - Update package.json with TipTap and React dependencies
 ```
