@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { LandingPage } from './pages/LandingPage';
 import { AppLayout } from './pages/AppLayout';
+import { LoginPage } from './pages/LoginPage';
+import { DashboardPage } from './pages/DashboardPage';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import { SkewedBackground } from './components/SkewedBackground';
 
 function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
@@ -16,11 +19,33 @@ function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  // Apply monochrome mode to the entire app
+  useEffect(() => {
+    document.body.classList.add('monochrome-mode');
+  }, []);
+
   // Simple routing based on pathname
+  if (currentPath === '/login') {
+    return <LoginPage />;
+  }
+
+  if (currentPath === '/dashboard') {
+    return (
+      <ProtectedRoute>
+        <DashboardPage />
+      </ProtectedRoute>
+    );
+  }
+
   if (currentPath === '/app' || currentPath.startsWith('/app/')) {
     return (
       <ProtectedRoute>
-        <AppLayout />
+        <div className="min-h-screen bg-zinc-950">
+          <SkewedBackground opacity={0.02} />
+          <div className="relative z-10">
+            <AppLayout />
+          </div>
+        </div>
       </ProtectedRoute>
     );
   }

@@ -1,9 +1,8 @@
 import React from 'react';
-import { BackgroundBeams } from '@/components/ui/background-beams';
-import { Spotlight } from '@/components/ui/spotlight';
-import { SparklesCore } from '@/components/ui/sparkles';
+import { SkewedBackground } from '@/components/SkewedBackground';
 import { InfiniteMovingCards } from '@/components/ui/infinite-moving-cards';
-import { Button } from '@/components/ui/moving-border';
+import { MonochromeButton } from '@/components/MonochromeButton';
+import { CompactCard } from '@/components/CompactCard';
 import { LogIn } from 'lucide-react';
 import { componentTheme } from '@/config/theme';
 
@@ -42,60 +41,43 @@ const testimonials = [
 
 export function LandingPage() {
   return (
-    <div className="min-h-screen bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">
-      <Spotlight
-        className="-top-40 left-0 md:left-60 md:-top-20"
-        fill="white"
-      />
-      <BackgroundBeams />
+    <div className="min-h-screen bg-zinc-950 antialiased relative overflow-hidden">
+      <SkewedBackground opacity={0.03} />
 
       <div className="relative z-10">
         {/* Hero Section */}
-        <div className="h-[40rem] w-full bg-black flex flex-col items-center justify-center overflow-hidden rounded-md">
-          <h1 className="md:text-7xl text-5xl lg:text-9xl font-bold text-center text-white relative z-20">
-            Watson <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">AI</span>{" "}
-            <span className="text-cyan-400 font-normal text-4xl">v1.0</span>
+        <div className="h-[40rem] w-full flex flex-col items-center justify-center overflow-hidden rounded-md">
+          <h1 className="md:text-7xl text-5xl lg:text-9xl font-bold text-center text-zinc-50 relative z-20">
+            Watson <span className="text-zinc-400">AI</span>{" "}
+            <span className="text-zinc-500 font-normal text-4xl">v1.0</span>
           </h1>
           <div className="w-[40rem] h-40 relative">
-            {/* Gradients */}
-            <div className="absolute inset-x-20 top-0 bg-gradient-to-r from-transparent via-blue-500 to-transparent h-[2px] w-3/4 blur-sm" />
-            <div className="absolute inset-x-20 top-0 bg-gradient-to-r from-transparent via-blue-500 to-transparent h-px w-3/4" />
-            <div className="absolute inset-x-60 top-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent h-[5px] w-1/4 blur-sm" />
-            <div className="absolute inset-x-60 top-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent h-px w-1/4" />
+            {/* Subtle monochrome gradients */}
+            <div className="absolute inset-x-20 top-0 bg-gradient-to-r from-transparent via-zinc-600 to-transparent h-[2px] w-3/4 blur-sm opacity-30" />
+            <div className="absolute inset-x-20 top-0 bg-gradient-to-r from-transparent via-zinc-500 to-transparent h-px w-3/4" />
+            <div className="absolute inset-x-60 top-0 bg-gradient-to-r from-transparent via-zinc-400 to-transparent h-[5px] w-1/4 blur-sm opacity-20" />
+            <div className="absolute inset-x-60 top-0 bg-gradient-to-r from-transparent via-zinc-400 to-transparent h-px w-1/4" />
 
-            {/* Core component */}
-            <SparklesCore
-              background="transparent"
-              minSize={0.4}
-              maxSize={1}
-              particleDensity={1200}
-              className="w-full h-full"
-              particleColor="#FFFFFF"
-            />
-
-            {/* Radial Gradient to prevent sharp edges */}
-            <div className="absolute inset-0 w-full h-full bg-black [mask-image:radial-gradient(350px_200px_at_top,transparent_20%,white)]">
-
-            </div>
+            {/* Simple gradient overlay */}
+            <div className="absolute inset-0 w-full h-full bg-zinc-950 [mask-image:radial-gradient(350px_200px_at_top,transparent_20%,white)]" />
           </div>
         </div>
 
 
 
         {/* Testimonials Section */}
-        <div className="py-20 relative bg-black">
-          <div className="absolute inset-0 bg-grid-white/[0.02]" />
+        <div className="py-20 relative">
           <div className="relative z-10">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h2 className="text-3xl md:text-5xl font-bold text-center bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-4">
+              <h2 className="text-3xl md:text-5xl font-bold text-center text-zinc-50 mb-4">
                 What Our Users Say
               </h2>
-              <p className="text-neutral-400 text-center max-w-2xl mx-auto mb-16">
+              <p className="text-zinc-400 text-center max-w-2xl mx-auto mb-16">
                 Join hundreds of clinicians who have transformed their documentation workflow
               </p>
             </div>
 
-            <div className="rounded-md flex flex-col antialiased bg-black items-center justify-center relative overflow-hidden">
+            <div className="rounded-md flex flex-col antialiased items-center justify-center relative overflow-hidden">
               <InfiniteMovingCards
                 items={testimonials}
                 direction="right"
