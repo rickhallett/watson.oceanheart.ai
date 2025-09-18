@@ -1,0 +1,4544 @@
+This file is a merged representation of a subset of the codebase, containing files not matching ignore patterns, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching these patterns are excluded: tsconfig.tsbuildinfo, components/ui
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+app/
+  (protected)/
+    app/
+      profile/
+        page.tsx
+      settings/
+        page.tsx
+      page.tsx
+    layout.tsx
+  (public)/
+    login/
+      page.tsx
+    layout.tsx
+    page.tsx
+  globals.css
+  layout.tsx
+components/
+  auth/
+    AuthProvider.tsx
+  layout/
+    AppLayout.tsx
+  navigation/
+    MainNav.tsx
+  survey/
+    forms/
+      FeedbackForm.tsx
+      FinalForm.tsx
+      PersonalInfoForm.tsx
+      PreferencesForm.tsx
+      TechnicalForm.tsx
+    ProgressBar.tsx
+    SurveyContainer.tsx
+data/
+  globe.json
+hooks/
+  use-outside-click.tsx
+lib/
+  auth/
+    stub.ts
+    utils.ts
+  stores/
+    survey-store.ts
+  utils.ts
+public/
+  file.svg
+  globe.svg
+  next.svg
+  vercel.svg
+  window.svg
+.gitignore
+aceternity-registry.json
+add-ts-nocheck.ts
+biome.json
+components.json
+Dockerfile
+middleware.ts
+next.config.ts
+package.json
+postcss.config.mjs
+README.md
+register-all.ts
+tsconfig.json
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="app/(protected)/app/profile/page.tsx">
+"use client";
+
+import React from "react";
+import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
+import { LogOut, User, Mail, Calendar } from "lucide-react";
+import { signOut, clearStubCookie } from "@/lib/auth/stub";
+import { useRouter } from "next/navigation";
+
+export default function ProfilePage() {
+  const router = useRouter();
+
+  const handleSignOut = () => {
+    // Clear stub auth
+    signOut();
+    clearStubCookie();
+
+    // Redirect to login
+    router.push("/login");
+  };
+
+  const profileData = [
+    {
+      id: 1,
+      name: "John Doe",
+      designation: "Premium User",
+      image: "",
+    },
+  ];
+
+  return (
+    <div className="max-w-4xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-white mb-2">Profile</h1>
+        <p className="text-gray-400">Manage your account settings and preferences</p>
+      </div>
+
+      <div className="bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800 p-8">
+        <div className="flex items-center space-x-6 mb-8">
+          <div className="flex">
+            <AnimatedTooltip items={profileData} />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-2xl font-semibold text-white">John Doe</h2>
+            <p className="text-gray-400">john.doe@example.com</p>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2 text-gray-400">
+                <User className="w-4 h-4" />
+                <span className="text-sm">Account Type</span>
+              </div>
+              <p className="text-white font-medium">Premium</p>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2 text-gray-400">
+                <Mail className="w-4 h-4" />
+                <span className="text-sm">Email</span>
+              </div>
+              <p className="text-white font-medium">john.doe@example.com</p>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2 text-gray-400">
+                <Calendar className="w-4 h-4" />
+                <span className="text-sm">Member Since</span>
+              </div>
+              <p className="text-white font-medium">January 2024</p>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2 text-gray-400">
+                <span className="text-sm">Status</span>
+              </div>
+              <p className="text-green-400 font-medium">Active</p>
+            </div>
+          </div>
+
+          <div className="pt-6 border-t border-gray-800">
+            <h3 className="text-lg font-semibold text-white mb-4">Actions</h3>
+            <div className="flex flex-wrap gap-4">
+              <button
+                onClick={handleSignOut}
+                className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Sign Out</span>
+              </button>
+
+              <button
+                className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Edit Profile
+              </button>
+
+              <button
+                className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Change Password
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/(protected)/app/settings/page.tsx">
+"use client";
+
+import React, { useState } from "react";
+import { 
+  Bell, 
+  Shield, 
+  Palette, 
+  Globe, 
+  User, 
+  Lock, 
+  Smartphone,
+  CreditCard,
+  HelpCircle,
+  ChevronRight,
+  Check,
+  X
+} from "lucide-react";
+
+export default function SettingsPage() {
+  const [activeSection, setActiveSection] = useState("account");
+  const [notifications, setNotifications] = useState({
+    email: true,
+    push: false,
+    weekly: true,
+    product: false,
+    security: true
+  });
+
+  const menuItems = [
+    { id: "account", label: "Account", icon: User },
+    { id: "notifications", label: "Notifications", icon: Bell },
+    { id: "privacy", label: "Privacy & Security", icon: Shield },
+    { id: "appearance", label: "Appearance", icon: Palette },
+    { id: "billing", label: "Billing", icon: CreditCard },
+    { id: "help", label: "Help & Support", icon: HelpCircle },
+  ];
+
+  const renderContent = () => {
+    switch (activeSection) {
+      case "account":
+        return (
+          <div className="space-y-6">
+            <div className="animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+              <h2 className="text-2xl font-bold text-white mb-2">Account Settings</h2>
+              <p className="text-gray-400">Manage your account information and preferences</p>
+            </div>
+
+            <div className="bg-gray-800/50 rounded-lg p-6 space-y-4 hover:bg-gray-800/60 transition-all duration-200 ease-out opacity-0 animate-[fadeInUp_500ms_ease-out_200ms_forwards]">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold transition-transform duration-200 ease-out">
+                    JD
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-white">John Doe</h3>
+                    <p className="text-gray-400 text-sm">john.doe@example.com</p>
+                  </div>
+                </div>
+                <button className="text-indigo-400 hover:text-indigo-300 text-sm transition-colors duration-150 ease-out">
+                  Change Photo
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-0 animate-[fadeInUp_600ms_ease-out_300ms_forwards]">
+              <div className="bg-gray-800/50 rounded-lg p-4 hover:bg-gray-800/60 transition-all duration-200 ease-out">
+                <label className="block text-sm font-medium text-gray-400 mb-2">
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  defaultValue="John"
+                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-indigo-500 transition-all duration-150 ease-out hover:border-gray-600"
+                />
+              </div>
+
+              <div className="bg-gray-800/50 rounded-lg p-4 hover:bg-gray-800/60 transition-all duration-200 ease-out">
+                <label className="block text-sm font-medium text-gray-400 mb-2">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  defaultValue="Doe"
+                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-indigo-500 transition-all duration-150 ease-out hover:border-gray-600"
+                />
+              </div>
+
+              <div className="bg-gray-800/50 rounded-lg p-4 hover:bg-gray-800/60 transition-all duration-200 ease-out">
+                <label className="block text-sm font-medium text-gray-400 mb-2">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  defaultValue="john.doe@example.com"
+                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-indigo-500 transition-all duration-150 ease-out hover:border-gray-600"
+                />
+              </div>
+
+              <div className="bg-gray-800/50 rounded-lg p-4 hover:bg-gray-800/60 transition-all duration-200 ease-out">
+                <label className="block text-sm font-medium text-gray-400 mb-2">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  placeholder="+1 (555) 123-4567"
+                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-indigo-500 transition-all duration-150 ease-out hover:border-gray-600"
+                />
+              </div>
+            </div>
+
+            <div className="bg-red-900/20 border border-red-900/50 rounded-lg p-4">
+              <h3 className="text-red-400 font-semibold mb-2">Danger Zone</h3>
+              <p className="text-gray-400 text-sm mb-4">
+                Once you delete your account, there is no going back. Please be certain.
+              </p>
+              <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-150 ease-out">
+                Delete Account
+              </button>
+            </div>
+          </div>
+        );
+
+      case "notifications":
+        return (
+          <div className="space-y-6">
+            <div className="opacity-0 animate-[fadeInUp_400ms_ease-out_100ms_forwards]">
+              <h2 className="text-2xl font-bold text-white mb-2">Notification Preferences</h2>
+              <p className="text-gray-400">Choose how you want to be notified</p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="bg-gray-800/50 rounded-lg p-6 opacity-0 animate-[fadeInUp_500ms_ease-out_200ms_forwards] hover:bg-gray-800/60 transition-all duration-200 ease-out">
+                <h3 className="text-lg font-semibold text-white mb-4">Email Notifications</h3>
+                <div className="space-y-3">
+                  {Object.entries({
+                    email: "All email notifications",
+                    weekly: "Weekly digest",
+                    product: "Product updates",
+                    security: "Security alerts"
+                  }).map(([key, label], index) => (
+                    <div key={key} className={`flex items-center justify-between py-2 opacity-0 animate-[fadeInUp_300ms_ease-out_${300 + (index * 100)}ms_forwards]`}>
+                      <span className="text-gray-300">{label}</span>
+                      <button
+                        onClick={() => setNotifications(prev => ({ ...prev, [key]: !prev[key] }))}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-150 ease-out ${
+                          notifications[key] ? 'bg-indigo-600' : 'bg-gray-600'
+                        }`}
+                      >
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-all duration-150 ease-out ${
+                            notifications[key] ? 'translate-x-6' : 'translate-x-1'
+                          }`}
+                        />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-gray-800/50 rounded-lg p-6 opacity-0 animate-[fadeInUp_500ms_ease-out_400ms_forwards] hover:bg-gray-800/60 transition-all duration-200 ease-out">
+                <h3 className="text-lg font-semibold text-white mb-4">Push Notifications</h3>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gray-300">Browser notifications</p>
+                    <p className="text-sm text-gray-500">Get notifications in your browser</p>
+                  </div>
+                  <button
+                    onClick={() => setNotifications(prev => ({ ...prev, push: !prev.push }))}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-150 ease-out ${
+                      notifications.push ? 'bg-indigo-600' : 'bg-gray-600'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-all duration-150 ease-out ${
+                        notifications.push ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case "privacy":
+        return (
+          <div className="space-y-6">
+            <div className="opacity-0 animate-[fadeInUp_400ms_ease-out_100ms_forwards]">
+              <h2 className="text-2xl font-bold text-white mb-2">Privacy & Security</h2>
+              <p className="text-gray-400">Manage your security settings and privacy preferences</p>
+            </div>
+
+            <div className="bg-gray-800/50 rounded-lg p-6 opacity-0 animate-[fadeInUp_500ms_ease-out_200ms_forwards] hover:bg-gray-800/60 transition-all duration-200 ease-out">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 className="text-lg font-semibold text-white">Two-Factor Authentication</h3>
+                  <p className="text-sm text-gray-400">Add an extra layer of security</p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  <span className="text-green-400 text-sm">Enabled</span>
+                </div>
+              </div>
+              <button className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors duration-150 ease-out">
+                Manage 2FA
+              </button>
+            </div>
+
+            <div className="bg-gray-800/50 rounded-lg p-6 opacity-0 animate-[fadeInUp_500ms_ease-out_300ms_forwards] hover:bg-gray-800/60 transition-all duration-200 ease-out">
+              <h3 className="text-lg font-semibold text-white mb-4">Active Sessions</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between py-3 border-b border-gray-700 opacity-0 animate-[fadeInUp_300ms_ease-out_400ms_forwards]">
+                  <div className="flex items-center space-x-3">
+                    <Smartphone className="w-5 h-5 text-gray-400" />
+                    <div>
+                      <p className="text-white">MacBook Pro</p>
+                      <p className="text-sm text-gray-400">San Francisco, CA • Now</p>
+                    </div>
+                  </div>
+                  <span className="text-green-400 text-sm">Current</span>
+                </div>
+                <div className="flex items-center justify-between py-3 opacity-0 animate-[fadeInUp_300ms_ease-out_500ms_forwards]">
+                  <div className="flex items-center space-x-3">
+                    <Smartphone className="w-5 h-5 text-gray-400" />
+                    <div>
+                      <p className="text-white">iPhone 14 Pro</p>
+                      <p className="text-sm text-gray-400">San Francisco, CA • 2 hours ago</p>
+                    </div>
+                  </div>
+                  <button className="text-red-400 hover:text-red-300 text-sm transition-colors duration-150 ease-out">
+                    Revoke
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gray-800/50 rounded-lg p-6 opacity-0 animate-[fadeInUp_500ms_ease-out_400ms_forwards] hover:bg-gray-800/60 transition-all duration-200 ease-out">
+              <h3 className="text-lg font-semibold text-white mb-4">Change Password</h3>
+              <div className="space-y-4">
+                <input
+                  type="password"
+                  placeholder="Current password"
+                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-indigo-500 transition-all duration-150 ease-out hover:border-gray-600 opacity-0 animate-[fadeInUp_300ms_ease-out_500ms_forwards]"
+                />
+                <input
+                  type="password"
+                  placeholder="New password"
+                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-indigo-500 transition-all duration-150 ease-out hover:border-gray-600 opacity-0 animate-[fadeInUp_300ms_ease-out_600ms_forwards]"
+                />
+                <input
+                  type="password"
+                  placeholder="Confirm new password"
+                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-indigo-500 transition-all duration-150 ease-out hover:border-gray-600 opacity-0 animate-[fadeInUp_300ms_ease-out_700ms_forwards]"
+                />
+                <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors duration-150 ease-out opacity-0 animate-[fadeInUp_300ms_ease-out_800ms_forwards]">
+                  Update Password
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+
+      case "appearance":
+        return (
+          <div className="space-y-6">
+            <div className="opacity-0 animate-[fadeInUp_400ms_ease-out_100ms_forwards]">
+              <h2 className="text-2xl font-bold text-white mb-2">Appearance</h2>
+              <p className="text-gray-400">Customize how Preflight AI looks for you</p>
+            </div>
+
+            <div className="bg-gray-800/50 rounded-lg p-6 opacity-0 animate-[fadeInUp_500ms_ease-out_200ms_forwards] hover:bg-gray-800/60 transition-all duration-200 ease-out">
+              <h3 className="text-lg font-semibold text-white mb-4">Theme</h3>
+              <div className="grid grid-cols-3 gap-4">
+                <button className="relative p-4 bg-gray-900 border-2 border-indigo-600 rounded-lg transition-all duration-150 ease-out hover:shadow-md opacity-0 animate-[fadeInUp_300ms_ease-out_300ms_forwards]">
+                  <div className="absolute top-2 right-2">
+                    <Check className="w-4 h-4 text-indigo-600" />
+                  </div>
+                  <div className="text-white font-medium">Dark</div>
+                  <div className="text-xs text-gray-400 mt-1">Default</div>
+                </button>
+                <button className="p-4 bg-gray-800 border border-gray-700 rounded-lg hover:border-gray-600 transition-all duration-150 ease-out opacity-0 animate-[fadeInUp_300ms_ease-out_400ms_forwards]">
+                  <div className="text-white font-medium">Light</div>
+                  <div className="text-xs text-gray-400 mt-1">Coming soon</div>
+                </button>
+                <button className="p-4 bg-gray-800 border border-gray-700 rounded-lg hover:border-gray-600 transition-all duration-150 ease-out opacity-0 animate-[fadeInUp_300ms_ease-out_500ms_forwards]">
+                  <div className="text-white font-medium">System</div>
+                  <div className="text-xs text-gray-400 mt-1">Auto</div>
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-gray-800/50 rounded-lg p-6 opacity-0 animate-[fadeInUp_500ms_ease-out_300ms_forwards] hover:bg-gray-800/60 transition-all duration-200 ease-out">
+              <h3 className="text-lg font-semibold text-white mb-4">Accent Color</h3>
+              <div className="flex space-x-4">
+                <button className="w-12 h-12 bg-indigo-600 rounded-full border-2 border-white transition-all duration-150 ease-out opacity-0 animate-[fadeInUp_300ms_ease-out_400ms_forwards]"></button>
+                <button className="w-12 h-12 bg-purple-600 rounded-full hover:border-2 hover:border-white transition-all duration-150 ease-out opacity-0 animate-[fadeInUp_300ms_ease-out_450ms_forwards]"></button>
+                <button className="w-12 h-12 bg-green-600 rounded-full hover:border-2 hover:border-white transition-all duration-150 ease-out opacity-0 animate-[fadeInUp_300ms_ease-out_500ms_forwards]"></button>
+                <button className="w-12 h-12 bg-orange-600 rounded-full hover:border-2 hover:border-white transition-all duration-150 ease-out opacity-0 animate-[fadeInUp_300ms_ease-out_550ms_forwards]"></button>
+                <button className="w-12 h-12 bg-pink-600 rounded-full hover:border-2 hover:border-white transition-all duration-150 ease-out opacity-0 animate-[fadeInUp_300ms_ease-out_600ms_forwards]"></button>
+              </div>
+            </div>
+
+            <div className="bg-gray-800/50 rounded-lg p-6 opacity-0 animate-[fadeInUp_500ms_ease-out_400ms_forwards] hover:bg-gray-800/60 transition-all duration-200 ease-out">
+              <h3 className="text-lg font-semibold text-white mb-4">Display</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between opacity-0 animate-[fadeInUp_300ms_ease-out_500ms_forwards]">
+                  <div>
+                    <p className="text-gray-300">Compact mode</p>
+                    <p className="text-sm text-gray-500">Reduce spacing and padding</p>
+                  </div>
+                  <button className="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-600 transition-all duration-150 ease-out">
+                    <span className="inline-block h-4 w-4 transform rounded-full bg-white translate-x-1 transition-all duration-150 ease-out" />
+                  </button>
+                </div>
+                <div className="flex items-center justify-between opacity-0 animate-[fadeInUp_300ms_ease-out_600ms_forwards]">
+                  <div>
+                    <p className="text-gray-300">Animations</p>
+                    <p className="text-sm text-gray-500">Enable interface animations</p>
+                  </div>
+                  <button className="relative inline-flex h-6 w-11 items-center rounded-full bg-indigo-600 transition-all duration-150 ease-out">
+                    <span className="inline-block h-4 w-4 transform rounded-full bg-white translate-x-6 transition-all duration-150 ease-out" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case "billing":
+        return (
+          <div className="space-y-6">
+            <div className="opacity-0 animate-[fadeInUp_400ms_ease-out_100ms_forwards]">
+              <h2 className="text-2xl font-bold text-white mb-2">Billing & Subscription</h2>
+              <p className="text-gray-400">Manage your subscription and payment methods</p>
+            </div>
+
+            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg p-6 hover:shadow-lg transition-all duration-200 ease-out opacity-0 animate-[fadeInUp_500ms_ease-out_200ms_forwards]">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-bold text-white">Premium Plan</h3>
+                  <p className="text-white/80">$19/month</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-white/80 text-sm">Next billing date</p>
+                  <p className="text-white font-semibold">Feb 15, 2024</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gray-800/50 rounded-lg p-6 opacity-0 animate-[fadeInUp_500ms_ease-out_300ms_forwards] hover:bg-gray-800/60 transition-all duration-200 ease-out">
+              <h3 className="text-lg font-semibold text-white mb-4">Payment Method</h3>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <CreditCard className="w-8 h-8 text-gray-400" />
+                  <div>
+                    <p className="text-white">•••• •••• •••• 4242</p>
+                    <p className="text-sm text-gray-400">Expires 12/24</p>
+                  </div>
+                </div>
+                <button className="text-indigo-400 hover:text-indigo-300 transition-colors duration-150 ease-out">
+                  Update
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-gray-800/50 rounded-lg p-6 opacity-0 animate-[fadeInUp_500ms_ease-out_400ms_forwards] hover:bg-gray-800/60 transition-all duration-200 ease-out">
+              <h3 className="text-lg font-semibold text-white mb-4">Billing History</h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between py-2 opacity-0 animate-[fadeInUp_300ms_ease-out_500ms_forwards]">
+                  <div>
+                    <p className="text-white">January 2024</p>
+                    <p className="text-sm text-gray-400">Premium Plan</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-white">$19.00</p>
+                    <p className="text-sm text-green-400">Paid</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between py-2 opacity-0 animate-[fadeInUp_300ms_ease-out_600ms_forwards]">
+                  <div>
+                    <p className="text-white">December 2023</p>
+                    <p className="text-sm text-gray-400">Premium Plan</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-white">$19.00</p>
+                    <p className="text-sm text-green-400">Paid</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case "help":
+        return (
+          <div className="space-y-6">
+            <div className="opacity-0 animate-[fadeInUp_400ms_ease-out_100ms_forwards]">
+              <h2 className="text-2xl font-bold text-white mb-2">Help & Support</h2>
+              <p className="text-gray-400">Get help with Preflight AI</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <button className="bg-gray-800/50 rounded-lg p-6 text-left hover:bg-gray-800/70 transition-all duration-200 ease-out group opacity-0 animate-[fadeInUp_500ms_ease-out_200ms_forwards]">
+                <HelpCircle className="w-8 h-8 text-indigo-400 mb-3" />
+                <h3 className="text-lg font-semibold text-white mb-2">Documentation</h3>
+                <p className="text-sm text-gray-400">Browse our comprehensive guides</p>
+              </button>
+
+              <button className="bg-gray-800/50 rounded-lg p-6 text-left hover:bg-gray-800/70 transition-all duration-200 ease-out group opacity-0 animate-[fadeInUp_500ms_ease-out_300ms_forwards]">
+                <Globe className="w-8 h-8 text-indigo-400 mb-3" />
+                <h3 className="text-lg font-semibold text-white mb-2">Community</h3>
+                <p className="text-sm text-gray-400">Connect with other users</p>
+              </button>
+            </div>
+
+            <div className="bg-gray-800/50 rounded-lg p-6 opacity-0 animate-[fadeInUp_500ms_ease-out_400ms_forwards] hover:bg-gray-800/60 transition-all duration-200 ease-out">
+              <h3 className="text-lg font-semibold text-white mb-4">Contact Support</h3>
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  placeholder="Subject"
+                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-indigo-500 transition-all duration-150 ease-out hover:border-gray-600 opacity-0 animate-[fadeInUp_300ms_ease-out_500ms_forwards]"
+                />
+                <textarea
+                  placeholder="Describe your issue..."
+                  rows={4}
+                  className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-indigo-500 transition-all duration-150 ease-out hover:border-gray-600 opacity-0 animate-[fadeInUp_300ms_ease-out_600ms_forwards]"
+                />
+                <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors duration-150 ease-out opacity-0 animate-[fadeInUp_300ms_ease-out_700ms_forwards]">
+                  Send Message
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold text-white mb-2">Settings</h1>
+        <p className="text-gray-400">Manage your application preferences</p>
+      </div>
+      
+      <div className="flex gap-8">
+        {/* Sidebar Navigation */}
+        <div className="w-64 flex-shrink-0">
+          <nav className="space-y-1">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveSection(item.id)}
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ease-out ${
+                    activeSection === item.id
+                      ? 'bg-indigo-600 text-white'
+                      : 'text-gray-400 hover:bg-gray-800/30 hover:text-gray-300'
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span className="text-sm font-medium">{item.label}</span>
+                  <ChevronRight className={`w-4 h-4 ml-auto transition-all duration-200 ${
+                    activeSection === item.id ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'
+                  }`} />
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 min-h-[600px]">
+          <div className="opacity-0 translate-x-4 animate-[fadeInRight_400ms_ease-out_150ms_forwards]">
+            {renderContent()}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/(protected)/app/page.tsx">
+"use client";
+
+import React from "react";
+import { HoverEffect } from "@/components/ui/card-hover-effect";
+import { Illustration } from "@/components/ui/glowing-stars";
+import { useAuth } from "@/components/auth/AuthProvider";
+import { useSurveyStore } from "@/lib/stores/survey-store";
+import { SurveyContainer } from "@/components/survey/SurveyContainer";
+import { FileText, Play } from "lucide-react";
+
+export default function DashboardPage() {
+  const { user } = useAuth();
+  const { isActive, startSurvey } = useSurveyStore();
+  const features = [
+    {
+      title: "Quick Actions",
+      description: "Access your most used features and workflows",
+      link: "#",
+    },
+    {
+      title: "Recent Activity",
+      description: "View your latest preflight checks and results",
+      link: "#",
+    },
+    {
+      title: "Analytics",
+      description: "Track your usage patterns and insights",
+      link: "#",
+    },
+    {
+      title: "Team Collaboration",
+      description: "Work together on shared preflight checklists",
+      link: "#",
+    },
+  ];
+
+  // If survey is active, show the survey container instead of dashboard
+  if (isActive) {
+    return <SurveyContainer />;
+  }
+
+  return (
+    <div className="relative min-h-[60vh]">
+      <div className="absolute inset-0 flex items-center justify-center opacity-20">
+        <Illustration mouseEnter={true} />
+      </div>
+      
+      <div className="relative z-10">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-white mb-2">
+            Welcome back{user?.name ? `, ${user.name}` : ""}!
+          </h1>
+          <p className="text-gray-400">
+            Manage your AI preflight checks and workflows
+          </p>
+        </div>
+
+        {/* Survey CTA Banner */}
+        <div className="mb-8 bg-gradient-to-r from-indigo-600/20 to-purple-600/20 border border-indigo-500/30 rounded-lg p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center">
+                <FileText className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-white">Share Your Feedback</h3>
+                <p className="text-gray-300 text-sm">
+                  Help us improve by completing our 5-minute user survey
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={startSurvey}
+              className="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+            >
+              <Play className="w-4 h-4" />
+              <span>Start Survey</span>
+            </button>
+          </div>
+        </div>
+        
+        <HoverEffect items={features} className="grid-cols-1 md:grid-cols-2" />
+        
+        <div className="mt-12 p-6 bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800">
+          <h2 className="text-2xl font-semibold text-white mb-4">
+            Getting Started
+          </h2>
+          <ul className="space-y-2 text-gray-400">
+            <li>• Create your first preflight checklist</li>
+            <li>• Configure AI assistance settings</li>
+            <li>• Invite team members to collaborate</li>
+            <li>• Explore templates and best practices</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/(protected)/layout.tsx">
+import type { Metadata } from "next";
+import { AppLayout } from "@/components/layout/AppLayout";
+import { AuthProvider } from "@/components/auth/AuthProvider";
+
+export const metadata: Metadata = {
+  title: "Preflight AI - Dashboard",
+  description: "AI-powered preflight checklist system",
+};
+
+export default function ProtectedLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <AuthProvider>
+      <AppLayout>{children}</AppLayout>
+    </AuthProvider>
+  );
+}
+</file>
+
+<file path="app/(public)/login/page.tsx">
+"use client";
+
+import React, { useState } from "react";
+import { SparklesCore } from "@/components/ui/sparkles";
+import { signIn, setStubCookie } from "@/lib/auth/stub";
+import { useRouter } from "next/navigation";
+
+export default function LoginPage() {
+  const [email, setEmail] = useState("john.doe@example.com");
+  const router = useRouter();
+  
+  const handleLogin = () => {
+    // Use stub auth for testing
+    signIn(email);
+    setStubCookie();
+    
+    // Redirect to app after a brief delay to allow cookie to be set
+    setTimeout(() => {
+      router.push("/app");
+    }, 100);
+  };
+  
+  const handleOceanheartLogin = () => {
+    const isDev = process.env.NODE_ENV === "development";
+    const returnTo = isDev 
+      ? "http://localhost:3000/app"
+      : "https://watson.oceanheart.ai/app";
+    
+    window.location.href = `https://passport.oceanheart.ai/auth?returnTo=${encodeURIComponent(returnTo)}`;
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-black">
+      <div className="absolute inset-0 w-full h-full">
+        <SparklesCore
+          id="login-sparkles"
+          background="transparent"
+          minSize={0.4}
+          maxSize={1}
+          particleDensity={100}
+          className="w-full h-full"
+          particleColor="#FFFFFF"
+        />
+      </div>
+      
+      <div className="relative z-10 max-w-md w-full space-y-8 p-8 bg-black/50 backdrop-blur-sm rounded-lg border border-gray-800">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-white">
+            Sign in to Preflight AI
+          </h2>
+          <p className="mt-2 text-sm text-gray-400">
+            Access your AI preflight dashboard
+          </p>
+        </div>
+        
+        <div className="space-y-4">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter email for testing"
+            className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+          />
+          
+          <button
+            onClick={handleLogin}
+            className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200"
+          >
+            Sign in (Test Mode)
+          </button>
+          
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-700"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-black text-gray-400">Or</span>
+            </div>
+          </div>
+          
+          <button
+            onClick={handleOceanheartLogin}
+            className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200"
+          >
+            Sign in with Oceanheart
+          </button>
+          
+          <p className="text-center text-xs text-gray-500">
+            By signing in, you agree to our Terms of Service and Privacy Policy
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/(public)/layout.tsx">
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Preflight AI - Landing",
+  description: "AI-powered preflight checklist system",
+};
+
+export default function PublicLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <>{children}</>;
+}
+</file>
+
+<file path="app/(public)/page.tsx">
+import { SparklesPreview } from "@/components/ui/sparkles-preview";
+
+export default function Home() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <main className="w-full">
+        <SparklesPreview />
+      </main>
+    </div>
+  );
+}
+</file>
+
+<file path="app/globals.css">
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Configure your theme variables here */
+  --font-display: "Inter", "sans-serif";
+  --color-primary-500: oklch(0.84 0.18 117.33);
+  --spacing: 0.25rem;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* @theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+} */
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(0 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom animations for subtle transitions */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</file>
+
+<file path="app/layout.tsx">
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "Create Next App",
+  description: "Generated by create next app",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        {children}
+      </body>
+    </html>
+  );
+}
+</file>
+
+<file path="components/auth/AuthProvider.tsx">
+"use client";
+
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { isAuthenticated, getCurrentUser, type StubUser } from "@/lib/auth/stub";
+
+interface AuthContextType {
+  isAuthenticated: boolean;
+  user: StubUser | null;
+  checkAuth: () => void;
+}
+
+const AuthContext = createContext<AuthContextType>({
+  isAuthenticated: false,
+  user: null,
+  checkAuth: () => {},
+});
+
+export function useAuth() {
+  return useContext(AuthContext);
+}
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [authState, setAuthState] = useState({
+    isAuthenticated: false,
+    user: null as StubUser | null,
+  });
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const checkAuth = () => {
+    const authenticated = isAuthenticated();
+    const user = getCurrentUser();
+    setAuthState({ isAuthenticated: authenticated, user });
+    
+    // Redirect logic
+    const protectedRoutes = ["/app", "/app/profile", "/app/settings"];
+    const isProtectedRoute = protectedRoutes.some(route => 
+      pathname === route || pathname.startsWith(`${route}/`)
+    );
+    
+    if (isProtectedRoute && !authenticated) {
+      router.push("/login");
+    }
+  };
+
+  useEffect(() => {
+    checkAuth();
+  }, [pathname]);
+
+  return (
+    <AuthContext.Provider value={{ ...authState, checkAuth }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+</file>
+
+<file path="components/layout/AppLayout.tsx">
+// @ts-nocheck
+"use client";
+
+import React from "react";
+
+interface AppLayoutProps {
+  children: React.ReactNode;
+}
+
+export function AppLayout({ children }: AppLayoutProps) {
+  const navItems = [
+    { name: "Home", link: "/" },
+    { name: "Dashboard", link: "/app" },
+    { name: "Profile", link: "/app/profile" },
+    { name: "Settings", link: "/app/settings" },
+  ];
+
+  return (
+    <div className="min-h-screen flex flex-col bg-black">
+      {/* Fixed header navigation */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-sm border-b border-gray-800">
+        <nav className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-8">
+              <a href="/" className="text-xl font-bold text-white">
+                Preflight AI
+              </a>
+              <div className="hidden md:flex items-center space-x-6">
+                {navItems.map((item) => (
+                  <a
+                    key={item.link}
+                    href={item.link}
+                    className="text-gray-300 hover:text-white transition-colors"
+                  >
+                    {item.name}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </nav>
+      </header>
+
+      <main className="flex-1 container mx-auto px-4 pt-20 pb-8 md:pt-24">
+        <div className="relative rounded-lg overflow-hidden bg-gray-900/20 backdrop-blur-sm border border-gray-800">
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-purple-500/10 to-pink-500/10 opacity-50"></div>
+          <div className="relative z-10 p-6 md:p-8">
+            {children}
+          </div>
+        </div>
+      </main>
+
+      <footer className="border-t border-gray-800 py-6 text-center">
+        <p className="text-sm text-gray-400">
+          © 2024 Preflight AI. All rights reserved.
+        </p>
+      </footer>
+    </div>
+  );
+}
+</file>
+
+<file path="components/navigation/MainNav.tsx">
+// @ts-nocheck
+"use client";
+
+import React, { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Sidebar } from "@/components/ui/sidebar";
+import { Menu, X, Home, User, Settings, LogOut } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+interface NavItem {
+  name: string;
+  link: string;
+  icon?: React.ReactNode;
+}
+
+export function MainNav() {
+  const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+
+  const navItems: NavItem[] = [
+    { name: "Home", link: "/", icon: <Home className="w-4 h-4" /> },
+    { name: "Dashboard", link: "/app", icon: <Home className="w-4 h-4" /> },
+    { name: "Profile", link: "/app/profile", icon: <User className="w-4 h-4" /> },
+    { name: "Settings", link: "/app/settings", icon: <Settings className="w-4 h-4" /> },
+  ];
+
+  const isActive = (link: string) => {
+    if (link === "/" && pathname === "/") return true;
+    if (link !== "/" && pathname.startsWith(link)) return true;
+    return false;
+  };
+
+  return (
+    <>
+      {/* Desktop Navigation */}
+      <nav className="hidden md:flex items-center space-x-6">
+        {navItems.map((item) => (
+          <Link
+            key={item.link}
+            href={item.link}
+            className={cn(
+              "flex items-center space-x-2 text-sm font-medium transition-colors",
+              isActive(item.link)
+                ? "text-white"
+                : "text-gray-400 hover:text-white"
+            )}
+          >
+            {item.icon}
+            <span>{item.name}</span>
+          </Link>
+        ))}
+      </nav>
+
+      {/* Mobile Menu Button */}
+      <button
+        className="md:hidden p-2"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="Toggle menu"
+      >
+        {isOpen ? (
+          <X className="w-6 h-6 text-white" />
+        ) : (
+          <Menu className="w-6 h-6 text-white" />
+        )}
+      </button>
+
+      {/* Mobile Sidebar */}
+      <Sidebar open={isOpen} setOpen={setIsOpen}>
+        <div className="flex flex-col space-y-4 p-6">
+          {navItems.map((item) => (
+            <Link
+              key={item.link}
+              href={item.link}
+              onClick={() => setIsOpen(false)}
+              className={cn(
+                "flex items-center space-x-3 text-base font-medium transition-colors p-3 rounded-lg",
+                isActive(item.link)
+                  ? "text-white bg-gray-800"
+                  : "text-gray-400 hover:text-white hover:bg-gray-800/50"
+              )}
+            >
+              {item.icon}
+              <span>{item.name}</span>
+            </Link>
+          ))}
+        </div>
+      </Sidebar>
+    </>
+  );
+}
+</file>
+
+<file path="components/survey/forms/FeedbackForm.tsx">
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useSurveyStore } from "@/lib/stores/survey-store";
+import { Star, ThumbsUp, ThumbsDown } from "lucide-react";
+
+export function FeedbackForm() {
+  const { getFormData, updateFormData } = useSurveyStore();
+  const formId = "feedback";
+  
+  const [data, setData] = useState(() => ({
+    rating: 0,
+    satisfaction: "",
+    improvement: "",
+    features: [],
+    recommend: "",
+    additionalComments: "",
+    contactConsent: false,
+    ...getFormData(formId)
+  }));
+
+  useEffect(() => {
+    updateFormData(formId, data);
+  }, [data, updateFormData]);
+
+  const handleChange = (field: string, value: any) => {
+    setData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleMultiSelect = (field: string, value: string) => {
+    setData(prev => ({
+      ...prev,
+      [field]: prev[field].includes(value)
+        ? prev[field].filter((item: string) => item !== value)
+        : [...prev[field], value]
+    }));
+  };
+
+  const features = [
+    "Better UI/UX Design",
+    "More Integrations", 
+    "Advanced Analytics",
+    "Mobile App",
+    "API Documentation",
+    "Video Tutorials",
+    "Community Forum",
+    "Live Chat Support"
+  ];
+
+  const renderStarRating = () => {
+    return (
+      <div className="flex space-x-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button
+            key={star}
+            onClick={() => handleChange("rating", star)}
+            className={`p-1 transition-colors ${
+              star <= data.rating ? "text-yellow-400" : "text-gray-600 hover:text-yellow-300"
+            }`}
+          >
+            <Star className="w-8 h-8 fill-current" />
+          </button>
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold text-white mb-2">Feedback & Experience</h2>
+        <p className="text-gray-400">Help us improve by sharing your thoughts and suggestions.</p>
+      </div>
+
+      <div className="space-y-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-3">
+            Overall Rating <span className="text-red-400">*</span>
+          </label>
+          <div className="flex items-center space-x-4">
+            {renderStarRating()}
+            <span className="text-gray-400 text-sm ml-4">
+              {data.rating > 0 && `${data.rating}/5 stars`}
+            </span>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-3">
+            How satisfied are you with our service?
+          </label>
+          <div className="flex space-x-4">
+            {[
+              { value: "very-satisfied", label: "Very Satisfied", icon: "😊" },
+              { value: "satisfied", label: "Satisfied", icon: "🙂" },
+              { value: "neutral", label: "Neutral", icon: "😐" },
+              { value: "dissatisfied", label: "Dissatisfied", icon: "😞" },
+              { value: "very-dissatisfied", label: "Very Dissatisfied", icon: "😤" }
+            ].map((option) => (
+              <button
+                key={option.value}
+                onClick={() => handleChange("satisfaction", option.value)}
+                className={`flex flex-col items-center p-3 rounded-lg border transition-colors ${
+                  data.satisfaction === option.value
+                    ? "bg-indigo-600 border-indigo-500 text-white"
+                    : "bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600"
+                }`}
+              >
+                <span className="text-2xl mb-1">{option.icon}</span>
+                <span className="text-xs text-center">{option.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            What could we improve? <span className="text-red-400">*</span>
+          </label>
+          <textarea
+            value={data.improvement}
+            onChange={(e) => handleChange("improvement", e.target.value)}
+            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors"
+            placeholder="Tell us what features or improvements would make this better for you..."
+            rows={4}
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-3">
+            What features would you like to see? (Select multiple)
+          </label>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {features.map((feature) => (
+              <button
+                key={feature}
+                onClick={() => handleMultiSelect("features", feature)}
+                className={`p-3 rounded-lg border text-sm transition-colors ${
+                  data.features.includes(feature)
+                    ? "bg-indigo-600 border-indigo-500 text-white"
+                    : "bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600"
+                }`}
+              >
+                {feature}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-3">
+            Would you recommend us to others?
+          </label>
+          <div className="flex space-x-4">
+            <button
+              onClick={() => handleChange("recommend", "yes")}
+              className={`flex items-center space-x-2 px-6 py-3 rounded-lg border transition-colors ${
+                data.recommend === "yes"
+                  ? "bg-green-600 border-green-500 text-white"
+                  : "bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600"
+              }`}
+            >
+              <ThumbsUp className="w-5 h-5" />
+              <span>Yes, definitely</span>
+            </button>
+            <button
+              onClick={() => handleChange("recommend", "maybe")}
+              className={`flex items-center space-x-2 px-6 py-3 rounded-lg border transition-colors ${
+                data.recommend === "maybe"
+                  ? "bg-yellow-600 border-yellow-500 text-white"
+                  : "bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600"
+              }`}
+            >
+              <span>Maybe</span>
+            </button>
+            <button
+              onClick={() => handleChange("recommend", "no")}
+              className={`flex items-center space-x-2 px-6 py-3 rounded-lg border transition-colors ${
+                data.recommend === "no"
+                  ? "bg-red-600 border-red-500 text-white"
+                  : "bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600"
+              }`}
+            >
+              <ThumbsDown className="w-5 h-5" />
+              <span>No</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Additional Comments
+          </label>
+          <textarea
+            value={data.additionalComments}
+            onChange={(e) => handleChange("additionalComments", e.target.value)}
+            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors"
+            placeholder="Any other feedback or suggestions..."
+            rows={3}
+          />
+        </div>
+
+        <div>
+          <label className="flex items-start space-x-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={data.contactConsent}
+              onChange={(e) => handleChange("contactConsent", e.target.checked)}
+              className="w-4 h-4 text-indigo-600 bg-gray-800 border-gray-600 rounded mt-1"
+            />
+            <div>
+              <span className="text-gray-300 text-sm">
+                I consent to being contacted for follow-up feedback
+              </span>
+              <p className="text-gray-500 text-xs mt-1">
+                We may reach out to discuss your feedback in more detail
+              </p>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="components/survey/forms/FinalForm.tsx">
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useSurveyStore } from "@/lib/stores/survey-store";
+import { Check, Mail, Bell, Shield } from "lucide-react";
+
+export function FinalForm() {
+  const { getFormData, updateFormData } = useSurveyStore();
+  const formId = "final";
+  
+  const [data, setData] = useState(() => ({
+    newsletter: false,
+    updates: false,
+    privacy: false,
+    terms: false,
+    marketing: false,
+    surveyType: "",
+    referralSource: "",
+    futureParticipation: false,
+    dataRetention: "1-year",
+    ...getFormData(formId)
+  }));
+
+  useEffect(() => {
+    updateFormData(formId, data);
+  }, [data, updateFormData]);
+
+  const handleChange = (field: string, value: any) => {
+    setData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const surveyTypes = [
+    "Product Feedback",
+    "User Experience Research", 
+    "Market Research",
+    "Beta Testing Feedback",
+    "General Inquiry",
+    "Other"
+  ];
+
+  const referralSources = [
+    "Search Engine",
+    "Social Media",
+    "Friend/Colleague",
+    "Email Newsletter",
+    "Advertisement",
+    "Company Website",
+    "Conference/Event",
+    "Other"
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold text-white mb-2">Final Details</h2>
+        <p className="text-gray-400">Just a few more details to complete your submission.</p>
+      </div>
+
+      <div className="space-y-6">
+        <div className="bg-green-900/20 border border-green-900/50 rounded-lg p-4">
+          <div className="flex items-start space-x-3">
+            <Check className="w-5 h-5 text-green-400 mt-1 flex-shrink-0" />
+            <div>
+              <h3 className="text-green-400 font-semibold mb-2">Almost Complete!</h3>
+              <p className="text-gray-300 text-sm">
+                Thank you for taking the time to provide detailed information. 
+                Your responses will help us improve our services and better understand our users.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-3">
+            What type of survey is this for you?
+          </label>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {surveyTypes.map((type) => (
+              <button
+                key={type}
+                onClick={() => handleChange("surveyType", type)}
+                className={`p-3 rounded-lg border text-sm transition-colors ${
+                  data.surveyType === type
+                    ? "bg-indigo-600 border-indigo-500 text-white"
+                    : "bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600"
+                }`}
+              >
+                {type}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            How did you hear about us?
+          </label>
+          <select
+            value={data.referralSource}
+            onChange={(e) => handleChange("referralSource", e.target.value)}
+            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-indigo-500"
+          >
+            <option value="">Please select...</option>
+            {referralSources.map((source) => (
+              <option key={source} value={source}>{source}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="bg-gray-800/50 rounded-lg p-6 space-y-4">
+          <h3 className="text-lg font-semibold text-white flex items-center space-x-2">
+            <Mail className="w-5 h-5" />
+            <span>Communication Preferences</span>
+          </h3>
+          
+          <div className="space-y-3">
+            <label className="flex items-start space-x-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={data.newsletter}
+                onChange={(e) => handleChange("newsletter", e.target.checked)}
+                className="w-4 h-4 text-indigo-600 bg-gray-800 border-gray-600 rounded mt-1"
+              />
+              <div>
+                <span className="text-gray-300 text-sm font-medium">
+                  Subscribe to newsletter <span className="text-red-400">*</span>
+                </span>
+                <p className="text-gray-500 text-xs mt-1">
+                  Stay updated with our latest features and improvements
+                </p>
+              </div>
+            </label>
+
+            <label className="flex items-start space-x-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={data.updates}
+                onChange={(e) => handleChange("updates", e.target.checked)}
+                className="w-4 h-4 text-indigo-600 bg-gray-800 border-gray-600 rounded mt-1"
+              />
+              <div>
+                <span className="text-gray-300 text-sm">Product updates</span>
+                <p className="text-gray-500 text-xs mt-1">
+                  Notifications about new features and releases
+                </p>
+              </div>
+            </label>
+
+            <label className="flex items-start space-x-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={data.marketing}
+                onChange={(e) => handleChange("marketing", e.target.checked)}
+                className="w-4 h-4 text-indigo-600 bg-gray-800 border-gray-600 rounded mt-1"
+              />
+              <div>
+                <span className="text-gray-300 text-sm">Marketing communications</span>
+                <p className="text-gray-500 text-xs mt-1">
+                  Special offers, events, and promotional content
+                </p>
+              </div>
+            </label>
+
+            <label className="flex items-start space-x-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={data.futureParticipation}
+                onChange={(e) => handleChange("futureParticipation", e.target.checked)}
+                className="w-4 h-4 text-indigo-600 bg-gray-800 border-gray-600 rounded mt-1"
+              />
+              <div>
+                <span className="text-gray-300 text-sm">Future survey participation</span>
+                <p className="text-gray-500 text-xs mt-1">
+                  Invite me to participate in future research studies
+                </p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div className="bg-gray-800/50 rounded-lg p-6 space-y-4">
+          <h3 className="text-lg font-semibold text-white flex items-center space-x-2">
+            <Shield className="w-5 h-5" />
+            <span>Privacy & Data</span>
+          </h3>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Data Retention Preference
+            </label>
+            <div className="flex space-x-4">
+              {[
+                { value: "6-months", label: "6 Months" },
+                { value: "1-year", label: "1 Year" },
+                { value: "2-years", label: "2 Years" },
+                { value: "indefinite", label: "No Limit" }
+              ].map((option) => (
+                <label key={option.value} className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="dataRetention"
+                    value={option.value}
+                    checked={data.dataRetention === option.value}
+                    onChange={(e) => handleChange("dataRetention", e.target.value)}
+                    className="w-4 h-4 text-indigo-600"
+                  />
+                  <span className="text-gray-300 text-sm">{option.label}</span>
+                </label>
+              ))}
+            </div>
+            <p className="text-gray-500 text-xs mt-2">
+              How long should we keep your survey responses?
+            </p>
+          </div>
+
+          <div className="space-y-3 pt-4 border-t border-gray-700">
+            <label className="flex items-start space-x-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={data.privacy}
+                onChange={(e) => handleChange("privacy", e.target.checked)}
+                className="w-4 h-4 text-indigo-600 bg-gray-800 border-gray-600 rounded mt-1"
+              />
+              <div>
+                <span className="text-gray-300 text-sm">
+                  I agree to the Privacy Policy
+                </span>
+                <p className="text-gray-500 text-xs mt-1">
+                  Read our <a href="#" className="text-indigo-400 hover:text-indigo-300">Privacy Policy</a>
+                </p>
+              </div>
+            </label>
+
+            <label className="flex items-start space-x-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={data.terms}
+                onChange={(e) => handleChange("terms", e.target.checked)}
+                className="w-4 h-4 text-indigo-600 bg-gray-800 border-gray-600 rounded mt-1"
+              />
+              <div>
+                <span className="text-gray-300 text-sm">
+                  I accept the Terms of Service
+                </span>
+                <p className="text-gray-500 text-xs mt-1">
+                  Read our <a href="#" className="text-indigo-400 hover:text-indigo-300">Terms of Service</a>
+                </p>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="components/survey/forms/PersonalInfoForm.tsx">
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useSurveyStore } from "@/lib/stores/survey-store";
+
+export function PersonalInfoForm() {
+  const { getFormData, updateFormData } = useSurveyStore();
+  const formId = "personal-info";
+  
+  const [data, setData] = useState(() => ({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    company: "",
+    jobTitle: "",
+    ...getFormData(formId)
+  }));
+
+  useEffect(() => {
+    updateFormData(formId, data);
+  }, [data, updateFormData]);
+
+  const handleChange = (field: string, value: string) => {
+    setData(prev => ({ ...prev, [field]: value }));
+  };
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold text-white mb-2">Personal Information</h2>
+        <p className="text-gray-400">Tell us about yourself to get started.</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            First Name <span className="text-red-400">*</span>
+          </label>
+          <input
+            type="text"
+            value={data.firstName}
+            onChange={(e) => handleChange("firstName", e.target.value)}
+            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors"
+            placeholder="Enter your first name"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Last Name <span className="text-red-400">*</span>
+          </label>
+          <input
+            type="text"
+            value={data.lastName}
+            onChange={(e) => handleChange("lastName", e.target.value)}
+            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors"
+            placeholder="Enter your last name"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Email Address <span className="text-red-400">*</span>
+          </label>
+          <input
+            type="email"
+            value={data.email}
+            onChange={(e) => handleChange("email", e.target.value)}
+            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors"
+            placeholder="your.email@company.com"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Phone Number
+          </label>
+          <input
+            type="tel"
+            value={data.phone}
+            onChange={(e) => handleChange("phone", e.target.value)}
+            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors"
+            placeholder="+1 (555) 123-4567"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Company
+          </label>
+          <input
+            type="text"
+            value={data.company}
+            onChange={(e) => handleChange("company", e.target.value)}
+            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors"
+            placeholder="Your company name"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Job Title
+          </label>
+          <input
+            type="text"
+            value={data.jobTitle}
+            onChange={(e) => handleChange("jobTitle", e.target.value)}
+            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors"
+            placeholder="Your current role"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="components/survey/forms/PreferencesForm.tsx">
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useSurveyStore } from "@/lib/stores/survey-store";
+
+export function PreferencesForm() {
+  const { getFormData, updateFormData } = useSurveyStore();
+  const formId = "preferences";
+  
+  const [data, setData] = useState(() => ({
+    role: "",
+    experience: "",
+    teamSize: "",
+    interests: [],
+    workStyle: "",
+    availability: [],
+    ...getFormData(formId)
+  }));
+
+  useEffect(() => {
+    updateFormData(formId, data);
+  }, [data, updateFormData]);
+
+  const handleChange = (field: string, value: any) => {
+    setData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleMultiSelect = (field: string, value: string) => {
+    setData(prev => ({
+      ...prev,
+      [field]: prev[field].includes(value)
+        ? prev[field].filter((item: string) => item !== value)
+        : [...prev[field], value]
+    }));
+  };
+
+  const roles = [
+    "Frontend Developer",
+    "Backend Developer",
+    "Full Stack Developer",
+    "DevOps Engineer",
+    "Product Manager",
+    "Designer",
+    "QA Engineer",
+    "Data Scientist",
+    "Other"
+  ];
+
+  const interests = [
+    "Web Development",
+    "Mobile Development",
+    "Machine Learning",
+    "Cloud Computing",
+    "Blockchain",
+    "IoT",
+    "Cybersecurity",
+    "Game Development"
+  ];
+
+  const availability = ["Mornings", "Afternoons", "Evenings", "Weekends"];
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold text-white mb-2">Preferences & Background</h2>
+        <p className="text-gray-400">Help us understand your professional background and interests.</p>
+      </div>
+
+      <div className="space-y-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-3">
+            Primary Role <span className="text-red-400">*</span>
+          </label>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {roles.map((role) => (
+              <button
+                key={role}
+                onClick={() => handleChange("role", role)}
+                className={`p-3 rounded-lg border text-sm transition-colors ${
+                  data.role === role
+                    ? "bg-indigo-600 border-indigo-500 text-white"
+                    : "bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600"
+                }`}
+              >
+                {role}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Years of Experience <span className="text-red-400">*</span>
+          </label>
+          <select
+            value={data.experience}
+            onChange={(e) => handleChange("experience", e.target.value)}
+            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-indigo-500"
+            required
+          >
+            <option value="">Select experience level</option>
+            <option value="0-1">0-1 years (Entry level)</option>
+            <option value="2-3">2-3 years (Junior)</option>
+            <option value="4-6">4-6 years (Mid level)</option>
+            <option value="7-10">7-10 years (Senior)</option>
+            <option value="10+">10+ years (Expert/Lead)</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Team Size
+          </label>
+          <div className="flex space-x-4">
+            {["Solo", "2-5", "6-10", "11-20", "20+"].map((size) => (
+              <label key={size} className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="teamSize"
+                  value={size}
+                  checked={data.teamSize === size}
+                  onChange={(e) => handleChange("teamSize", e.target.value)}
+                  className="w-4 h-4 text-indigo-600"
+                />
+                <span className="text-gray-300 text-sm">{size}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-3">
+            Areas of Interest (Select multiple)
+          </label>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {interests.map((interest) => (
+              <button
+                key={interest}
+                onClick={() => handleMultiSelect("interests", interest)}
+                className={`p-2 rounded-lg border text-xs transition-colors ${
+                  data.interests.includes(interest)
+                    ? "bg-indigo-600 border-indigo-500 text-white"
+                    : "bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600"
+                }`}
+              >
+                {interest}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            Preferred Work Style
+          </label>
+          <textarea
+            value={data.workStyle}
+            onChange={(e) => handleChange("workStyle", e.target.value)}
+            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors"
+            placeholder="Describe your preferred work environment and style..."
+            rows={3}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-3">
+            Availability (Select all that apply)
+          </label>
+          <div className="flex flex-wrap gap-3">
+            {availability.map((time) => (
+              <label key={time} className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  value={time}
+                  checked={data.availability.includes(time)}
+                  onChange={() => handleMultiSelect("availability", time)}
+                  className="w-4 h-4 text-indigo-600 rounded"
+                />
+                <span className="text-gray-300 text-sm">{time}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="components/survey/forms/TechnicalForm.tsx">
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useSurveyStore } from "@/lib/stores/survey-store";
+
+export function TechnicalForm() {
+  const { getFormData, updateFormData } = useSurveyStore();
+  const formId = "technical";
+  
+  const [data, setData] = useState(() => ({
+    languages: [],
+    frameworks: [],
+    databases: [],
+    tools: [],
+    cloudPlatforms: [],
+    skillLevel: {},
+    certifications: "",
+    githubProfile: "",
+    ...getFormData(formId)
+  }));
+
+  useEffect(() => {
+    updateFormData(formId, data);
+  }, [data, updateFormData]);
+
+  const handleMultiSelect = (field: string, value: string) => {
+    setData(prev => ({
+      ...prev,
+      [field]: prev[field].includes(value)
+        ? prev[field].filter((item: string) => item !== value)
+        : [...prev[field], value]
+    }));
+  };
+
+  const handleSkillLevel = (skill: string, level: string) => {
+    setData(prev => ({
+      ...prev,
+      skillLevel: {
+        ...prev.skillLevel,
+        [skill]: level
+      }
+    }));
+  };
+
+  const languages = [
+    "JavaScript", "TypeScript", "Python", "Java", "C#", "Go", 
+    "Rust", "PHP", "Ruby", "Swift", "Kotlin", "C++", "SQL"
+  ];
+
+  const frameworks = [
+    "React", "Vue.js", "Angular", "Next.js", "Svelte", "Express.js",
+    "Django", "Flask", "Spring Boot", "Laravel", ".NET", "Ruby on Rails"
+  ];
+
+  const databases = [
+    "PostgreSQL", "MySQL", "MongoDB", "Redis", "Elasticsearch",
+    "SQLite", "DynamoDB", "Firebase", "Supabase"
+  ];
+
+  const tools = [
+    "Git", "Docker", "Kubernetes", "Jenkins", "GitHub Actions",
+    "Terraform", "AWS CLI", "Webpack", "Vite", "Jest", "Cypress"
+  ];
+
+  const cloudPlatforms = ["AWS", "Google Cloud", "Azure", "Vercel", "Netlify", "Heroku"];
+
+  const skillLevels = ["Beginner", "Intermediate", "Advanced", "Expert"];
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold text-white mb-2">Technical Skills</h2>
+        <p className="text-gray-400">Share your technical expertise and experience.</p>
+      </div>
+
+      <div className="space-y-6">
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-3">
+            Programming Languages <span className="text-red-400">*</span>
+          </label>
+          <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
+            {languages.map((lang) => (
+              <button
+                key={lang}
+                onClick={() => handleMultiSelect("languages", lang)}
+                className={`p-2 rounded-lg border text-xs font-medium transition-colors ${
+                  data.languages.includes(lang)
+                    ? "bg-indigo-600 border-indigo-500 text-white"
+                    : "bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600"
+                }`}
+              >
+                {lang}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-3">
+            Frameworks & Libraries <span className="text-red-400">*</span>
+          </label>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {frameworks.map((framework) => (
+              <button
+                key={framework}
+                onClick={() => handleMultiSelect("frameworks", framework)}
+                className={`p-2 rounded-lg border text-xs transition-colors ${
+                  data.frameworks.includes(framework)
+                    ? "bg-indigo-600 border-indigo-500 text-white"
+                    : "bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600"
+                }`}
+              >
+                {framework}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-3">
+            Databases
+          </label>
+          <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
+            {databases.map((db) => (
+              <button
+                key={db}
+                onClick={() => handleMultiSelect("databases", db)}
+                className={`p-2 rounded-lg border text-xs transition-colors ${
+                  data.databases.includes(db)
+                    ? "bg-indigo-600 border-indigo-500 text-white"
+                    : "bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600"
+                }`}
+              >
+                {db}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-3">
+            Development Tools
+          </label>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {tools.map((tool) => (
+              <button
+                key={tool}
+                onClick={() => handleMultiSelect("tools", tool)}
+                className={`p-2 rounded-lg border text-xs transition-colors ${
+                  data.tools.includes(tool)
+                    ? "bg-indigo-600 border-indigo-500 text-white"
+                    : "bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600"
+                }`}
+              >
+                {tool}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-3">
+            Cloud Platforms
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {cloudPlatforms.map((platform) => (
+              <button
+                key={platform}
+                onClick={() => handleMultiSelect("cloudPlatforms", platform)}
+                className={`px-4 py-2 rounded-lg border text-sm transition-colors ${
+                  data.cloudPlatforms.includes(platform)
+                    ? "bg-indigo-600 border-indigo-500 text-white"
+                    : "bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-600"
+                }`}
+              >
+                {platform}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {data.languages.length > 0 && (
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-3">
+              Skill Levels for Selected Languages
+            </label>
+            <div className="space-y-3">
+              {data.languages.slice(0, 3).map((lang) => (
+                <div key={lang} className="flex items-center justify-between bg-gray-800/50 p-3 rounded-lg">
+                  <span className="text-white font-medium">{lang}</span>
+                  <div className="flex space-x-2">
+                    {skillLevels.map((level) => (
+                      <button
+                        key={level}
+                        onClick={() => handleSkillLevel(lang, level)}
+                        className={`px-3 py-1 rounded text-xs transition-colors ${
+                          data.skillLevel[lang] === level
+                            ? "bg-indigo-600 text-white"
+                            : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                        }`}
+                      >
+                        {level}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              GitHub Profile
+            </label>
+            <input
+              type="url"
+              value={data.githubProfile}
+              onChange={(e) => setData(prev => ({ ...prev, githubProfile: e.target.value }))}
+              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors"
+              placeholder="https://github.com/username"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Certifications
+            </label>
+            <input
+              type="text"
+              value={data.certifications}
+              onChange={(e) => setData(prev => ({ ...prev, certifications: e.target.value }))}
+              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition-colors"
+              placeholder="AWS, Google Cloud, etc."
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="components/survey/ProgressBar.tsx">
+"use client";
+
+import React from "react";
+import { useSurveyStore } from "@/lib/stores/survey-store";
+
+export function ProgressBar() {
+  const { currentStep, totalSteps, getProgress } = useSurveyStore();
+  const progress = getProgress();
+
+  return (
+    <div className="w-full bg-gray-800 rounded-full h-3 mb-6">
+      <div 
+        className="bg-gradient-to-r from-indigo-500 to-purple-600 h-3 rounded-full transition-all duration-300 ease-out"
+        style={{ width: `${progress}%` }}
+      />
+      <div className="flex justify-between items-center mt-2 text-sm text-gray-400">
+        <span>Step {currentStep + 1} of {totalSteps}</span>
+        <span>{progress}% Complete</span>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="components/survey/SurveyContainer.tsx">
+"use client";
+
+import React from "react";
+import { useSurveyStore } from "@/lib/stores/survey-store";
+import { ProgressBar } from "./ProgressBar";
+import { PersonalInfoForm } from "./forms/PersonalInfoForm";
+import { PreferencesForm } from "./forms/PreferencesForm";
+import { TechnicalForm } from "./forms/TechnicalForm";
+import { FeedbackForm } from "./forms/FeedbackForm";
+import { FinalForm } from "./forms/FinalForm";
+import { ChevronLeft, ChevronRight, Send, X } from "lucide-react";
+
+export function SurveyContainer() {
+  const { 
+    currentStep, 
+    nextStep, 
+    prevStep, 
+    endSurvey, 
+    isStepComplete,
+    isAllComplete,
+    totalSteps 
+  } = useSurveyStore();
+
+  const forms = [
+    { 
+      id: "personal-info", 
+      component: PersonalInfoForm, 
+      title: "Personal Information",
+      requiredFields: ["firstName", "lastName", "email"]
+    },
+    { 
+      id: "preferences", 
+      component: PreferencesForm, 
+      title: "Preferences & Background",
+      requiredFields: ["role", "experience"]
+    },
+    { 
+      id: "technical", 
+      component: TechnicalForm, 
+      title: "Technical Skills",
+      requiredFields: ["languages", "frameworks"]
+    },
+    { 
+      id: "feedback", 
+      component: FeedbackForm, 
+      title: "Feedback & Experience",
+      requiredFields: ["rating", "improvement"]
+    },
+    { 
+      id: "final", 
+      component: FinalForm, 
+      title: "Final Details",
+      requiredFields: ["newsletter"]
+    }
+  ];
+
+  const currentForm = forms[currentStep];
+  const CurrentFormComponent = currentForm.component;
+  const isLastStep = currentStep === totalSteps - 1;
+  const isFirstStep = currentStep === 0;
+
+  const canProceed = isStepComplete(currentForm.id, currentForm.requiredFields);
+  const canSubmit = isAllComplete();
+
+  const handleNext = () => {
+    if (canProceed) {
+      nextStep();
+    }
+  };
+
+  const handleSubmit = () => {
+    if (canSubmit) {
+      // Here you would typically send the data to your API
+      console.log("Survey submitted!", useSurveyStore.getState().formData);
+      
+      // Show success message and return to dashboard
+      alert("Survey submitted successfully! Thank you for your feedback.");
+      endSurvey();
+    } else {
+      alert("Please complete all required fields before submitting.");
+    }
+  };
+
+  const handleClose = () => {
+    if (confirm("Are you sure you want to close the survey? Your progress will be lost.")) {
+      endSurvey();
+    }
+  };
+
+  return (
+    <div className="max-w-4xl mx-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">Survey</h1>
+          <p className="text-gray-400">{currentForm.title}</p>
+        </div>
+        <button
+          onClick={handleClose}
+          className="text-gray-400 hover:text-white transition-colors p-2"
+        >
+          <X className="w-6 h-6" />
+        </button>
+      </div>
+
+      {/* Progress Bar */}
+      <ProgressBar />
+
+      {/* Form Content */}
+      <div className="bg-gray-900/50 backdrop-blur-sm rounded-lg border border-gray-800 p-8 mb-8">
+        <CurrentFormComponent />
+      </div>
+
+      {/* Navigation */}
+      <div className="flex items-center justify-between">
+        <button
+          onClick={prevStep}
+          disabled={isFirstStep}
+          className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-colors ${
+            isFirstStep
+              ? "bg-gray-800 text-gray-500 cursor-not-allowed"
+              : "bg-gray-700 text-white hover:bg-gray-600"
+          }`}
+        >
+          <ChevronLeft className="w-4 h-4" />
+          <span>Previous</span>
+        </button>
+
+        <div className="flex items-center space-x-3">
+          {/* Step indicators */}
+          <div className="flex space-x-2">
+            {forms.map((_, index) => (
+              <div
+                key={index}
+                className={`w-3 h-3 rounded-full transition-colors ${
+                  index < currentStep
+                    ? "bg-green-500"
+                    : index === currentStep
+                    ? "bg-indigo-500"
+                    : "bg-gray-700"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {isLastStep ? (
+          <button
+            onClick={handleSubmit}
+            disabled={!canSubmit}
+            className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-colors ${
+              canSubmit
+                ? "bg-green-600 text-white hover:bg-green-700"
+                : "bg-gray-800 text-gray-500 cursor-not-allowed"
+            }`}
+          >
+            <Send className="w-4 h-4" />
+            <span>Submit Survey</span>
+          </button>
+        ) : (
+          <button
+            onClick={handleNext}
+            disabled={!canProceed}
+            className={`flex items-center space-x-2 px-6 py-3 rounded-lg transition-colors ${
+              canProceed
+                ? "bg-indigo-600 text-white hover:bg-indigo-700"
+                : "bg-gray-800 text-gray-500 cursor-not-allowed"
+            }`}
+          >
+            <span>Next</span>
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        )}
+      </div>
+
+      {/* Validation message */}
+      {!canProceed && (
+        <div className="mt-4 p-3 bg-yellow-900/20 border border-yellow-900/50 rounded-lg">
+          <p className="text-yellow-400 text-sm">
+            Please fill in all required fields marked with <span className="text-red-400">*</span> before proceeding.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="data/globe.json">
+{
+  "features": []
+}
+</file>
+
+<file path="hooks/use-outside-click.tsx">
+import type React from "react";
+import { useEffect } from "react";
+
+export const useOutsideClick = (
+  ref: React.RefObject<HTMLDivElement>,
+  callback: (event: MouseEvent | TouchEvent) => void,
+) => {
+  useEffect(() => {
+    const listener = (event: MouseEvent | TouchEvent) => {
+      // DO NOTHING if the element being clicked is the target element or their children
+      if (!ref.current || ref.current.contains(event.target as Node)) {
+        return;
+      }
+      callback(event);
+    };
+
+    document.addEventListener("mousedown", listener);
+    document.addEventListener("touchstart", listener);
+
+    return () => {
+      document.removeEventListener("mousedown", listener);
+      document.removeEventListener("touchstart", listener);
+    };
+  }, [ref, callback]);
+};
+</file>
+
+<file path="lib/auth/stub.ts">
+/**
+ * Temporary auth stub using localStorage for testing
+ * TODO: Replace with actual Oceanheart Passport integration
+ */
+
+const AUTH_KEY = "preflight_auth_stub";
+const USER_KEY = "preflight_user_stub";
+
+export interface StubUser {
+  id: string;
+  email: string;
+  name: string;
+}
+
+/**
+ * Check if user is authenticated (client-side only)
+ */
+export function isAuthenticated(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem(AUTH_KEY) === "true";
+}
+
+/**
+ * Sign in user (stub)
+ */
+export function signIn(email: string = "john.doe@example.com"): void {
+  if (typeof window === "undefined") return;
+  
+  localStorage.setItem(AUTH_KEY, "true");
+  localStorage.setItem(USER_KEY, JSON.stringify({
+    id: "stub-user-123",
+    email: email,
+    name: "John Doe"
+  }));
+}
+
+/**
+ * Sign out user (stub)
+ */
+export function signOut(): void {
+  if (typeof window === "undefined") return;
+  
+  localStorage.removeItem(AUTH_KEY);
+  localStorage.removeItem(USER_KEY);
+}
+
+/**
+ * Get current user (stub)
+ */
+export function getCurrentUser(): StubUser | null {
+  if (typeof window === "undefined") return null;
+  
+  const userStr = localStorage.getItem(USER_KEY);
+  if (!userStr) return null;
+  
+  try {
+    return JSON.parse(userStr);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Create a fake JWT token for testing
+ */
+export function createStubToken(): string {
+  const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }));
+  const payload = btoa(JSON.stringify({
+    userId: "stub-user-123",
+    email: "john.doe@example.com",
+    exp: Math.floor(Date.now() / 1000) + 3600 // 1 hour from now
+  }));
+  const signature = btoa("stub-signature");
+  
+  return `${header}.${payload}.${signature}`;
+}
+
+/**
+ * Set stub auth cookie for middleware
+ */
+export function setStubCookie(): void {
+  if (typeof document === "undefined") return;
+  
+  const token = createStubToken();
+  document.cookie = `oh_session=${token}; path=/; max-age=3600`;
+}
+
+/**
+ * Clear stub auth cookie
+ */
+export function clearStubCookie(): void {
+  if (typeof document === "undefined") return;
+  
+  document.cookie = "oh_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+}
+</file>
+
+<file path="lib/auth/utils.ts">
+/**
+ * Authentication utilities for Oceanheart Passport integration
+ */
+
+export interface AuthConfig {
+  authUrl: string;
+  domain: string;
+  protocol: string;
+  jwtSecret: string;
+  subdomainName: string;
+}
+
+export interface User {
+  id: string;
+  email: string;
+}
+
+/**
+ * Get authentication configuration based on environment
+ */
+export function getAuthConfig(): AuthConfig {
+  const isDev = process.env.NODE_ENV === "development";
+  
+  return {
+    authUrl: isDev ? "http://oceanheart.lvh.me:3000" : "https://www.oceanheart.ai",
+    domain: isDev ? ".lvh.me" : ".oceanheart.ai",
+    protocol: isDev ? "http" : "https",
+    jwtSecret: process.env.JWT_SECRET || "",
+    subdomainName: process.env.SUBDOMAIN_NAME || "preflight",
+  };
+}
+
+/**
+ * Build authentication redirect URL
+ */
+export function getAuthUrl(returnPath: string): string {
+  const isDev = process.env.NODE_ENV === "development";
+  const baseUrl = isDev 
+    ? "http://localhost:3000" 
+    : "https://watson.oceanheart.ai";
+  const returnTo = `${baseUrl}${returnPath}`;
+  
+  return `https://passport.oceanheart.ai/auth?returnTo=${encodeURIComponent(returnTo)}`;
+}
+
+/**
+ * Build sign out URL
+ */
+export function getSignOutUrl(): string {
+  const config = getAuthConfig();
+  return `${config.authUrl}/api/auth/signout`;
+}
+
+/**
+ * Verify JWT token (client-side check only)
+ * Note: Actual verification should happen server-side
+ */
+export function isTokenExpired(token: string): boolean {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const exp = payload.exp * 1000; // Convert to milliseconds
+    return Date.now() > exp;
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * Extract user from JWT token (client-side only)
+ * Note: This does not verify the token signature
+ */
+export function getUserFromToken(token: string): User | null {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return {
+      id: payload.userId || payload.sub,
+      email: payload.email,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Get cookie value by name
+ */
+export function getCookie(name: string): string | null {
+  if (typeof document === 'undefined') return null;
+  
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  
+  if (parts.length === 2) {
+    return parts.pop()?.split(';').shift() || null;
+  }
+  
+  return null;
+}
+
+/**
+ * Clear authentication cookie
+ */
+export function clearAuthCookie(): void {
+  if (typeof document === 'undefined') return;
+  
+  // Clear for all possible domains
+  const domains = [
+    "",
+    ".localhost",
+    ".lvh.me",
+    ".oceanheart.ai",
+    ".watson.oceanheart.ai",
+  ];
+  
+  domains.forEach(domain => {
+    document.cookie = `oh_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`;
+  });
+}
+</file>
+
+<file path="lib/stores/survey-store.ts">
+import { create } from 'zustand';
+
+export interface FormField {
+  name: string;
+  value: any;
+  required: boolean;
+}
+
+export interface FormData {
+  [key: string]: any;
+}
+
+export interface SurveyForm {
+  id: string;
+  title: string;
+  fields: FormField[];
+}
+
+interface SurveyState {
+  isActive: boolean;
+  currentStep: number;
+  totalSteps: number;
+  formData: Record<string, FormData>;
+  
+  // Actions
+  startSurvey: () => void;
+  endSurvey: () => void;
+  nextStep: () => void;
+  prevStep: () => void;
+  goToStep: (step: number) => void;
+  updateFormData: (stepId: string, data: FormData) => void;
+  getFormData: (stepId: string) => FormData;
+  isStepComplete: (stepId: string, requiredFields: string[]) => boolean;
+  isAllComplete: () => boolean;
+  resetSurvey: () => void;
+  getProgress: () => number;
+}
+
+const TOTAL_STEPS = 5; // Number of forms in our survey
+
+export const useSurveyStore = create<SurveyState>((set, get) => ({
+  isActive: false,
+  currentStep: 0,
+  totalSteps: TOTAL_STEPS,
+  formData: {},
+
+  startSurvey: () => set({ 
+    isActive: true, 
+    currentStep: 0,
+    formData: {} 
+  }),
+
+  endSurvey: () => set({ 
+    isActive: false, 
+    currentStep: 0,
+    formData: {} 
+  }),
+
+  nextStep: () => set((state) => ({
+    currentStep: Math.min(state.currentStep + 1, state.totalSteps - 1)
+  })),
+
+  prevStep: () => set((state) => ({
+    currentStep: Math.max(state.currentStep - 1, 0)
+  })),
+
+  goToStep: (step: number) => set((state) => ({
+    currentStep: Math.max(0, Math.min(step, state.totalSteps - 1))
+  })),
+
+  updateFormData: (stepId: string, data: FormData) => set((state) => ({
+    formData: {
+      ...state.formData,
+      [stepId]: { ...state.formData[stepId], ...data }
+    }
+  })),
+
+  getFormData: (stepId: string) => {
+    const state = get();
+    return state.formData[stepId] || {};
+  },
+
+  isStepComplete: (stepId: string, requiredFields: string[]) => {
+    const state = get();
+    const data = state.formData[stepId] || {};
+    
+    return requiredFields.every(field => {
+      const value = data[field];
+      if (typeof value === 'string') return value.trim() !== '';
+      if (typeof value === 'number') return value > 0;
+      if (typeof value === 'boolean') return value === true;
+      if (Array.isArray(value)) return value.length > 0;
+      return value !== undefined && value !== null && value !== '';
+    });
+  },
+
+  isAllComplete: () => {
+    const state = get();
+    const forms = [
+      { id: 'personal-info', required: ['firstName', 'lastName', 'email'] },
+      { id: 'preferences', required: ['role', 'experience'] },
+      { id: 'technical', required: ['languages', 'frameworks'] },
+      { id: 'feedback', required: ['rating', 'improvement'] },
+      { id: 'final', required: ['newsletter'] }
+    ];
+
+    return forms.every(form => 
+      state.isStepComplete(form.id, form.required)
+    );
+  },
+
+  resetSurvey: () => set({
+    isActive: false,
+    currentStep: 0,
+    formData: {}
+  }),
+
+  getProgress: () => {
+    const state = get();
+    return Math.round(((state.currentStep + 1) / state.totalSteps) * 100);
+  }
+}));
+</file>
+
+<file path="lib/utils.ts">
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+</file>
+
+<file path="public/file.svg">
+<svg fill="none" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M14.5 13.5V5.41a1 1 0 0 0-.3-.7L9.8.29A1 1 0 0 0 9.08 0H1.5v13.5A2.5 2.5 0 0 0 4 16h8a2.5 2.5 0 0 0 2.5-2.5m-1.5 0v-7H8v-5H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1M9.5 5V2.12L12.38 5zM5.13 5h-.62v1.25h2.12V5zm-.62 3h7.12v1.25H4.5zm.62 3h-.62v1.25h7.12V11z" clip-rule="evenodd" fill="#666" fill-rule="evenodd"/></svg>
+</file>
+
+<file path="public/globe.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g clip-path="url(#a)"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.27 14.1a6.5 6.5 0 0 0 3.67-3.45q-1.24.21-2.7.34-.31 1.83-.97 3.1M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.48-1.52a7 7 0 0 1-.96 0H7.5a4 4 0 0 1-.84-1.32q-.38-.89-.63-2.08a40 40 0 0 0 3.92 0q-.25 1.2-.63 2.08a4 4 0 0 1-.84 1.31zm2.94-4.76q1.66-.15 2.95-.43a7 7 0 0 0 0-2.58q-1.3-.27-2.95-.43a18 18 0 0 1 0 3.44m-1.27-3.54a17 17 0 0 1 0 3.64 39 39 0 0 1-4.3 0 17 17 0 0 1 0-3.64 39 39 0 0 1 4.3 0m1.1-1.17q1.45.13 2.69.34a6.5 6.5 0 0 0-3.67-3.44q.65 1.26.98 3.1M8.48 1.5l.01.02q.41.37.84 1.31.38.89.63 2.08a40 40 0 0 0-3.92 0q.25-1.2.63-2.08a4 4 0 0 1 .85-1.32 7 7 0 0 1 .96 0m-2.75.4a6.5 6.5 0 0 0-3.67 3.44 29 29 0 0 1 2.7-.34q.31-1.83.97-3.1M4.58 6.28q-1.66.16-2.95.43a7 7 0 0 0 0 2.58q1.3.27 2.95.43a18 18 0 0 1 0-3.44m.17 4.71q-1.45-.12-2.69-.34a6.5 6.5 0 0 0 3.67 3.44q-.65-1.27-.98-3.1" fill="#666"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h16v16H0z"/></clipPath></defs></svg>
+</file>
+
+<file path="public/next.svg">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 394 80"><path fill="#000" d="M262 0h68.5v12.7h-27.2v66.6h-13.6V12.7H262V0ZM149 0v12.7H94v20.4h44.3v12.6H94v21h55v12.6H80.5V0h68.7zm34.3 0h-17.8l63.8 79.4h17.9l-32-39.7 32-39.6h-17.9l-23 28.6-23-28.6zm18.3 56.7-9-11-27.1 33.7h17.8l18.3-22.7z"/><path fill="#000" d="M81 79.3 17 0H0v79.3h13.6V17l50.2 62.3H81Zm252.6-.4c-1 0-1.8-.4-2.5-1s-1.1-1.6-1.1-2.6.3-1.8 1-2.5 1.6-1 2.6-1 1.8.3 2.5 1a3.4 3.4 0 0 1 .6 4.3 3.7 3.7 0 0 1-3 1.8zm23.2-33.5h6v23.3c0 2.1-.4 4-1.3 5.5a9.1 9.1 0 0 1-3.8 3.5c-1.6.8-3.5 1.3-5.7 1.3-2 0-3.7-.4-5.3-1s-2.8-1.8-3.7-3.2c-.9-1.3-1.4-3-1.4-5h6c.1.8.3 1.6.7 2.2s1 1.2 1.6 1.5c.7.4 1.5.5 2.4.5 1 0 1.8-.2 2.4-.6a4 4 0 0 0 1.6-1.8c.3-.8.5-1.8.5-3V45.5zm30.9 9.1a4.4 4.4 0 0 0-2-3.3 7.5 7.5 0 0 0-4.3-1.1c-1.3 0-2.4.2-3.3.5-.9.4-1.6 1-2 1.6a3.5 3.5 0 0 0-.3 4c.3.5.7.9 1.3 1.2l1.8 1 2 .5 3.2.8c1.3.3 2.5.7 3.7 1.2a13 13 0 0 1 3.2 1.8 8.1 8.1 0 0 1 3 6.5c0 2-.5 3.7-1.5 5.1a10 10 0 0 1-4.4 3.5c-1.8.8-4.1 1.2-6.8 1.2-2.6 0-4.9-.4-6.8-1.2-2-.8-3.4-2-4.5-3.5a10 10 0 0 1-1.7-5.6h6a5 5 0 0 0 3.5 4.6c1 .4 2.2.6 3.4.6 1.3 0 2.5-.2 3.5-.6 1-.4 1.8-1 2.4-1.7a4 4 0 0 0 .8-2.4c0-.9-.2-1.6-.7-2.2a11 11 0 0 0-2.1-1.4l-3.2-1-3.8-1c-2.8-.7-5-1.7-6.6-3.2a7.2 7.2 0 0 1-2.4-5.7 8 8 0 0 1 1.7-5 10 10 0 0 1 4.3-3.5c2-.8 4-1.2 6.4-1.2 2.3 0 4.4.4 6.2 1.2 1.8.8 3.2 2 4.3 3.4 1 1.4 1.5 3 1.5 5h-5.8z"/></svg>
+</file>
+
+<file path="public/vercel.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1155 1000"><path d="m577.3 0 577.4 1000H0z" fill="#fff"/></svg>
+</file>
+
+<file path="public/window.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.5h13v10a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1zM0 1h16v11.5a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 0 12.5zm3.75 4.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5M7 4.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0m1.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5" fill="#666"/></svg>
+</file>
+
+<file path=".gitignore">
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+</file>
+
+<file path="aceternity-registry.json">
+{
+  "name": "aceternity",
+  "homepage": "https://ui.aceternity.com",
+  "items": [
+    {
+      "name": "grid",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/grid.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "moving-line",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/moving-line.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sparkles",
+      "type": "registry:ui",
+      "dependencies": [
+        "@tsparticles/react",
+        "@tsparticles/engine",
+        "@tsparticles/slim",
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "ui/sparkles.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "spotlight",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/spotlight.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "glowing-stars",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/glowing-stars.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "text-reveal-card",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/text-reveal-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "animated-tooltip",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/animated-tooltip.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "following-pointer",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/following-pointer.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "background-beams",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/background-beams.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "svg-mask-effect",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/svg-mask-effect.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "infinite-moving-cards",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/infinite-moving-cards.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "3d-pin",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/3d-pin.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "evervault-card",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/evervault-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "parallax-scroll",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/parallax-scroll.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "parallax-scroll-2",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/parallax-scroll-2.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tracing-beam",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/tracing-beam.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "container-scroll-animation",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/container-scroll-animation.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "text-generate-effect",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/text-generate-effect.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "meteors",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/meteors.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "card-stack",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/card-stack.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "moving-border",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/moving-border.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "lamp",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/lamp.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sticky-scroll-reveal",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/sticky-scroll-reveal.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "floating-navbar",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/floating-navbar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "navbar-menu",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/navbar-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tailwindcss-buttons",
+      "type": "registry:ui",
+      "dependencies": ["@tabler/icons-react"],
+      "files": [
+        {
+          "path": "ui/tailwindcss-buttons.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "bento-grid",
+      "type": "registry:ui",
+      "dependencies": ["@tabler/icons-react"],
+      "files": [
+        {
+          "path": "ui/bento-grid.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "card-hover-effect",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/card-hover-effect.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "google-gemini-effect",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/google-gemini-effect.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "typewriter-effect",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/typewriter-effect.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "background-boxes",
+      "type": "registry:ui",
+      "dependencies": ["mini-svg-data-uri", "motion"],
+      "files": [
+        {
+          "path": "ui/background-boxes.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "3d-card",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/3d-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "images-slider",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/images-slider.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "direction-aware-hover",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/direction-aware-hover.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "dependencies": ["@radix-ui/react-tabs"],
+      "files": [
+        {
+          "path": "ui/tabs.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "hero-parallax",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/hero-parallax.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "wavy-background",
+      "type": "registry:ui",
+      "dependencies": ["simplex-noise"],
+      "files": [
+        {
+          "path": "ui/wavy-background.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "background-gradient",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/background-gradient.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "layout-grid",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/layout-grid.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "background-gradient-animation",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/background-gradient-animation.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "macbook-scroll",
+      "type": "registry:ui",
+      "dependencies": ["@tabler/icons-react", "motion"],
+      "files": [
+        {
+          "path": "ui/macbook-scroll.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "label",
+      "type": "registry:ui",
+      "dependencies": ["@radix-ui/react-label"],
+      "files": [
+        {
+          "path": "ui/label.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "multi-step-loader",
+      "type": "registry:ui",
+      "dependencies": ["@tabler/icons-react", "motion"],
+      "files": [
+        {
+          "path": "ui/multi-step-loader.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "globe",
+      "type": "registry:ui",
+      "dependencies": [
+        "three",
+        "three-globe",
+        "@react-three/fiber@alpha",
+        "@react-three/drei"
+      ],
+      "devDependencies": ["@types/three"],
+      "files": [
+        {
+          "path": "ui/globe.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "aurora-background",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/aurora-background.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "canvas-reveal-effect",
+      "type": "registry:ui",
+      "dependencies": ["three", "@react-three/fiber@alpha"],
+      "devDependencies": ["@types/three"],
+      "files": [
+        {
+          "path": "ui/canvas-reveal-effect.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "hover-border-gradient",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/hover-border-gradient.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "hero-highlight",
+      "type": "registry:ui",
+      "dependencies": ["mini-svg-data-uri", "motion"],
+      "files": [
+        {
+          "path": "ui/hero-highlight.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "vortex",
+      "type": "registry:ui",
+      "dependencies": ["simplex-noise", "motion"],
+      "files": [
+        {
+          "path": "ui/vortex.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "wobble-card",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/wobble-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "placeholders-and-vanish-input",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/placeholders-and-vanish-input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "flip-words",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/flip-words.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "link-preview",
+      "type": "registry:ui",
+      "dependencies": ["@radix-ui/react-hover-card", "qss", "motion"],
+      "files": [
+        {
+          "path": "ui/link-preview.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "glare-card",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/glare-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "animated-modal",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/animated-modal.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sidebar",
+      "type": "registry:ui",
+      "dependencies": ["@tabler/icons-react", "motion"],
+      "files": [
+        {
+          "path": "ui/sidebar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "apple-cards-carousel",
+      "type": "registry:ui",
+      "dependencies": ["@tabler/icons-react", "motion"],
+      "registryDependencies": ["use-outside-click"],
+      "files": [
+        {
+          "path": "ui/apple-cards-carousel.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "shooting-stars",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/shooting-stars.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "stars-background",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/stars-background.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "compare",
+      "type": "registry:ui",
+      "dependencies": ["@tabler/icons-react", "motion"],
+      "files": [
+        {
+          "path": "ui/compare.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "card-spotlight",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "registryDependencies": ["canvas-reveal-effect"],
+      "files": [
+        {
+          "path": "ui/card-spotlight.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "cover",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "registryDependencies": ["sparkles"],
+      "files": [
+        {
+          "path": "ui/cover.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "file-upload",
+      "type": "registry:ui",
+      "dependencies": ["@tabler/icons-react", "react-dropzone", "motion"],
+      "files": [
+        {
+          "path": "ui/file-upload.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "floating-dock",
+      "type": "registry:ui",
+      "dependencies": ["@tabler/icons-react", "motion"],
+      "files": [
+        {
+          "path": "ui/floating-dock.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "focus-cards",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/focus-cards.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "background-beams-with-collision",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/background-beams-with-collision.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "timeline",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/timeline.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "text-hover-effect",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/text-hover-effect.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "lens",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/lens.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "background-lines",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/background-lines.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "animated-testimonials",
+      "type": "registry:ui",
+      "dependencies": ["@tabler/icons-react", "motion"],
+      "files": [
+        {
+          "path": "ui/animated-testimonials.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "world-map",
+      "type": "registry:ui",
+      "dependencies": ["dotted-map", "motion"],
+      "files": [
+        {
+          "path": "ui/world-map.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "code-block",
+      "type": "registry:ui",
+      "dependencies": ["@tabler/icons-react", "react-syntax-highlighter"],
+      "devDependencies": ["@types/react-syntax-highlighter"],
+      "files": [
+        {
+          "path": "ui/code-block.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "carousel",
+      "type": "registry:ui",
+      "dependencies": ["@tabler/icons-react"],
+      "files": [
+        {
+          "path": "ui/carousel.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "colourful-text",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/colourful-text.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "spotlight-new",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/spotlight-new.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "glowing-effect",
+      "type": "registry:ui",
+      "dependencies": ["lucide-react"],
+      "files": [
+        {
+          "path": "ui/glowing-effect.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "3d-marquee",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/3d-marquee.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "container-text-flip",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/container-text-flip.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "resizable-navbar",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/resizable-navbar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "draggable-card",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/draggable-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sticky-banner",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/sticky-banner.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "pointer-highlight",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/pointer-highlight.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "stateful-button",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/stateful-button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "loader",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/loader.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "comet-card",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/comet-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "background-ripple-effect",
+      "type": "registry:ui",
+      "dependencies": ["motion"],
+      "files": [
+        {
+          "path": "ui/background-ripple-effect.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "pixelated-canvas",
+      "type": "registry:ui",
+      "files": [
+        {
+          "path": "ui/pixelated-canvas.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    }
+  ]
+}
+</file>
+
+<file path="add-ts-nocheck.ts">
+#!/usr/bin/env bun
+
+import fs from "node:fs";
+import path from "node:path";
+
+const TS_NOCHECK = "// @ts-nocheck\n";
+const UI_COMPONENTS_DIR = path.join(__dirname, "components", "ui");
+
+function addTsNocheck(filePath: string): void {
+  try {
+    const content = fs.readFileSync(filePath, "utf-8");
+
+    // Check if @ts-nocheck already exists
+    if (content.startsWith("// @ts-nocheck")) {
+      console.log(
+        `⏭️  Skipping ${path.basename(filePath)} - already has @ts-nocheck`,
+      );
+      return;
+    }
+
+    // Check if it has @ts-expect-error or other ts comments at the top
+    if (content.startsWith("// @ts-")) {
+      console.log(
+        `⚠️  Skipping ${path.basename(filePath)} - has other @ts- directive`,
+      );
+      return;
+    }
+
+    // Add @ts-nocheck to the beginning of the file
+    const newContent = TS_NOCHECK + content;
+    fs.writeFileSync(filePath, newContent, "utf-8");
+    console.log(`✅ Added @ts-nocheck to ${path.basename(filePath)}`);
+  } catch (error) {
+    console.error(`❌ Error processing ${filePath}:`, error);
+  }
+}
+
+function processDirectory(dirPath: string): void {
+  try {
+    const files = fs.readdirSync(dirPath);
+
+    for (const file of files) {
+      const filePath = path.join(dirPath, file);
+      const stat = fs.statSync(filePath);
+
+      if (stat.isDirectory()) {
+        // Recursively process subdirectories
+        processDirectory(filePath);
+      } else if (file.endsWith(".tsx") || file.endsWith(".ts")) {
+        // Process TypeScript files
+        addTsNocheck(filePath);
+      }
+    }
+  } catch (error) {
+    console.error(`❌ Error reading directory ${dirPath}:`, error);
+  }
+}
+
+// Main execution
+console.log("🚀 Starting to add @ts-nocheck to UI components...\n");
+
+if (!fs.existsSync(UI_COMPONENTS_DIR)) {
+  console.error(`❌ Directory not found: ${UI_COMPONENTS_DIR}`);
+  process.exit(1);
+}
+
+processDirectory(UI_COMPONENTS_DIR);
+
+console.log("\n✨ Done!");
+</file>
+
+<file path="biome.json">
+{
+  "$schema": "https://biomejs.dev/schemas/2.2.0/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignoreUnknown": true,
+    "includes": [
+      "**",
+      "!node_modules",
+      "!.next",
+      "!dist",
+      "!build",
+      "!components/ui"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "suspicious": {
+        "noUnknownAtRules": "off"
+      }
+    },
+    "domains": {
+      "next": "recommended",
+      "react": "recommended"
+    }
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  }
+}
+</file>
+
+<file path="components.json">
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": true,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "app/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  },
+  "registries": {}
+}
+</file>
+
+<file path="Dockerfile">
+FROM oven/bun:1 AS base
+
+# Install dependencies only when needed
+FROM base AS deps
+WORKDIR /app
+
+# Install dependencies based on the preferred package manager
+COPY package.json bun.lock* ./
+RUN bun install --frozen-lockfile
+
+# Development image
+FROM base AS development
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+EXPOSE 3000
+CMD ["bun", "run", "dev"]
+
+# Rebuild the source code only when needed
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# Next.js collects completely anonymous telemetry data about general usage.
+# Learn more here: https://nextjs.org/telemetry
+# Uncomment the following line in case you want to disable telemetry during the build.
+# ENV NEXT_TELEMETRY_DISABLED 1
+
+RUN bun run build
+
+# Production image, copy all the files and run next
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV production
+# Uncomment the following line in case you want to disable telemetry during runtime.
+# ENV NEXT_TELEMETRY_DISABLED 1
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+
+# Set the correct permission for prerender cache
+RUN mkdir .next
+RUN chown nextjs:nodejs .next
+
+# Automatically leverage output traces to reduce image size
+# https://nextjs.org/docs/advanced-features/output-file-tracing
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT 3000
+ENV HOSTNAME "0.0.0.0"
+
+# server.js is created by next build from the standalone output
+# https://nextjs.org/docs/pages/api-reference/next-config-js/output
+CMD ["bun", "server.js"]
+</file>
+
+<file path="middleware.ts">
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+
+// List of protected routes that require authentication
+const protectedRoutes = ["/app", "/app/profile", "/app/settings"];
+
+// List of public routes that don't require authentication
+const publicRoutes = ["/", "/login"];
+
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  
+  // Check if the route is protected
+  const isProtectedRoute = protectedRoutes.some(route => 
+    pathname === route || pathname.startsWith(`${route}/`)
+  );
+  
+  if (!isProtectedRoute) {
+    return NextResponse.next();
+  }
+  
+  // Check for authentication token
+  const token = request.cookies.get("oh_session");
+  
+  if (!token) {
+    // Redirect to login with return URL
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("returnTo", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+  
+  // Basic token validation (check if it exists and has proper structure)
+  try {
+    const tokenValue = token.value;
+    const parts = tokenValue.split(".");
+    
+    if (parts.length !== 3) {
+      throw new Error("Invalid token structure");
+    }
+    
+    // Decode payload to check expiration
+    const payload = JSON.parse(atob(parts[1]));
+    const exp = payload.exp * 1000; // Convert to milliseconds
+    
+    if (Date.now() > exp) {
+      throw new Error("Token expired");
+    }
+    
+    // Token appears valid, continue to the protected route
+    return NextResponse.next();
+  } catch (error) {
+    // Invalid or expired token, redirect to login
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("returnTo", pathname);
+    
+    // Clear the invalid cookie
+    const response = NextResponse.redirect(loginUrl);
+    response.cookies.delete("oh_session");
+    
+    return response;
+  }
+}
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder
+     */
+    "/((?!api|_next/static|_next/image|favicon.ico|public).*)",
+  ],
+};
+</file>
+
+<file path="next.config.ts">
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
+  output: "standalone",
+};
+
+export default nextConfig;
+</file>
+
+<file path="package.json">
+{
+  "name": "preflight-next",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -H 0.0.0.0",
+    "build": "next build",
+    "start": "next start",
+    "lint": "biome check",
+    "format": "biome format --write"
+  },
+  "dependencies": {
+    "@radix-ui/react-hover-card": "^1.1.15",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-tabs": "^1.1.13",
+    "@react-three/drei": "^10.7.6",
+    "@react-three/fiber": "^9.0.0-alpha.8",
+    "@tabler/icons-react": "^3.34.1",
+    "@tailwindcss/cli": "^4.1.13",
+    "@tsparticles/engine": "^3.9.1",
+    "@tsparticles/react": "^3.0.0",
+    "@tsparticles/slim": "^3.9.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "dotted-map": "^2.2.3",
+    "framer-motion": "^12.23.12",
+    "lucide-react": "^0.544.0",
+    "mini-svg-data-uri": "^1.4.4",
+    "motion": "^12.23.12",
+    "next": "15.5.3",
+    "next-themes": "^0.4.6",
+    "qss": "^3.0.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-dropzone": "^14.3.8",
+    "react-syntax-highlighter": "^15.6.6",
+    "simplex-noise": "^4.0.3",
+    "tailwind-merge": "^3.3.1",
+    "three": "^0.180.0",
+    "three-globe": "^2.44.0",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.2.0",
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "@types/three": "^0.180.0",
+    "tailwindcss": "^4.1.13",
+    "tw-animate-css": "^1.3.8",
+    "typescript": "^5"
+  }
+}
+</file>
+
+<file path="postcss.config.mjs">
+const config = {
+  plugins: ["@tailwindcss/postcss"],
+};
+
+export default config;
+</file>
+
+<file path="README.md">
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+</file>
+
+<file path="register-all.ts">
+import { execSync } from "node:child_process";
+import registry from "./aceternity-registry.json";
+
+type ComponentRegistry = {
+  name: string;
+  type: string;
+  dependencies?: string[];
+  registryDependencies?: string[];
+  devDependencies?: string[];
+  files: {
+    path: string;
+    type: string;
+  }[];
+};
+
+const getComponentRegistryURL = (component: string) =>
+  `https://ui.aceternity.com/registry/${component}.json`;
+
+const componentNames = registry.items.map(
+  (item: ComponentRegistry) => item.name,
+);
+
+for (const componentName of componentNames) {
+  // bunx --bun shadcn@latest add https://ui.aceternity.com/registry/\[component\].json
+  const command = `bunx --bun shadcn@latest add ${getComponentRegistryURL(componentName)}`;
+
+  try {
+    execSync(command);
+  } catch (error) {
+    console.error(`Error registering component ${componentName}: ${error}`);
+  }
+}
+</file>
+
+<file path="tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
+</file>
+
+</files>

@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { CompactCard, CompactCardGrid } from '../components/CompactCard';
 import { MonochromeButton } from '../components/MonochromeButton';
 import { SkewedBackground } from '../components/SkewedBackground';
+import { TabNav } from '../components/TabNav';
+import { Toast } from '../components/Toast';
+import { Breadcrumb } from '../components/Breadcrumb';
+import { DragDropZone } from '../components/DragDropZone';
+import { CommandPalette, useCommandPalette, defaultCommands } from '../components/CommandPalette';
+import { Plus, BarChart3, FileText, Settings as SettingsIcon, Upload } from 'lucide-react';
 
 // Sample icons
 const AssessmentIcon = () => (
@@ -41,6 +48,66 @@ interface DashboardPageProps {
  * Main dashboard with bento grid layout using monochrome design
  */
 export function DashboardPage({ userName = 'Dr. Smith' }: DashboardPageProps) {
+  const [activeTab, setActiveTab] = useState('overview');
+  const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' | 'warning' | 'info' }>({ 
+    show: false, message: '', type: 'info' 
+  });
+  const commandPalette = useCommandPalette();
+
+  const tabs = [
+    { id: 'overview', label: 'Overview', count: 24 },
+    { id: 'analytics', label: 'Analytics', count: 8 },
+    { id: 'reports', label: 'Reports', count: 3 },
+    { id: 'settings', label: 'Settings' }
+  ];
+
+  const breadcrumbItems = [
+    { label: 'Watson', href: '/', path: '/' },
+    { label: 'Dashboard', path: '/dashboard' }
+  ];
+
+  const handleFileDrop = (files: File[]) => {
+    setToast({
+      show: true,
+      message: `${files.length} file(s) uploaded successfully`,
+      type: 'success'
+    });
+  };
+
+  const dashboardCommands = [
+    ...defaultCommands,
+    {
+      id: 'new-review',
+      title: 'Start New Review',
+      description: 'Begin reviewing a clinical document',
+      icon: FileText,
+      shortcut: '⌘N',
+      action: () => {
+        setToast({
+          show: true,
+          message: 'Starting new review...',
+          type: 'info'
+        });
+      }
+    },
+    {
+      id: 'analytics',
+      title: 'View Analytics',
+      description: 'Open analytics dashboard',
+      icon: BarChart3,
+      shortcut: '⌘A',
+      action: () => setActiveTab('analytics')
+    },
+    {
+      id: 'settings',
+      title: 'Settings',
+      description: 'Open dashboard settings',
+      icon: SettingsIcon,
+      shortcut: '⌘,',
+      action: () => setActiveTab('settings')
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-zinc-950">
       {/* Background effect */}
@@ -52,20 +119,13 @@ export function DashboardPage({ userName = 'Dr. Smith' }: DashboardPageProps) {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-8">
               <h1 className="text-xl font-bold text-zinc-50">Watson</h1>
-              <nav className="hidden md:flex items-center gap-6">
-                <a href="#" className="text-sm text-zinc-100 hover:text-zinc-300 transition-colors">
-                  Dashboard
-                </a>
-                <a href="#" className="text-sm text-zinc-400 hover:text-zinc-300 transition-colors">
-                  Reviews
-                </a>
-                <a href="#" className="text-sm text-zinc-400 hover:text-zinc-300 transition-colors">
-                  Analytics
-                </a>
-                <a href="#" className="text-sm text-zinc-400 hover:text-zinc-300 transition-colors">
-                  Settings
-                </a>
-              </nav>
+              <MonochromeButton 
+                variant="ghost" 
+                size="sm"
+                onClick={() => commandPalette.open()}
+              >
+                Quick Actions ⌘K
+              </MonochromeButton>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-zinc-400">Welcome, {userName}</span>
@@ -79,9 +139,10 @@ export function DashboardPage({ userName = 'Dr. Smith' }: DashboardPageProps) {
 
       {/* Main content */}
       <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Page title */}
+        {/* Breadcrumb and page title */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-zinc-50 mb-2">
+          <Breadcrumb items={breadcrumbItems} />
+          <h2 className="text-2xl font-bold text-zinc-50 mb-2 mt-4">
             Clinical Review Dashboard
           </h2>
           <p className="text-sm text-zinc-400">
@@ -89,8 +150,70 @@ export function DashboardPage({ userName = 'Dr. Smith' }: DashboardPageProps) {
           </p>
         </div>
 
-        {/* Bento grid layout */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 auto-rows-auto">
+        {/* Tab navigation */}
+        <div className="mb-8">
+          <TabNav tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
+        </div>
+
+        {/* Tab content with animation */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="space-y-6"
+          >
+            {activeTab === 'overview' && <OverviewTab toast={toast} setToast={setToast} />}
+            {activeTab === 'analytics' && <AnalyticsTab />}
+            {activeTab === 'reports' && <ReportsTab />}
+            {activeTab === 'settings' && <SettingsTab />}
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Floating action button with drag drop */}
+        <div className="fixed bottom-8 right-8 z-40">
+          <DragDropZone
+            onFileDrop={handleFileDrop}
+            accept=".pdf,.doc,.docx,.txt"
+            multiple
+            className="w-16 h-16 rounded-full bg-zinc-800 border-2 border-dashed border-zinc-600 hover:border-zinc-500 transition-all duration-200 flex items-center justify-center"
+          >
+            <Upload className="w-6 h-6 text-zinc-400" />
+          </DragDropZone>
+        </div>
+      </main>
+      
+      {/* Toast Notifications */}
+      {toast.show && (
+        <div className="fixed bottom-8 left-8 z-50">
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast({ ...toast, show: false })}
+          />
+        </div>
+      )}
+      
+      {/* Command Palette */}
+      <CommandPalette
+        isOpen={commandPalette.isOpen}
+        onClose={commandPalette.close}
+        commands={dashboardCommands}
+      />
+    </div>
+  );
+}
+
+// Overview Tab Component
+function OverviewTab({ toast, setToast }: { 
+  toast: { show: boolean; message: string; type: 'success' | 'error' | 'warning' | 'info' };
+  setToast: (toast: any) => void;
+}) {
+  return (
+    <div>
+      {/* Bento grid layout */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 auto-rows-auto">
           {/* Large feature card - 2x2 */}
           <div className="col-span-full md:col-span-2 md:row-span-2 glass-card p-6">
             <h3 className="text-lg font-semibold text-zinc-100 mb-4">
@@ -131,7 +254,13 @@ export function DashboardPage({ userName = 'Dr. Smith' }: DashboardPageProps) {
             icon={<DocumentIcon />}
             metric={12}
             status="warning"
-            onClick={() => console.log('View pending')}
+            onClick={() => {
+              setToast({
+                show: true,
+                message: 'Loading pending reviews...',
+                type: 'info'
+              });
+            }}
           />
 
           <CompactCard
@@ -213,26 +342,164 @@ export function DashboardPage({ userName = 'Dr. Smith' }: DashboardPageProps) {
               <p className="text-sm text-zinc-500">Chart visualization placeholder</p>
             </div>
           </div>
-        </div>
+      </div>
 
-        {/* Additional sections */}
-        <div className="mt-8">
-          <h3 className="text-lg font-semibold text-zinc-100 mb-4">
-            Recent Assessments
-          </h3>
-          <CompactCardGrid columns={3}>
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <CompactCard
-                key={i}
-                title={`Assessment #${2000 + i}`}
-                description="Clinical notes review required"
-                icon={<DocumentIcon />}
-                onClick={() => console.log(`View assessment ${i}`)}
-              />
-            ))}
-          </CompactCardGrid>
+      {/* Additional sections */}
+      <div className="mt-8">
+        <h3 className="text-lg font-semibold text-zinc-100 mb-4">
+          Recent Assessments
+        </h3>
+        <CompactCardGrid columns={3}>
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <CompactCard
+              key={i}
+              title={`Assessment #${2000 + i}`}
+              description="Clinical notes review required"
+              icon={<DocumentIcon />}
+              onClick={() => {
+                setToast({
+                  show: true,
+                  message: `Opening assessment #${2000 + i}...`,
+                  type: 'info'
+                });
+              }}
+            />
+          ))}
+        </CompactCardGrid>
+      </div>
+    </div>
+  );
+}
+
+// Analytics Tab Component
+function AnalyticsTab() {
+  return (
+    <div className="space-y-6">
+      <h3 className="text-lg font-semibold text-zinc-100">Analytics Dashboard</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <CompactCard
+          title="Total Reviews"
+          description="This month"
+          icon={<BarChart3 className="w-4 h-4" />}
+          metric={156}
+          trend="up"
+          status="success"
+        />
+        <CompactCard
+          title="Avg. Time"
+          description="Per review"
+          icon={<BarChart3 className="w-4 h-4" />}
+          metric="12.5m"
+          trend="down"
+          status="success"
+        />
+        <CompactCard
+          title="Accuracy Rate"
+          description="30-day average"
+          icon={<BarChart3 className="w-4 h-4" />}
+          metric="94.2%"
+          trend="up"
+          status="success"
+        />
+        <CompactCard
+          title="Quality Score"
+          description="Review quality"
+          icon={<BarChart3 className="w-4 h-4" />}
+          metric={8.7}
+          trend="up"
+          status="success"
+        />
+      </div>
+      <div className="glass-card p-6">
+        <h4 className="text-base font-semibold text-zinc-100 mb-4">Performance Trends</h4>
+        <div className="h-64 bg-zinc-800/30 rounded-md flex items-center justify-center">
+          <p className="text-sm text-zinc-500">Advanced analytics chart placeholder</p>
         </div>
-      </main>
+      </div>
+    </div>
+  );
+}
+
+// Reports Tab Component
+function ReportsTab() {
+  return (
+    <div className="space-y-6">
+      <h3 className="text-lg font-semibold text-zinc-100">Reports & Exports</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="glass-card p-6">
+          <h4 className="text-base font-semibold text-zinc-100 mb-4">Quick Reports</h4>
+          <div className="space-y-3">
+            <MonochromeButton variant="ghost" fullWidth>
+              Daily Summary Report
+            </MonochromeButton>
+            <MonochromeButton variant="ghost" fullWidth>
+              Weekly Performance Report
+            </MonochromeButton>
+            <MonochromeButton variant="ghost" fullWidth>
+              Monthly Analytics Report
+            </MonochromeButton>
+          </div>
+        </div>
+        <div className="glass-card p-6">
+          <h4 className="text-base font-semibold text-zinc-100 mb-4">Export Data</h4>
+          <div className="space-y-3">
+            <MonochromeButton variant="ghost" fullWidth>
+              Export as CSV
+            </MonochromeButton>
+            <MonochromeButton variant="ghost" fullWidth>
+              Export as JSON
+            </MonochromeButton>
+            <MonochromeButton variant="ghost" fullWidth>
+              Export as PDF
+            </MonochromeButton>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Settings Tab Component
+function SettingsTab() {
+  return (
+    <div className="space-y-6">
+      <h3 className="text-lg font-semibold text-zinc-100">Dashboard Settings</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="glass-card p-6">
+          <h4 className="text-base font-semibold text-zinc-100 mb-4">Display Preferences</h4>
+          <div className="space-y-4">
+            <label className="flex items-center">
+              <input type="checkbox" className="w-4 h-4 bg-zinc-800 border-zinc-700 rounded" defaultChecked />
+              <span className="ml-2 text-sm text-zinc-300">Show activity notifications</span>
+            </label>
+            <label className="flex items-center">
+              <input type="checkbox" className="w-4 h-4 bg-zinc-800 border-zinc-700 rounded" defaultChecked />
+              <span className="ml-2 text-sm text-zinc-300">Auto-refresh dashboard</span>
+            </label>
+            <label className="flex items-center">
+              <input type="checkbox" className="w-4 h-4 bg-zinc-800 border-zinc-700 rounded" />
+              <span className="ml-2 text-sm text-zinc-300">Compact view mode</span>
+            </label>
+          </div>
+        </div>
+        <div className="glass-card p-6">
+          <h4 className="text-base font-semibold text-zinc-100 mb-4">Notification Settings</h4>
+          <div className="space-y-4">
+            <label className="flex items-center">
+              <input type="checkbox" className="w-4 h-4 bg-zinc-800 border-zinc-700 rounded" defaultChecked />
+              <span className="ml-2 text-sm text-zinc-300">Email notifications</span>
+            </label>
+            <label className="flex items-center">
+              <input type="checkbox" className="w-4 h-4 bg-zinc-800 border-zinc-700 rounded" defaultChecked />
+              <span className="ml-2 text-sm text-zinc-300">Desktop notifications</span>
+            </label>
+            <label className="flex items-center">
+              <input type="checkbox" className="w-4 h-4 bg-zinc-800 border-zinc-700 rounded" />
+              <span className="ml-2 text-sm text-zinc-300">Mobile push notifications</span>
+            </label>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

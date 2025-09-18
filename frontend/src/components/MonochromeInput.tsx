@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes, ReactNode, forwardRef } from 'react';
+import React, { type InputHTMLAttributes, type ReactNode, forwardRef } from 'react';
 
 interface MonochromeInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;

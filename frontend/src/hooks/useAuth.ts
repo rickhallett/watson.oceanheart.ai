@@ -4,7 +4,7 @@
  */
 
 import { useAuthContext } from '../contexts/AuthContext';
-import { User, AuthState } from '../types/auth';
+import { type User, type AuthState } from '../types/auth';
 
 /**
  * Custom hook to access authentication state and methods

@@ -3,7 +3,7 @@
  * Provides stubbed authentication functionality for development and testing
  */
 
-import { User, LoginCredentials, AuthError } from '../types/auth';
+import { type User, type LoginCredentials, type AuthError } from '../types/auth';
 
 // Mock users for development
 const MOCK_USERS: User[] = [

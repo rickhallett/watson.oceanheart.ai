@@ -3,8 +3,8 @@
  * Provides authentication state management across the application
  */
 
-import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
-import { AuthState, AuthContextType, User } from '../types/auth';
+import React, { createContext, useContext, useReducer, useEffect, type ReactNode } from 'react';
+import { type AuthState, type AuthContextType, type User } from '../types/auth';
 import {
   getStoredToken,
   storeToken,

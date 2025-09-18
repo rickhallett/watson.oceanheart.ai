@@ -3,7 +3,7 @@
  * Handles JWT token validation, parsing, and localStorage management
  */
 
-import { JWTPayload, User, AuthError } from '../types/auth';
+import { type JWTPayload, type User, type AuthError } from '../types/auth';
 
 /**
  * Parse JWT token payload (basic implementation)

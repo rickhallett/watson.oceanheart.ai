@@ -3,7 +3,8 @@ import { SkewedBackground } from '@/components/SkewedBackground';
 import { InfiniteMovingCards } from '@/components/ui/infinite-moving-cards';
 import { MonochromeButton } from '@/components/MonochromeButton';
 import { CompactCard } from '@/components/CompactCard';
-import { LogIn } from 'lucide-react';
+import { CommandPalette, useCommandPalette, defaultCommands } from '@/components/CommandPalette';
+import { LogIn, Brain, Shield, Users, Star, ArrowRight } from 'lucide-react';
 import { componentTheme } from '@/config/theme';
 
 const testimonials = [
@@ -40,6 +41,8 @@ const testimonials = [
 ];
 
 export function LandingPage() {
+  const commandPalette = useCommandPalette();
+
   return (
     <div className="min-h-screen bg-zinc-950 antialiased relative overflow-hidden">
       <SkewedBackground opacity={0.03} />
@@ -47,19 +50,34 @@ export function LandingPage() {
       <div className="relative z-10">
         {/* Hero Section */}
         <div className="h-[40rem] w-full flex flex-col items-center justify-center overflow-hidden rounded-md">
-          <h1 className="md:text-7xl text-5xl lg:text-9xl font-bold text-center text-zinc-50 relative z-20">
-            Watson <span className="text-zinc-400">AI</span>{" "}
-            <span className="text-zinc-500 font-normal text-4xl">v1.0</span>
-          </h1>
-          <div className="w-[40rem] h-40 relative">
-            {/* Subtle monochrome gradients */}
-            <div className="absolute inset-x-20 top-0 bg-gradient-to-r from-transparent via-zinc-600 to-transparent h-[2px] w-3/4 blur-sm opacity-30" />
-            <div className="absolute inset-x-20 top-0 bg-gradient-to-r from-transparent via-zinc-500 to-transparent h-px w-3/4" />
-            <div className="absolute inset-x-60 top-0 bg-gradient-to-r from-transparent via-zinc-400 to-transparent h-[5px] w-1/4 blur-sm opacity-20" />
-            <div className="absolute inset-x-60 top-0 bg-gradient-to-r from-transparent via-zinc-400 to-transparent h-px w-1/4" />
-
-            {/* Simple gradient overlay */}
-            <div className="absolute inset-0 w-full h-full bg-zinc-950 [mask-image:radial-gradient(350px_200px_at_top,transparent_20%,white)]" />
+          <div className="glass-card p-12 text-center max-w-4xl mx-auto">
+            <h1 className="md:text-7xl text-5xl lg:text-8xl font-bold text-zinc-50 relative z-20 mb-6">
+              Watson <span className="text-zinc-400">AI</span>{" "}
+              <span className="text-zinc-500 font-normal text-3xl block mt-2">Clinical Documentation Platform</span>
+            </h1>
+            <p className="text-zinc-400 text-xl mb-8 max-w-2xl mx-auto">
+              Transform your clinical documentation workflow with AI-powered review and curation tools designed for healthcare professionals.
+            </p>
+            <div className="flex gap-4 justify-center">
+              <MonochromeButton
+                variant="primary"
+                size="lg"
+                icon={<LogIn className="w-5 h-5" />}
+                onClick={() => {
+                  localStorage.setItem('isAuthenticated', 'true');
+                  window.location.href = '/app';
+                }}
+              >
+                Get Started
+              </MonochromeButton>
+              <MonochromeButton
+                variant="ghost"
+                size="lg"
+                onClick={() => commandPalette.open()}
+              >
+                Explore Features ⌘K
+              </MonochromeButton>
+            </div>
           </div>
         </div>
 
@@ -87,47 +105,91 @@ export function LandingPage() {
           </div>
         </div>
 
+        {/* Features Section */}
+        <div className="py-20 relative">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl md:text-5xl font-bold text-zinc-50 text-center mb-4">
+              Powerful Features
+            </h2>
+            <p className="text-zinc-400 text-center max-w-2xl mx-auto mb-16">
+              Advanced clinical documentation tools designed for healthcare professionals
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <CompactCard
+                title="AI-Powered Review"
+                description="Intelligent analysis of clinical documentation with advanced LLM capabilities"
+                icon={<Brain className="w-5 h-5" />}
+                status="success"
+              />
+              <CompactCard
+                title="Secure Workflows"
+                description="HIPAA-compliant document processing with enterprise-grade security"
+                icon={<Shield className="w-5 h-5" />}
+                status="success"
+              />
+              <CompactCard
+                title="Team Collaboration"
+                description="Real-time collaborative review and approval workflows"
+                icon={<Users className="w-5 h-5" />}
+                status="success"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* CTA Section */}
         <div className="py-20 relative">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-8">
-              Ready to Get Started?
-            </h2>
-            <p className="text-neutral-400 text-lg mb-12">
-              Experience the power of AI-assisted clinical documentation
-            </p>
-            <MonochromeButton
-              variant="primary"
-              size="lg"
-              icon={<LogIn className="w-5 h-5" />}
-              onClick={() => {
-                // Set localStorage flag and redirect to app
-                localStorage.setItem('isAuthenticated', 'true');
-                window.location.href = '/app';
-              }}
-            >
-              Sign In to Watson
-            </MonochromeButton>
+            <div className="glass-card p-12">
+              <h2 className="text-3xl md:text-5xl font-bold text-zinc-50 mb-8">
+                Ready to Get Started?
+              </h2>
+              <p className="text-zinc-400 text-lg mb-12">
+                Experience the power of AI-assisted clinical documentation
+              </p>
+              <div className="flex gap-4 justify-center">
+                <MonochromeButton
+                  variant="primary"
+                  size="lg"
+                  icon={<LogIn className="w-5 h-5" />}
+                  onClick={() => {
+                    // Set localStorage flag and redirect to app
+                    localStorage.setItem('isAuthenticated', 'true');
+                    window.location.href = '/app';
+                  }}
+                >
+                  Sign In to Watson
+                </MonochromeButton>
+                <MonochromeButton
+                  variant="ghost"
+                  size="lg"
+                  icon={<ArrowRight className="w-5 h-5" />}
+                  onClick={() => window.location.href = '/demo'}
+                >
+                  View Demo
+                </MonochromeButton>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Footer */}
-        <footer className="border-t border-neutral-800 py-12">
+        <footer className="border-t border-zinc-800 py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <div className="mb-4 md:mb-0">
-                <p className="text-neutral-400">
-                  © 2024 Watson AI. All rights reserved.
+                <p className="text-zinc-400">
+                  © 2025 Watson AI. All rights reserved.
                 </p>
               </div>
               <div className="flex space-x-6">
-                <a href="#" className="text-neutral-400 hover:text-white transition">
+                <a href="#" className="text-zinc-400 hover:text-zinc-300 transition">
                   Privacy
                 </a>
-                <a href="#" className="text-neutral-400 hover:text-white transition">
+                <a href="#" className="text-zinc-400 hover:text-zinc-300 transition">
                   Terms
                 </a>
-                <a href="#" className="text-neutral-400 hover:text-white transition">
+                <a href="#" className="text-zinc-400 hover:text-zinc-300 transition">
                   Contact
                 </a>
               </div>
@@ -135,6 +197,34 @@ export function LandingPage() {
           </div>
         </footer>
       </div>
+      
+      {/* Command Palette */}
+      <CommandPalette
+        isOpen={commandPalette.isOpen}
+        onClose={commandPalette.close}
+        commands={[
+          ...defaultCommands,
+          {
+            id: 'sign-in',
+            title: 'Sign In',
+            description: 'Access your Watson account',
+            icon: LogIn,
+            shortcut: '⌘L',
+            action: () => {
+              localStorage.setItem('isAuthenticated', 'true');
+              window.location.href = '/app';
+            }
+          },
+          {
+            id: 'demo',
+            title: 'View Demo',
+            description: 'Explore monochrome components',
+            icon: Star,
+            shortcut: '⌘D',
+            action: () => window.location.href = '/demo'
+          }
+        ]}
+      />
     </div>
   );
 }

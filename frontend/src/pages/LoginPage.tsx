@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { SkewedBackground } from '../components/SkewedBackground';
 import { MonochromeInput } from '../components/MonochromeInput';
 import { MonochromeButton } from '../components/MonochromeButton';
+import { Toast } from '../components/Toast';
+import { Skeleton } from '../components/Skeleton';
+import { CommandPalette, useCommandPalette, defaultCommands } from '../components/CommandPalette';
 
 // Icon components (can be replaced with actual icon library)
 const MailIcon = () => (
@@ -31,6 +34,10 @@ export function LoginPage({ onLogin }: LoginPageProps) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' | 'warning' | 'info' }>({ 
+    show: false, message: '', type: 'info' 
+  });
+  const commandPalette = useCommandPalette();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,6 +58,11 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      setToast({
+        show: true,
+        message: 'Please fix the form errors and try again',
+        type: 'error'
+      });
       return;
     }
 
@@ -58,6 +70,17 @@ export function LoginPage({ onLogin }: LoginPageProps) {
     setLoading(true);
     try {
       await onLogin?.(email, password);
+      setToast({
+        show: true,
+        message: 'Login successful! Redirecting...',
+        type: 'success'
+      });
+    } catch (error) {
+      setToast({
+        show: true,
+        message: 'Login failed. Please check your credentials.',
+        type: 'error'
+      });
     } finally {
       setLoading(false);
     }
@@ -82,17 +105,29 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
         {/* Glass card container */}
         <div className="glass-card p-6 space-y-6">
-          <div>
-            <h2 className="text-xl font-semibold text-zinc-100 mb-1">
-              Welcome back
-            </h2>
-            <p className="text-sm text-zinc-400">
-              Sign in to access your clinical workspace
-            </p>
-          </div>
+          {loading && (
+            <div className="space-y-4">
+              <Skeleton className="h-6 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+          )}
+          {!loading && (
+            <div>
+              <h2 className="text-xl font-semibold text-zinc-100 mb-1">
+                Welcome back
+              </h2>
+              <p className="text-sm text-zinc-400">
+                Sign in to access your clinical workspace
+              </p>
+            </div>
+          )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          {!loading && (
+            <form onSubmit={handleSubmit} className="space-y-4">
             <MonochromeInput
               type="email"
               label="Email"
@@ -130,6 +165,10 @@ export function LoginPage({ onLogin }: LoginPageProps) {
               <a
                 href="#forgot"
                 className="text-sm text-zinc-400 hover:text-zinc-300 transition-colors"
+                onClick={(e) => {
+                  e.preventDefault();
+                  commandPalette.open();
+                }}
               >
                 Forgot password?
               </a>
@@ -144,48 +183,75 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             >
               Sign in
             </MonochromeButton>
-          </form>
+            </form>
+          )}
 
           {/* Divider */}
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-zinc-800"></div>
+          {!loading && (
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-zinc-800"></div>
+              </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="px-2 bg-zinc-900/50 text-zinc-500">Or continue with</span>
+              </div>
             </div>
-            <div className="relative flex justify-center text-xs">
-              <span className="px-2 bg-zinc-900/50 text-zinc-500">Or continue with</span>
-            </div>
-          </div>
+          )}
 
           {/* SSO options */}
-          <div className="grid grid-cols-2 gap-3">
-            <MonochromeButton
-              variant="ghost"
-              size="md"
-              disabled={loading}
-              onClick={() => console.log('Google SSO')}
-            >
-              Google
-            </MonochromeButton>
-            <MonochromeButton
-              variant="ghost"
-              size="md"
-              disabled={loading}
-              onClick={() => console.log('Microsoft SSO')}
-            >
-              Microsoft
-            </MonochromeButton>
-          </div>
+          {!loading && (
+            <div className="grid grid-cols-2 gap-3">
+              <MonochromeButton
+                variant="ghost"
+                size="md"
+                disabled={loading}
+                onClick={() => {
+                  setToast({
+                    show: true,
+                    message: 'Google SSO integration coming soon',
+                    type: 'info'
+                  });
+                }}
+              >
+                Google
+              </MonochromeButton>
+              <MonochromeButton
+                variant="ghost"
+                size="md"
+                disabled={loading}
+                onClick={() => {
+                  setToast({
+                    show: true,
+                    message: 'Microsoft SSO integration coming soon',
+                    type: 'info'
+                  });
+                }}
+              >
+                Microsoft
+              </MonochromeButton>
+            </div>
+          )}
 
           {/* Sign up link */}
-          <p className="text-center text-sm text-zinc-400">
-            Don't have an account?{' '}
-            <a
-              href="#signup"
-              className="text-zinc-300 hover:text-zinc-100 transition-colors"
-            >
-              Sign up
-            </a>
-          </p>
+          {!loading && (
+            <p className="text-center text-sm text-zinc-400">
+              Don't have an account?{' '}
+              <a
+                href="#signup"
+                className="text-zinc-300 hover:text-zinc-100 transition-colors"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setToast({
+                    show: true,
+                    message: 'Registration opening soon',
+                    type: 'info'
+                  });
+                }}
+              >
+                Sign up
+              </a>
+            </p>
+          )}
         </div>
 
         {/* Footer */}
@@ -193,6 +259,39 @@ export function LoginPage({ onLogin }: LoginPageProps) {
           © 2025 Oceanheart.ai · Privacy · Terms
         </p>
       </div>
+      
+      {/* Toast Notifications */}
+      {toast.show && (
+        <div className="fixed bottom-8 right-8 z-50">
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast({ ...toast, show: false })}
+          />
+        </div>
+      )}
+      
+      {/* Command Palette */}
+      <CommandPalette
+        isOpen={commandPalette.isOpen}
+        onClose={commandPalette.close}
+        commands={[
+          ...defaultCommands,
+          {
+            id: 'forgot-password',
+            title: 'Forgot Password',
+            description: 'Reset your password',
+            shortcut: '⌘R',
+            action: () => {
+              setToast({
+                show: true,
+                message: 'Password reset feature coming soon',
+                type: 'info'
+              });
+            }
+          }
+        ]}
+      />
     </div>
   );
 }
