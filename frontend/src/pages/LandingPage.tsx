@@ -1,5 +1,7 @@
 import React from 'react';
 import { SkewedBackground } from '@/components/SkewedBackground';
+import { Spotlight } from '@/components/ui/spotlight-new';
+import { BackgroundGradient } from '@/components/ui/background-gradient';
 import { InfiniteMovingCards } from '@/components/ui/infinite-moving-cards';
 import { MonochromeButton } from '@/components/MonochromeButton';
 import { CompactCard } from '@/components/CompactCard';
@@ -49,35 +51,38 @@ export function LandingPage() {
 
       <div className="relative z-10">
         {/* Hero Section */}
-        <div className="h-[40rem] w-full flex flex-col items-center justify-center overflow-hidden rounded-md">
-          <div className="glass-card p-12 text-center max-w-4xl mx-auto">
-            <h1 className="md:text-7xl text-5xl lg:text-8xl font-bold text-zinc-50 relative z-20 mb-6">
-              Watson <span className="text-zinc-400">AI</span>{" "}
-              <span className="text-zinc-500 font-normal text-3xl block mt-2">Clinical Documentation Platform</span>
-            </h1>
-            <p className="text-zinc-400 text-xl mb-8 max-w-2xl mx-auto">
-              Transform your clinical documentation workflow with AI-powered review and curation tools designed for healthcare professionals.
-            </p>
-            <div className="flex gap-4 justify-center">
-              <MonochromeButton
-                variant="primary"
-                size="lg"
-                icon={<LogIn className="w-5 h-5" />}
-                onClick={() => {
-                  localStorage.setItem('isAuthenticated', 'true');
-                  window.location.href = '/app';
-                }}
-              >
-                Get Started
-              </MonochromeButton>
-              <MonochromeButton
-                variant="ghost"
-                size="lg"
-                onClick={() => commandPalette.open()}
-              >
-                Explore Features ⌘K
-              </MonochromeButton>
-            </div>
+        <div className="h-[40rem] w-full rounded-md flex md:items-center md:justify-center bg-zinc-950/95 antialiased bg-grid-white/[0.02] relative overflow-hidden">
+          <Spotlight />
+          <div className="p-4 max-w-4xl mx-auto relative z-10 w-full">
+            <BackgroundGradient className="rounded-[22px] p-12 bg-zinc-900">
+              <h1 className="md:text-7xl text-5xl lg:text-8xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-zinc-50 to-zinc-400 bg-opacity-50 mb-6">
+                <span className="text-blue-400">Watson</span> <span className="text-zinc-400">AI</span>{" "}
+                <span className="text-zinc-500 font-normal text-3xl block mt-2">Clinical Documentation Platform</span>
+              </h1>
+              <p className="text-zinc-400 text-xl mb-8 max-w-2xl mx-auto text-center">
+                Transform your clinical documentation workflow with AI-powered review and curation tools designed for healthcare professionals.
+              </p>
+              <div className="flex gap-4 justify-center">
+                <MonochromeButton
+                  variant="primary"
+                  size="lg"
+                  icon={<LogIn className="w-5 h-5" />}
+                  onClick={() => {
+                    localStorage.setItem('isAuthenticated', 'true');
+                    window.location.href = '/app';
+                  }}
+                >
+                  Get Started
+                </MonochromeButton>
+                <MonochromeButton
+                  variant="ghost"
+                  size="lg"
+                  onClick={() => commandPalette.open()}
+                >
+                  Explore Features ⌘K
+                </MonochromeButton>
+              </div>
+            </BackgroundGradient>
           </div>
         </div>
 
@@ -197,7 +202,7 @@ export function LandingPage() {
           </div>
         </footer>
       </div>
-      
+
       {/* Command Palette */}
       <CommandPalette
         isOpen={commandPalette.isOpen}
