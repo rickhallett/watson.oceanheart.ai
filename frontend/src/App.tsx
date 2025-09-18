@@ -3,6 +3,7 @@ import { LandingPage } from './pages/LandingPage';
 import { AppLayout } from './pages/AppLayout';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { MonochromeDemo } from './pages/MonochromeDemo';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { SkewedBackground } from './components/SkewedBackground';
 
@@ -35,6 +36,10 @@ function App() {
         <DashboardPage />
       </ProtectedRoute>
     );
+  }
+
+  if (currentPath === '/demo') {
+    return <MonochromeDemo />;
   }
 
   if (currentPath === '/app' || currentPath.startsWith('/app/')) {
