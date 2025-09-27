@@ -1,6 +1,8 @@
 import React from 'react';
 import { ProfilePanel } from '@/components/panels/ProfilePanel';
 import { SettingsPanel } from '@/components/panels/SettingsPanel';
+import { ReviewsPanel } from '@/components/panels/ReviewsPanel';
+import { AnalyticsPanel } from '@/components/panels/AnalyticsPanel';
 import { SimpleEditor } from '@/components/tiptap-templates/simple/simple-editor';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileText, Activity, Brain, TrendingUp, Users, Clock } from 'lucide-react';
@@ -9,7 +11,7 @@ import { MonochromeButton } from '@/components/MonochromeButton';
 import { SkewedBackground } from '@/components/SkewedBackground';
 
 interface MainPanelProps {
-  activeView: 'dashboard' | 'profile' | 'settings';
+  activeView: 'dashboard' | 'reviews' | 'analytics' | 'profile' | 'settings';
 }
 
 export function MainPanel({ activeView }: MainPanelProps) {
@@ -27,6 +29,32 @@ export function MainPanel({ activeView }: MainPanelProps) {
 
   const renderContent = () => {
     switch (activeView) {
+      case 'reviews':
+        return (
+          <motion.div
+            key="reviews"
+            initial="initial"
+            animate="in"
+            exit="out"
+            variants={pageVariants}
+            transition={pageTransition}
+          >
+            <ReviewsPanel />
+          </motion.div>
+        );
+      case 'analytics':
+        return (
+          <motion.div
+            key="analytics"
+            initial="initial"
+            animate="in"
+            exit="out"
+            variants={pageVariants}
+            transition={pageTransition}
+          >
+            <AnalyticsPanel />
+          </motion.div>
+        );
       case 'profile':
         return (
           <motion.div
@@ -72,16 +100,16 @@ export function MainPanel({ activeView }: MainPanelProps) {
               {/* Header */}
               <div className="mb-8">
                 <h1 className="text-4xl font-bold text-zinc-50 mb-2">
-                  Watson Clinical Dashboard
+                  Watson Research Dashboard
                 </h1>
-                <p className="text-zinc-400">AI-Powered Clinical Documentation Review</p>
+                <p className="text-zinc-400">LLM Response Analysis & Clinical Evaluation Tool</p>
               </div>
               
               {/* Stats Grid using CompactCard */}
               <div className="mb-8">
                 <CompactCardGrid columns={3}>
                   <CompactCard
-                    title="Documents Reviewed"
+                    title="Assessments Reviewed"
                     metric="127"
                     description="+23 this week"
                     icon={<FileText className="w-5 h-5" />}
@@ -89,17 +117,17 @@ export function MainPanel({ activeView }: MainPanelProps) {
                     trend="up"
                   />
                   <CompactCard
-                    title="Accuracy Rate"
-                    metric="94.2%"
-                    description="+2.1% improvement"
+                    title="Edit Rate"
+                    metric="31.8%"
+                    description="Avg. content modified"
                     icon={<Activity className="w-5 h-5" />}
-                    status="success"
-                    trend="up"
+                    status="info"
+                    trend="neutral"
                   />
                   <CompactCard
-                    title="AI Insights"
+                    title="Diff Patterns"
                     metric="48"
-                    description="New patterns detected"
+                    description="Common edits identified"
                     icon={<Brain className="w-5 h-5" />}
                     status="success"
                     trend="neutral"
@@ -150,20 +178,20 @@ export function MainPanel({ activeView }: MainPanelProps) {
                 className="glass-card p-6 mb-8"
               >
                 <h2 className="text-2xl font-semibold text-zinc-50 mb-4">
-                  Welcome to Watson AI
+                  Watson Research Platform
                 </h2>
                 <p className="text-zinc-400 mb-6">
-                  Clinical LLM Output Review & Curation Tool - Transform your clinical documentation workflow with AI-powered insights.
+                  Collect and analyze differences between LLM-generated clinical assessments and clinician evaluations to improve AI accuracy in mental health documentation.
                 </p>
                 <div className="flex flex-wrap gap-3">
                   <div className="px-3 py-1.5 bg-zinc-800 rounded-md border border-zinc-700">
-                    <span className="text-zinc-300 text-sm">Real-time Analysis</span>
+                    <span className="text-zinc-300 text-sm">Diff Analysis</span>
                   </div>
                   <div className="px-3 py-1.5 bg-zinc-800 rounded-md border border-zinc-700">
-                    <span className="text-zinc-300 text-sm">HIPAA Compliant</span>
+                    <span className="text-zinc-300 text-sm">Research Dataset</span>
                   </div>
                   <div className="px-3 py-1.5 bg-zinc-800 rounded-md border border-zinc-700">
-                    <span className="text-zinc-300 text-sm">Evidence-Based</span>
+                    <span className="text-zinc-300 text-sm">ACT Formulations</span>
                   </div>
                 </div>
                 <div className="mt-6 flex gap-3">
@@ -185,7 +213,7 @@ export function MainPanel({ activeView }: MainPanelProps) {
               >
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xl font-semibold text-zinc-50">
-                    Clinical Note Editor
+                    LLM Response Editor - Review & Edit AI-Generated Assessment
                   </h3>
                   <MonochromeButton variant="ghost" size="sm">
                     New Document

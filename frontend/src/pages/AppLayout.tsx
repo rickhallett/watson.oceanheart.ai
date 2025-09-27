@@ -12,7 +12,7 @@ import { MonochromeButton } from '@/components/MonochromeButton';
 import { Home, BarChart3, Settings, User, FileText, Search } from 'lucide-react';
 
 export function AppLayout() {
-  const [activeView, setActiveView] = useState<'dashboard' | 'profile' | 'settings'>('dashboard');
+  const [activeView, setActiveView] = useState<'dashboard' | 'reviews' | 'analytics' | 'profile' | 'settings'>('dashboard');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' | 'warning' | 'info' }>({ 
     show: false, message: '', type: 'info' 
