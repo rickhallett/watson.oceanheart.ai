@@ -57,10 +57,10 @@ export function LandingPage() {
             <BackgroundGradient className="rounded-[22px] p-12 bg-zinc-900">
               <h1 className="md:text-7xl text-5xl lg:text-8xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-zinc-50 to-zinc-400 bg-opacity-50 mb-6">
                 <span className="text-blue-400">Watson</span> <span className="text-zinc-400">AI</span>{" "}
-                <span className="text-zinc-500 font-normal text-3xl block mt-2">Clinical Documentation Platform</span>
+                <span className="text-zinc-500 font-normal text-3xl block mt-2">Clinical LLM Response Research Tool</span>
               </h1>
               <p className="text-zinc-400 text-xl mb-8 max-w-2xl mx-auto text-center">
-                Transform your clinical documentation workflow with AI-powered review and curation tools designed for healthcare professionals.
+                Collect and analyze differences between LLM responses and clinical evaluations to build research datasets for improving AI in healthcare.
               </p>
               <div className="flex gap-4 justify-center">
                 <MonochromeButton
@@ -88,55 +88,34 @@ export function LandingPage() {
 
 
 
-        {/* Testimonials Section */}
-        <div className="py-20 relative">
-          <div className="relative z-10">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <h2 className="text-3xl md:text-5xl font-bold text-center text-zinc-50 mb-4">
-                What Our Users Say
-              </h2>
-              <p className="text-zinc-400 text-center max-w-2xl mx-auto mb-16">
-                Join hundreds of clinicians who have transformed their documentation workflow
-              </p>
-            </div>
-
-            <div className="rounded-md flex flex-col antialiased items-center justify-center relative overflow-hidden">
-              <InfiniteMovingCards
-                items={testimonials}
-                direction="right"
-                speed="slow"
-              />
-            </div>
-          </div>
-        </div>
 
         {/* Features Section */}
         <div className="py-20 relative">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-3xl md:text-5xl font-bold text-zinc-50 text-center mb-4">
-              Powerful Features
+              Research Features
             </h2>
             <p className="text-zinc-400 text-center max-w-2xl mx-auto mb-16">
-              Advanced clinical documentation tools designed for healthcare professionals
+              Purpose-built tools for collecting clinician feedback on LLM responses
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <CompactCard
-                title="AI-Powered Review"
-                description="Intelligent analysis of clinical documentation with advanced LLM capabilities"
+                title="LLM Response Review"
+                description="Review and evaluate AI-generated clinical responses with TipTap editor"
                 icon={<Brain className="w-5 h-5" />}
                 status="success"
               />
               <CompactCard
-                title="Secure Workflows"
-                description="HIPAA-compliant document processing with enterprise-grade security"
+                title="Diff Analysis"
+                description="Track changes between original LLM output and clinician edits"
                 icon={<Shield className="w-5 h-5" />}
                 status="success"
               />
               <CompactCard
-                title="Team Collaboration"
-                description="Real-time collaborative review and approval workflows"
+                title="Dataset Export"
+                description="Export analyzed data for AI pattern research (Coming Soon)"
                 icon={<Users className="w-5 h-5" />}
-                status="success"
+                status="info"
               />
             </div>
           </div>
@@ -147,10 +126,10 @@ export function LandingPage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div className="glass-card p-12">
               <h2 className="text-3xl md:text-5xl font-bold text-zinc-50 mb-8">
-                Ready to Get Started?
+                Ready to Contribute?
               </h2>
               <p className="text-zinc-400 text-lg mb-12">
-                Experience the power of AI-assisted clinical documentation
+                Join our research effort to improve AI clinical response quality
               </p>
               <div className="flex gap-4 justify-center">
                 <MonochromeButton
@@ -163,7 +142,7 @@ export function LandingPage() {
                     window.location.href = '/app';
                   }}
                 >
-                  Sign In to Watson
+                  Start Research Session
                 </MonochromeButton>
                 <MonochromeButton
                   variant="ghost"

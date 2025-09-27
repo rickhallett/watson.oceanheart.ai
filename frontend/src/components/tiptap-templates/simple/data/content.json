@@ -10,7 +10,7 @@
       "content": [
         {
           "type": "text",
-          "text": "Getting started"
+          "text": "ACT Case Formulation - Client ID: #2024-1127"
         }
       ]
     },
@@ -20,97 +20,14 @@
         "textAlign": null
       },
       "content": [
-        {
-          "type": "text",
-          "text": "Welcome to the "
-        },
         {
           "type": "text",
           "marks": [
             {
               "type": "italic"
-            },
-            {
-              "type": "highlight",
-              "attrs": {
-                "color": "var(--tt-color-highlight-yellow)"
-              }
             }
           ],
-          "text": "Simple Editor"
-        },
-        {
-          "type": "text",
-          "text": " template! This template integrates "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "bold"
-            }
-          ],
-          "text": "open source"
-        },
-        {
-          "type": "text",
-          "text": " UI components and Tiptap extensions licensed under "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "bold"
-            }
-          ],
-          "text": "MIT"
-        },
-        {
-          "type": "text",
-          "text": "."
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "attrs": {
-        "textAlign": null
-      },
-      "content": [
-        {
-          "type": "text",
-          "text": "Integrate it by following the "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "link",
-              "attrs": {
-                "href": "https://tiptap.dev/docs/ui-components/templates/simple-editor",
-                "target": "_blank",
-                "rel": "noopener noreferrer nofollow",
-                "class": null
-              }
-            }
-          ],
-          "text": "Tiptap UI Components docs"
-        },
-        {
-          "type": "text",
-          "text": " or using our CLI tool."
-        }
-      ]
-    },
-    {
-      "type": "codeBlock",
-      "attrs": {
-        "language": null
-      },
-      "content": [
-        {
-          "type": "text",
-          "text": "npx @tiptap/cli init"
+          "text": "This is an LLM-generated clinical assessment. Please review and edit to ensure clinical accuracy and completeness."
         }
       ]
     },
@@ -123,85 +40,19 @@
       "content": [
         {
           "type": "text",
-          "text": "Features"
-        }
-      ]
-    },
-    {
-      "type": "blockquote",
-      "content": [
-        {
-          "type": "paragraph",
-          "attrs": {
-            "textAlign": null
-          },
-          "content": [
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "italic"
-                }
-              ],
-              "text": "A fully responsive rich text editor with built-in support for common formatting and layout tools. Type markdown "
-            },
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "code"
-                }
-              ],
-              "text": "**"
-            },
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "italic"
-                }
-              ],
-              "text": " or use keyboard shortcuts "
-            },
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "code"
-                }
-              ],
-              "text": "⌘+B"
-            },
-            {
-              "type": "text",
-              "text": " for "
-            },
-            {
-              "type": "text",
-              "marks": [
-                {
-                  "type": "strike"
-                }
-              ],
-              "text": "most"
-            },
-            {
-              "type": "text",
-              "text": " all common markdown marks. 🪄"
-            }
-          ]
+          "text": "Presenting Concerns"
         }
       ]
     },
     {
       "type": "paragraph",
       "attrs": {
-        "textAlign": "left"
+        "textAlign": null
       },
       "content": [
         {
           "type": "text",
-          "text": "Add images, customize alignment, and apply "
+          "text": "Client presents with persistent anxiety related to work performance and social interactions. Reports experiencing "
         },
         {
           "type": "text",
@@ -209,25 +60,78 @@
             {
               "type": "highlight",
               "attrs": {
-                "color": "var(--tt-color-highlight-blue)"
+                "color": "var(--tt-color-highlight-yellow)"
               }
             }
           ],
-          "text": "advanced formatting"
+          "text": "cognitive fusion"
         },
         {
           "type": "text",
-          "text": " to make your writing more engaging and professional."
+          "text": " with thoughts of being \"not good enough\" and engages in experiential avoidance through procrastination and social withdrawal."
         }
       ]
     },
     {
-      "type": "image",
+      "type": "heading",
       "attrs": {
-        "src": "/images/tiptap-ui-placeholder-image.jpg",
-        "alt": "placeholder-image",
-        "title": "placeholder-image"
-      }
+        "textAlign": null,
+        "level": 2
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Psychological Flexibility Assessment"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "textAlign": null,
+        "level": 3
+      },
+      "content": [
+        {
+          "type": "text",
+          "marks": [
+            {
+              "type": "bold"
+            }
+          ],
+          "text": "Contact with Present Moment"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "attrs": {
+        "textAlign": null
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Client demonstrates difficulty staying present, frequently ruminating about past failures and catastrophizing about future outcomes. Mindfulness skills are limited, with client reporting \"my mind is always racing.\""
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": {
+        "textAlign": null,
+        "level": 3
+      },
+      "content": [
+        {
+          "type": "text",
+          "marks": [
+            {
+              "type": "bold"
+            }
+          ],
+          "text": "Values Clarification"
+        }
+      ]
     },
     {
       "type": "bulletList",
@@ -248,50 +152,11 @@
                       "type": "bold"
                     }
                   ],
-                  "text": "Superscript"
+                  "text": "Connection:"
                 },
                 {
                   "type": "text",
-                  "text": " (x"
-                },
-                {
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "superscript"
-                    }
-                  ],
-                  "text": "2"
-                },
-                {
-                  "type": "text",
-                  "text": ") and "
-                },
-                {
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "bold"
-                    }
-                  ],
-                  "text": "Subscript"
-                },
-                {
-                  "type": "text",
-                  "text": " (H"
-                },
-                {
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "subscript"
-                    }
-                  ],
-                  "text": "2"
-                },
-                {
-                  "type": "text",
-                  "text": "O) for precision."
+                  "text": " Deep desire for meaningful relationships but avoidance behaviors create barriers"
                 }
               ]
             }
@@ -313,25 +178,25 @@
                       "type": "bold"
                     }
                   ],
-                  "text": "Typographic conversion"
+                  "text": "Professional Growth:"
                 },
                 {
                   "type": "text",
-                  "text": ": automatically convert to "
-                },
-                {
-                  "type": "text",
-                  "marks": [
-                    {
-                      "type": "code"
-                    }
-                  ],
-                  "text": "->"
-                },
-                {
-                  "type": "text",
-                  "text": " an arrow "
-                },
+                  "text": " Values competence and contribution but perfectionism interferes with progress"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": "left"
+              },
+              "content": [
                 {
                   "type": "text",
                   "marks": [
@@ -339,11 +204,11 @@
                       "type": "bold"
                     }
                   ],
-                  "text": "→"
+                  "text": "Authenticity:"
                 },
                 {
                   "type": "text",
-                  "text": "."
+                  "text": " Struggles to express true self due to fear of judgment"
                 }
               ]
             }
@@ -352,62 +217,71 @@
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
       "attrs": {
-        "textAlign": "left"
+        "textAlign": null,
+        "level": 3
       },
       "content": [
         {
           "type": "text",
           "marks": [
             {
-              "type": "italic"
+              "type": "bold"
             }
           ],
-          "text": "→ "
-        },
-        {
-          "type": "text",
-          "marks": [
-            {
-              "type": "link",
-              "attrs": {
-                "href": "https://tiptap.dev/docs/ui-components/templates/simple-editor#features",
-                "target": "_blank",
-                "rel": "noopener noreferrer nofollow",
-                "class": null
-              }
-            }
-          ],
-          "text": "Learn more"
+          "text": "Committed Action"
         }
       ]
     },
     {
-      "type": "horizontalRule"
+      "type": "paragraph",
+      "attrs": {
+        "textAlign": null
+      },
+      "content": [
+        {
+          "type": "text",
+          "text": "Currently demonstrates low engagement in values-based behaviors. Avoidance patterns dominate, with client reporting difficulty initiating tasks aligned with stated values."
+        }
+      ]
+    },
+    {
+      "type": "blockquote",
+      "content": [
+        {
+          "type": "paragraph",
+          "attrs": {
+            "textAlign": null
+          },
+          "content": [
+            {
+              "type": "text",
+              "marks": [
+                {
+                  "type": "italic"
+                }
+              ],
+              "text": "\"I know what I should do, but I just can't seem to make myself do it. The anxiety is too overwhelming.\""
+            },
+            {
+              "type": "text",
+              "text": " - Client statement during intake"
+            }
+          ]
+        }
+      ]
     },
     {
       "type": "heading",
       "attrs": {
-        "textAlign": "left",
+        "textAlign": null,
         "level": 2
       },
       "content": [
         {
           "type": "text",
-          "text": "Make it your own"
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "attrs": {
-        "textAlign": "left"
-      },
-      "content": [
-        {
-          "type": "text",
-          "text": "Switch between light and dark modes, and tailor the editor's appearance with customizable CSS to match your style."
+          "text": "Treatment Recommendations"
         }
       ]
     },
@@ -417,7 +291,7 @@
         {
           "type": "taskItem",
           "attrs": {
-            "checked": true
+            "checked": false
           },
           "content": [
             {
@@ -428,7 +302,7 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "Test template"
+                  "text": "Introduce defusion techniques for unhelpful thought patterns"
                 }
               ]
             }
@@ -448,18 +322,67 @@
               "content": [
                 {
                   "type": "text",
-                  "marks": [
-                    {
-                      "type": "link",
-                      "attrs": {
-                        "href": "https://tiptap.dev/docs/ui-components/templates/simple-editor",
-                        "target": "_blank",
-                        "rel": "noopener noreferrer nofollow",
-                        "class": null
-                      }
-                    }
-                  ],
-                  "text": "Integrate the free template"
+                  "text": "Develop mindfulness practices to enhance present-moment awareness"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "taskItem",
+          "attrs": {
+            "checked": false
+          },
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Values clarification exercises to strengthen motivation"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "taskItem",
+          "attrs": {
+            "checked": false
+          },
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Behavioral activation planning with small, achievable steps"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "taskItem",
+          "attrs": {
+            "checked": false
+          },
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": {
+                "textAlign": "left"
+              },
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Acceptance strategies for difficult emotions"
                 }
               ]
             }
@@ -468,10 +391,40 @@
       ]
     },
     {
+      "type": "horizontalRule"
+    },
+    {
       "type": "paragraph",
       "attrs": {
-        "textAlign": "left"
-      }
+        "textAlign": null
+      },
+      "content": [
+        {
+          "type": "text",
+          "marks": [
+            {
+              "type": "bold"
+            }
+          ],
+          "text": "Clinician Review Note:"
+        },
+        {
+          "type": "text",
+          "text": " "
+        },
+        {
+          "type": "text",
+          "marks": [
+            {
+              "type": "highlight",
+              "attrs": {
+                "color": "var(--tt-color-highlight-blue)"
+              }
+            }
+          ],
+          "text": "Please review this LLM-generated formulation and make necessary adjustments based on your clinical judgment and direct client interaction."
+        }
+      ]
     }
   ]
 }
