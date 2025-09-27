@@ -1,35 +1,35 @@
 # Watson
 
-**Clinical LLM Output Review & Curation Tool**
+**Clinical LLM Response Research Tool**
 *(part of Oceanheart.ai)*
 
 ---
 
 ## 1. Overview
 
-**Watson** is a prototype application exploring how clinicians can effectively **review and refine LLM outputs** in psychotherapy and related well-being fields.
-It provides an environment to:
+**Watson** is a research tool designed to collect and analyze differences between LLM-generated clinical assessments and clinician evaluations. Its purpose is to build datasets that help improve AI accuracy in mental health documentation.
 
-* Review a model-generated **clinical summary** or note.
-* **Edit** the text or per-section content with a rich editor.
-* **Classify/label** issues (e.g., hallucination, missing risk content).
-* **Submit** the review, generating a structured **diff**.
-* View **basic analytics** (change rates, label frequencies).
-* **Export** collected datasets for research and iteration.
+The platform enables clinicians to:
 
-The focus is on **process evaluation**, not clinical deployment.
+* Review AI-generated **clinical assessments** (e.g., ACT formulations)
+* **Edit** responses using a rich text editor (TipTap)
+* Track **changes** between original and edited content
+* Analyze **patterns** in how clinicians modify LLM outputs
+* **Export** datasets for AI training and research (coming soon)
+
+The focus is on **data collection for research**, not clinical deployment.
 
 ---
 
 ## 2. Key Features
 
-* **Rich text editing** (TipTap/ProseMirror) with support for strike-through, insertions, and sectioned content.
-* **Labeling/classification panel** to tag issues in outputs.
-* **Server-side diffing** (token + structural JSON) when edits are submitted.
-* **Basic analytics dashboard**: change rates, label frequency, per-section heatmap.
-* **Dataset export** (JSONL/CSV in a zip bundle with manifest).
-* **Django Admin console** for operational review and curation.
-* **Centralized Auth** via `passport.oceanheart.ai` JWTs.
+* **Rich text editing** (TipTap/ProseMirror) for reviewing LLM responses
+* **Diff analysis** showing what clinicians change in AI outputs
+* **Review tracking** with status management (pending, in-review, completed)
+* **Analytics dashboard** showing edit patterns and model performance
+* **Demo ACT formulation** as example clinical content
+* **Monochrome UI** with clean, instant-loading design
+* **Research metrics** tracking edit rates and common modifications
 
 ---
 
@@ -37,171 +37,189 @@ The focus is on **process evaluation**, not clinical deployment.
 
 | Layer      | Technology                          | Notes                                             |
 | ---------- | ----------------------------------- | ------------------------------------------------- |
-| Backend    | **Django 5** + DRF + HTMX           | Batteries-included MVC; lightweight interactivity |
-| Frontend   | **TipTap** editor                   | ProseMirror-based rich-text editing               |
-| Database   | **Postgres (Neon)**                 | JSONB for flexible storage + relational joins     |
-| Auth       | **JWT from passport.oceanheart.ai** | RS256 verification middleware                     |
-| Deployment | Render / Railway / Fly              | App server + Neon DB                              |
-| Diffing    | `difflib`, `jsondiff`               | Token-level + structural JSON                     |
+| Backend    | **Django 5** + DRF                  | REST API backend (HTMX planned but not implemented) |
+| Frontend   | **React** + TypeScript + Vite       | SPA with component-based architecture             |
+| Editor     | **TipTap** (ProseMirror)           | Rich text editing for clinical notes              |
+| Styling    | **Tailwind CSS** + Monochrome      | Custom design system with glass morphism          |
+| Runtime    | **Bun**                             | JavaScript runtime and package manager            |
+| Database   | **Postgres** (planned)              | For production deployment                         |
+| Auth       | **JWT from passport.oceanheart.ai** | Centralized authentication (planned)              |
 
 ---
 
-## 4. Data Model
+## 4. Current Implementation
 
-* **Document** – source clinical note (raw JSON).
-* **LLMOutput** – model-generated summary tied to a Document.
-* **Edit** – clinician revision of an LLMOutput (with `edited_json`, diffs, status).
-* **Label** – taxonomy of issue types (e.g., hallucination, missing\_risk).
-* **EditLabel** – join table: which labels were applied to an Edit.
-
----
-
-## 5. Core Workflow
-
-1. **Seed**: A Document + LLMOutput is loaded.
-2. **Edit**: Clinician opens the LLMOutput in TipTap, edits text/sections, applies labels.
-3. **Submit**: Backend computes diffs (token + structural), stores immutable record.
-4. **Review/Diff**: Diff viewer shows before/after changes.
-5. **Analytics**: Simple dashboard of change rates + label frequencies.
-6. **Export**: Generate a zip containing JSONL files of documents, outputs, edits, labels, and diffs.
-
----
-
-## 6. Endpoints
-
-* `GET /outputs/:id` → view output snapshot.
-* `POST /edits` → create draft edit.
-* `PUT /edits/:id` → save draft changes.
-* `POST /edits/:id/submit` → finalize, compute diffs.
-* `GET /edits/:id/diff` → return/render diff.
-* `GET /analytics/basic` → JSON for dashboard.
-* `POST /exports` → create export bundle.
-* `GET /exports/:id` → download export.
-
----
-
-## 7. Diffing
-
-* **Text diff**: tokenized diff with insert/delete/replace ops.
-* **Structural diff**: JSON node add/remove/replace/move with JSON pointers.
-* Both are stored in `Edit.diff_text_json` and `Edit.diff_struct_json`.
-
----
-
-## 8. Analytics (MVP)
-
-* Change rate per section.
-* Net length delta.
-* Most frequent labels.
-* Submission counts per clinician.
-
----
-
-## 9. Export Format
-
+### Frontend Structure
 ```
-manifest.json           # version, filters, timestamp, app_commit
-documents.jsonl         # {doc_id, source, raw_json}
-outputs.jsonl           # {output_id, doc_id, model, output_json, created_at}
-edits.jsonl             # {edit_id, output_id, clinician_hash, edited_json,
-                        #  diff_text_json, diff_struct_json, status}
-labels.jsonl            # {edit_id, label_key, value}
-README.txt
+frontend/
+├── src/
+│   ├── components/
+│   │   ├── panels/
+│   │   │   ├── ReviewsPanel.tsx    # Review tracking interface
+│   │   │   ├── AnalyticsPanel.tsx  # Research analytics
+│   │   │   ├── ProfilePanel.tsx    # User profile
+│   │   │   └── SettingsPanel.tsx   # App settings
+│   │   ├── layout/
+│   │   │   └── MainPanel.tsx       # Main dashboard layout
+│   │   └── tiptap-templates/       # Editor components
+│   └── pages/
+│       ├── LandingPage.tsx         # Research tool introduction
+│       └── AppLayout.tsx           # Application shell
 ```
 
-* Clinician IDs are hashed/salted.
-* PHI should be stripped from raw documents before ingestion.
+### Key Components
+
+* **Reviews Panel**: Track LLM response reviews with edit percentages
+* **Analytics Panel**: Visualize common edit patterns and model performance
+* **TipTap Editor**: Review and edit ACT formulations and clinical assessments
+* **Dashboard**: Research metrics and quick actions
 
 ---
 
-## 10. Installation
+## 5. Research Workflow
+
+1. **LLM Generation**: AI generates clinical assessment (e.g., ACT formulation)
+2. **Clinical Review**: Clinician reviews in TipTap editor
+3. **Edit & Annotate**: Make corrections, add missing elements
+4. **Track Changes**: System captures diff between original and edited
+5. **Pattern Analysis**: Aggregate data shows common AI mistakes
+6. **Export Dataset**: Research data for improving models (coming soon)
+
+---
+
+## 6. Installation
 
 ### Prerequisites
 
-* Python 3.11+
-* Postgres DB (Neon recommended)
-* Node/npm (for TipTap assets)
-* Redis (optional, for background tasks)
+* Node.js 18+ (for compatibility, though we use Bun)
+* Bun 1.0+
+* Python 3.11+ (for backend)
+* UV package manager (for Python)
 
-### Setup
+### Frontend Setup
 
 ```bash
-git clone https://github.com/oceanheart-ai/watson
-cd watson
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+cd frontend
+bun install
+bun run dev          # Start Vite dev server on port 5173
+```
 
-# env vars
-export DATABASE_URL=postgresql://user:pass@host/db
-export PASSPORT_JWKS_URL=https://passport.oceanheart.ai/.well-known/jwks.json
+### Backend Setup (In Progress)
 
+```bash
+cd backend
+uv venv
+source .venv/bin/activate
+uv pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
 ```
 
-Frontend assets (TipTap) load via npm in `static/`.
+---
+
+## 7. Development
+
+### Frontend Commands
+
+```bash
+bun run dev          # Start development server
+bun run build        # Build for production
+bun run preview      # Preview production build
+bun run typecheck    # Run TypeScript type checking
+bun test            # Run tests
+```
+
+### Code Style
+
+* TypeScript with strict mode enabled
+* React functional components with hooks
+* Tailwind CSS for styling
+* Component files use .tsx extension
+* Follow existing monochrome design patterns
 
 ---
 
-## 11. Django Admin
+## 8. Demo Content
 
-* Manage Labels taxonomy.
-* Review Edits inline with LLMOutputs.
-* Diff preview widget in `EditAdmin`.
-* Bulk export selected edits.
+The application includes demo data showing:
 
----
-
-## 12. Roadmap
-
-* **v0**: Review → Edit/Label → Submit → Diff → Analytics → Export.
-* **v1**: Per-section editing; richer analytics; taxonomy versioning.
-* **v2**: Multi-reviewer workflows, assignments, collaborative editing.
+* **ACT Case Formulation** example in the editor
+* **Mock review data** showing different edit percentages
+* **Analytics patterns** demonstrating common LLM issues:
+  - Missing safety planning (68.5% of edits)
+  - Lacking cultural factors (56.7% of edits)
+  - Incorrect clinical terminology (50.4% of edits)
 
 ---
 
-## 13. License
+## 9. Architecture Decisions
 
-MIT License © 2025 Oceanheart.ai / Rick “Kai” Hallett.
+### Why React instead of HTMX?
+
+While the original spec called for HTMX, the current implementation uses React because:
+- **Rich editor requirements**: TipTap integration is more mature in React
+- **Complex UI interactions**: Analytics dashboards benefit from client-side state
+- **Developer velocity**: Team expertise and component ecosystem
+- **Future features**: Real-time collaboration easier with SPA architecture
+
+### Migration Path
+
+Future versions may explore:
+- Hybrid approach (HTMX for simple pages, React for complex features)
+- Server-side rendering with Next.js
+- Progressive enhancement strategy
+
+---
+
+## 10. Roadmap
+
+### Phase 1 (Current)
+- ✅ Research-focused UI redesign
+- ✅ Reviews and Analytics panels
+- ✅ ACT formulation examples
+- ✅ Demo data for research patterns
+
+### Phase 2 (Next)
+- [ ] Backend API implementation
+- [ ] Real data persistence
+- [ ] Authentication integration
+- [ ] Diff calculation engine
+
+### Phase 3 (Future)
+- [ ] Dataset export functionality
+- [ ] AI pattern analysis
+- [ ] Multi-model comparison
+- [ ] Research collaboration features
+
+---
+
+## 11. Contributing
+
+This is a research prototype. Contributions should focus on:
+- Improving data collection capabilities
+- Enhancing diff analysis accuracy
+- Adding clinical assessment templates
+- Improving research analytics
+
+Please maintain the monochrome design system and research-focused purpose.
+
+---
+
+## 12. License
+
+MIT License © 2025 Oceanheart.ai / Rick "Kai" Hallett.
 See LICENSE for details.
 
 ---
 
-## 14. Contact
+## 13. Contact
 
 * Website: [www.oceanheart.ai](https://www.oceanheart.ai)
-* Lead developer: **Rick “Kai” Hallett**
+* Lead developer: **Rick "Kai" Hallett**
 * Email: [hello@oceanheart.ai](mailto:hello@oceanheart.ai)
 
 ---
 
-Would you like me to also generate a **matching portfolio carousel card** (like I did for Preflight) with title/description/tech for Watson?
+## Notes
 
-
-## Setup
-
-### Python (UV)
-```bash
-uv venv
-source .venv/bin/activate  # or .venv\Scripts\activate on Windows
-```
-
-### TypeScript/JavaScript (Bun)
-```bash
-bun install
-bun run dev
-```
-
-### Ruby
-```bash
-bundle install
-```
-
-## Development
-
-[Add development instructions here]
-
-## Contributing
-
-[Add contributing guidelines here]
+This tool is for research purposes only. It is not intended for clinical use or patient care. All demo content is fictional and for illustration purposes only.
