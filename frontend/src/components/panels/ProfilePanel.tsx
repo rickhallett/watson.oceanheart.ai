@@ -1,6 +1,5 @@
 import React from 'react';
 import { User, Mail, Calendar, LogOut, Shield, Award, Activity, Edit, Settings } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { CompactCard, CompactCardGrid } from '@/components/CompactCard';
 import { MonochromeButton } from '@/components/MonochromeButton';
 import { SkewedBackground } from '@/components/SkewedBackground';
@@ -13,53 +12,22 @@ export function ProfilePanel() {
     window.location.href = '/';
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
-  };
-
   return (
-    <motion.div 
-      className="relative"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
+    <div className="relative">
       {/* Background effect */}
       <SkewedBackground opacity={0.02} />
       
       <div className="relative z-10 max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
-        <motion.h2 
-          className="text-3xl font-bold text-zinc-50 mb-8"
-          variants={itemVariants}
-        >
+        <h2 className="text-3xl font-bold text-zinc-50 mb-8">
           Profile
-        </motion.h2>
+        </h2>
         
         {/* Profile Card */}
-        <motion.div 
-          className="glass-card p-6 mb-6"
-          variants={itemVariants}
-          whileHover={{ scale: 1.01 }}
-        >
+        <div className="glass-card p-6 mb-6">
           <div className="flex items-center mb-6">
-            <motion.div 
-              className="w-20 h-20 bg-zinc-800 border border-zinc-700 rounded-full flex items-center justify-center text-zinc-100 text-2xl font-bold"
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
+            <div className="w-20 h-20 bg-zinc-800 border border-zinc-700 rounded-full flex items-center justify-center text-zinc-100 text-2xl font-bold">
               JD
-            </motion.div>
+            </div>
             <div className="ml-6">
               <h3 className="text-xl font-semibold text-zinc-50">Dr. John Doe</h3>
               <p className="text-zinc-400">Senior Clinician</p>
@@ -93,13 +61,10 @@ export function ProfilePanel() {
               <span>Member since: January 2024</span>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Stats Grid using CompactCard */}
-        <motion.div 
-          className="mb-6"
-          variants={itemVariants}
-        >
+        <div className="mb-6">
           <CompactCardGrid columns={3}>
             <CompactCard
               title="Documents Reviewed"
@@ -125,13 +90,10 @@ export function ProfilePanel() {
               status="success"
             />
           </CompactCardGrid>
-        </motion.div>
+        </div>
 
         {/* Account Settings */}
-        <motion.div 
-          className="glass-card p-6 mb-6"
-          variants={itemVariants}
-        >
+        <div className="glass-card p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-zinc-50">
               Account Settings
@@ -144,13 +106,10 @@ export function ProfilePanel() {
           <MonochromeButton variant="primary" size="md">
             Go to Settings
           </MonochromeButton>
-        </motion.div>
+        </div>
 
         {/* Security Section */}
-        <motion.div 
-          className="glass-card p-6 border-l-2 border-l-red-500"
-          variants={itemVariants}
-        >
+        <div className="glass-card p-6 border-l-2 border-l-red-500">
           <h3 className="text-lg font-semibold text-zinc-50 mb-4">Security</h3>
           <p className="text-zinc-400 mb-6">
             Your session is managed through secure authentication. Sign out to end your current session.
@@ -164,8 +123,8 @@ export function ProfilePanel() {
           >
             Sign Out
           </MonochromeButton>
-        </motion.div>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

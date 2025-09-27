@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Bell, Moon, Globe, Shield, Save, Check, Database, Trash2 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { MonochromeButton } from '@/components/MonochromeButton';
 import { SkewedBackground } from '@/components/SkewedBackground';
 
@@ -18,45 +17,18 @@ export function SettingsPanel() {
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
-  };
-
   return (
-    <motion.div 
-      className="relative"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
+    <div className="relative">
       {/* Background effect */}
       <SkewedBackground opacity={0.02} />
       
       <div className="relative z-10 max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
-        <motion.h2 
-          className="text-3xl font-bold text-zinc-50 mb-8"
-          variants={itemVariants}
-        >
+        <h2 className="text-3xl font-bold text-zinc-50 mb-8">
           Settings
-        </motion.h2>
+        </h2>
         
         {/* Preferences */}
-        <motion.div 
-          className="glass-card p-6 mb-6"
-          variants={itemVariants}
-          whileHover={{ scale: 1.01 }}
-        >
+        <div className="glass-card p-6 mb-6">
           <h3 className="text-lg font-semibold text-zinc-50 mb-6">
             Preferences
           </h3>
@@ -71,23 +43,19 @@ export function SettingsPanel() {
                   <p className="text-sm text-zinc-400">Receive email updates about your activity</p>
                 </div>
               </div>
-              <motion.button
-                whileTap={{ scale: 0.95 }}
+              <button
                 onClick={() => setNotifications(!notifications)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                   notifications ? 'bg-zinc-700' : 'bg-zinc-800'
                 }`}
               >
                 <span className="sr-only">Enable notifications</span>
-                <motion.span
-                  layout
-                  className={`inline-block h-4 w-4 rounded-full shadow-lg transition-colors ${
-                    notifications ? 'bg-zinc-300' : 'bg-zinc-500'
+                <span
+                  className={`inline-block h-4 w-4 rounded-full shadow-lg transition-all ${
+                    notifications ? 'bg-zinc-300 translate-x-6' : 'bg-zinc-500 translate-x-1'
                   }`}
-                  animate={{ x: notifications ? 24 : 4 }}
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
                 />
-              </motion.button>
+              </button>
             </div>
 
             {/* Dark Mode */}
@@ -99,23 +67,19 @@ export function SettingsPanel() {
                   <p className="text-sm text-zinc-400">Use dark theme across the application</p>
                 </div>
               </div>
-              <motion.button
-                whileTap={{ scale: 0.95 }}
+              <button
                 onClick={() => setDarkMode(!darkMode)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                   darkMode ? 'bg-zinc-700' : 'bg-zinc-800'
                 }`}
               >
                 <span className="sr-only">Enable dark mode</span>
-                <motion.span
-                  layout
-                  className={`inline-block h-4 w-4 rounded-full shadow-lg transition-colors ${
-                    darkMode ? 'bg-zinc-300' : 'bg-zinc-500'
+                <span
+                  className={`inline-block h-4 w-4 rounded-full shadow-lg transition-all ${
+                    darkMode ? 'bg-zinc-300 translate-x-6' : 'bg-zinc-500 translate-x-1'
                   }`}
-                  animate={{ x: darkMode ? 24 : 4 }}
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
                 />
-              </motion.button>
+              </button>
             </div>
 
             {/* Language */}
@@ -139,14 +103,10 @@ export function SettingsPanel() {
               </select>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Security */}
-        <motion.div 
-          className="glass-card p-6 mb-6"
-          variants={itemVariants}
-          whileHover={{ scale: 1.01 }}
-        >
+        <div className="glass-card p-6 mb-6">
           <h3 className="text-lg font-semibold text-zinc-50 mb-6">
             Security
           </h3>
@@ -160,33 +120,25 @@ export function SettingsPanel() {
                   <p className="text-sm text-zinc-400">Add an extra layer of security to your account</p>
                 </div>
               </div>
-              <motion.button
-                whileTap={{ scale: 0.95 }}
+              <button
                 onClick={() => setTwoFactor(!twoFactor)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                   twoFactor ? 'bg-zinc-700' : 'bg-zinc-800'
                 }`}
               >
                 <span className="sr-only">Enable two-factor authentication</span>
-                <motion.span
-                  layout
-                  className={`inline-block h-4 w-4 rounded-full shadow-lg transition-colors ${
-                    twoFactor ? 'bg-zinc-300' : 'bg-zinc-500'
+                <span
+                  className={`inline-block h-4 w-4 rounded-full shadow-lg transition-all ${
+                    twoFactor ? 'bg-zinc-300 translate-x-6' : 'bg-zinc-500 translate-x-1'
                   }`}
-                  animate={{ x: twoFactor ? 24 : 4 }}
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
                 />
-              </motion.button>
+              </button>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Data & Privacy */}
-        <motion.div 
-          className="glass-card p-6 mb-8"
-          variants={itemVariants}
-          whileHover={{ scale: 1.01 }}
-        >
+        <div className="glass-card p-6 mb-8">
           <h3 className="text-lg font-semibold text-zinc-50 mb-4">
             Data & Privacy
           </h3>
@@ -210,37 +162,27 @@ export function SettingsPanel() {
               Delete Account
             </MonochromeButton>
           </div>
-        </motion.div>
+        </div>
 
         {/* Save Button */}
-        <motion.div 
-          className="flex justify-end"
-          variants={itemVariants}
-        >
-          <AnimatePresence mode="wait">
-            {saved ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                className="flex items-center gap-2 px-6 py-3 bg-zinc-800 border border-zinc-700 text-zinc-100 rounded-md"
-              >
-                <Check className="w-5 h-5" />
-                <span>Settings Saved!</span>
-              </motion.div>
-            ) : (
-              <MonochromeButton
-                onClick={handleSaveSettings}
-                variant="primary"
-                size="md"
-                icon={<Save className="w-4 h-4" />}
-              >
-                Save Settings
-              </MonochromeButton>
-            )}
-          </AnimatePresence>
-        </motion.div>
+        <div className="flex justify-end">
+          {saved ? (
+            <div className="flex items-center gap-2 px-6 py-3 bg-zinc-800 border border-zinc-700 text-zinc-100 rounded-md">
+              <Check className="w-5 h-5" />
+              <span>Settings Saved!</span>
+            </div>
+          ) : (
+            <MonochromeButton
+              onClick={handleSaveSettings}
+              variant="primary"
+              size="md"
+              icon={<Save className="w-4 h-4" />}
+            >
+              Save Settings
+            </MonochromeButton>
+          )}
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
