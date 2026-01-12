@@ -4,6 +4,12 @@ from django.db import connection
 from django.conf import settings
 import time
 
+from rest_framework import viewsets, filters
+from rest_framework.permissions import AllowAny
+
+from .models import Document
+from .serializers import DocumentSerializer, DocumentListSerializer
+
 
 def health_check(request):
     """Health check endpoint for monitoring and load balancers"""
@@ -66,4 +72,20 @@ def readiness_check(request):
     return JsonResponse(readiness_data, status=status_code)
 
 
-# Create your views here.
+class DocumentViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for Document model.
+
+    Provides CRUD operations for clinical documents.
+    """
+    queryset = Document.objects.all()
+    permission_classes = [AllowAny]  # TODO: Add proper auth
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['title', 'source', 'document_type']
+    ordering_fields = ['created_at', 'updated_at', 'title']
+    ordering = ['-created_at']
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return DocumentListSerializer
+        return DocumentSerializer

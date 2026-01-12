@@ -15,11 +15,23 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from core.views import health_check, readiness_check
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+
+from core.views import health_check, readiness_check, DocumentViewSet
+from reviews.views import LLMOutputViewSet, LabelViewSet, EditViewSet, EditLabelViewSet
+
+# Create API router
+router = DefaultRouter()
+router.register(r'documents', DocumentViewSet, basename='document')
+router.register(r'outputs', LLMOutputViewSet, basename='output')
+router.register(r'labels', LabelViewSet, basename='label')
+router.register(r'edits', EditViewSet, basename='edit')
+router.register(r'edit-labels', EditLabelViewSet, basename='edit-label')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('health/', health_check, name='health_check'),
     path('ready/', readiness_check, name='readiness_check'),
+    path('api/', include(router.urls)),
 ]
