@@ -1,0 +1,18 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:3001",
+      "localStorage": [
+        {
+          "name": "watson_auth_token",
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0LXVzZXItdXVpZCIsImVtYWlsIjoidGVzdC1jbGluaWNpYW5Ad2F0c29uLm9jZWFuaGVhcnQuYWkiLCJuYW1lIjoiRHIuIFRlc3QgQ2xpbmljaWFuIiwicm9sZSI6ImNsaW5pY2lhbiIsInBlcm1pc3Npb25zIjpbInJlYWQ6ZG9jdW1lbnRzIiwid3JpdGU6ZWRpdHMiLCJyZWFkOmFuYWx5dGljcyJdLCJpc3MiOiJ3YXRzb24tdGVzdC1hdXRoIiwiYXVkIjoid2F0c29uLm9jZWFuaGVhcnQuYWkiLCJpYXQiOjE3NjgzMTA2NTAsImV4cCI6MTc2ODMxNDI1MH0.9j1yBocIge0XqDDaThNwiWjE8EFVbEpaUXm1kQDpLCQ"
+        },
+        {
+          "name": "watson_user",
+          "value": "{\"sub\":\"test-user-uuid\",\"email\":\"test-clinician@watson.oceanheart.ai\",\"name\":\"Dr. Test Clinician\",\"role\":\"clinician\",\"permissions\":[\"read:documents\",\"write:edits\",\"read:analytics\"]}"
+        }
+      ]
+    }
+  ]
+}

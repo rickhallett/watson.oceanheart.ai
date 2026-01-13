@@ -1,0 +1,8 @@
+# Playwright
+.auth/state.json
+.auth/unauthenticated.json
+test-results/
+playwright-report/
+
+# Keep the .auth directory structure
+!.auth/.gitkeep

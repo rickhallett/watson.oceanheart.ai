@@ -1,0 +1,322 @@
+name: Production Readiness Tests
+
+on:
+  push:
+    branches: [main, staging]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      run_load_tests:
+        description: 'Run load tests'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: watson_test
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: watson_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgres://watson_test:test_password@localhost:5432/watson_test
+      REDIS_URL: redis://localhost:6379
+      DJANGO_SETTINGS_MODULE: watson.settings.test
+      SECRET_KEY: test-secret-key-for-ci
+      DEBUG: false
+      API_URL: http://localhost:8001
+      APP_URL: http://localhost:3001
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - name: Install Node dependencies
+        run: bun install
+
+      - name: Install Playwright browsers
+        run: bunx playwright install --with-deps chromium
+
+      - name: Run database migrations
+        run: |
+          cd backend
+          python manage.py migrate --noinput
+
+      - name: Start backend server
+        run: |
+          cd backend
+          python manage.py runserver 8001 &
+          sleep 5
+
+      - name: Start frontend server
+        run: |
+          bun run dev &
+          sleep 10
+
+      - name: Verify servers are running
+        run: |
+          curl -f http://localhost:8001/health/ || exit 1
+          curl -f http://localhost:3001/ || exit 1
+
+      - name: Run API Integration Tests
+        run: bun run test:e2e:api
+
+      - name: Run Authentication Tests
+        run: bun run test:e2e:auth
+
+      - name: Run Workflow Tests
+        run: bun run test:e2e:workflow
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: integration-test-results
+          path: |
+            e2e/test-results/
+            e2e/playwright-report/
+
+  error-handling-tests:
+    name: Error Handling Tests
+    runs-on: ubuntu-latest
+    needs: integration-tests
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: watson_test
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: watson_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgres://watson_test:test_password@localhost:5432/watson_test
+      DJANGO_SETTINGS_MODULE: watson.settings.test
+      SECRET_KEY: test-secret-key-for-ci
+      API_URL: http://localhost:8001
+      APP_URL: http://localhost:3001
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install -r backend/requirements.txt
+          bun install
+          bunx playwright install --with-deps chromium
+
+      - name: Start servers
+        run: |
+          cd backend && python manage.py migrate --noinput && python manage.py runserver 8001 &
+          bun run dev &
+          sleep 15
+
+      - name: Run Error Handling Tests
+        run: bun run test:e2e:errors
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: error-handling-results
+          path: e2e/test-results/
+
+  security-tests:
+    name: Security Tests
+    runs-on: ubuntu-latest
+    needs: integration-tests
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: watson_test
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: watson_test
+        ports:
+          - 5432:5432
+
+    env:
+      DATABASE_URL: postgres://watson_test:test_password@localhost:5432/watson_test
+      DJANGO_SETTINGS_MODULE: watson.settings.test
+      SECRET_KEY: test-secret-key-for-ci
+      API_URL: http://localhost:8001
+      APP_URL: http://localhost:3001
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install -r backend/requirements.txt
+          bun install
+          bunx playwright install --with-deps chromium
+
+      - name: Start servers
+        run: |
+          cd backend && python manage.py migrate --noinput && python manage.py runserver 8001 &
+          bun run dev &
+          sleep 15
+
+      - name: Run Security Tests
+        run: bun run test:e2e:security
+
+      - name: Upload security test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-test-results
+          path: e2e/test-results/
+
+  load-tests:
+    name: Load Tests
+    runs-on: ubuntu-latest
+    needs: [integration-tests, security-tests]
+    if: github.event.inputs.run_load_tests == 'true' || github.ref == 'refs/heads/main'
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: watson_test
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: watson_test
+        ports:
+          - 5432:5432
+
+    env:
+      DATABASE_URL: postgres://watson_test:test_password@localhost:5432/watson_test
+      DJANGO_SETTINGS_MODULE: watson.settings.test
+      SECRET_KEY: test-secret-key-for-ci
+      API_URL: http://localhost:8001
+      APP_URL: http://localhost:3001
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install -r backend/requirements.txt
+          bun install
+          bunx playwright install --with-deps chromium
+
+      - name: Start servers
+        run: |
+          cd backend && python manage.py migrate --noinput && python manage.py runserver 8001 &
+          bun run dev &
+          sleep 15
+
+      - name: Run Load Tests
+        run: bun run test:e2e:load
+        timeout-minutes: 10
+
+      - name: Upload load test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: load-test-results
+          path: e2e/test-results/
+
+  report:
+    name: Generate Report
+    runs-on: ubuntu-latest
+    needs: [integration-tests, error-handling-tests, security-tests]
+    if: always()
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-results
+
+      - name: Generate summary
+        run: |
+          echo "# Production Readiness Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Test Suites" >> $GITHUB_STEP_SUMMARY
+          echo "| Suite | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Integration | ${{ needs.integration-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Error Handling | ${{ needs.error-handling-tests.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security | ${{ needs.security-tests.result }} |" >> $GITHUB_STEP_SUMMARY
