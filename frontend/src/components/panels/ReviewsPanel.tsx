@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CompactCard, CompactCardGrid } from '@/components/CompactCard';
 import { MonochromeButton } from '@/components/MonochromeButton';
-import { FileText, Clock, CheckCircle, AlertCircle, Edit3, GitCompare, Calendar } from 'lucide-react';
+import { FileText, Clock, CheckCircle, AlertCircle, Edit3, GitCompare, Calendar, Loader2 } from 'lucide-react';
+import { fetchEdits, type Edit, handleApiError } from '@/utils/api';
 
 interface Review {
   id: string;
@@ -15,64 +16,66 @@ interface Review {
   clinicianNotes?: string;
 }
 
-const mockReviews: Review[] = [
-  {
-    id: 'R-2024-001',
-    clientId: '#2024-1127',
-    dateSubmitted: '2024-01-27 14:30',
-    llmVersion: 'GPT-4 Turbo',
-    status: 'completed',
-    editPercentage: 28.5,
-    keyChanges: ['Added safety planning', 'Refined diagnosis criteria', 'Expanded treatment goals'],
-    clinicianNotes: 'LLM missed important trauma history context'
-  },
-  {
-    id: 'R-2024-002',
-    clientId: '#2024-1128',
-    dateSubmitted: '2024-01-27 15:45',
-    llmVersion: 'Claude 3 Opus',
-    status: 'completed',
-    editPercentage: 15.2,
-    keyChanges: ['Corrected medication names', 'Added cultural considerations'],
-    clinicianNotes: 'Generally accurate, minor terminology adjustments'
-  },
-  {
-    id: 'R-2024-003',
-    clientId: '#2024-1129',
-    dateSubmitted: '2024-01-27 16:20',
-    llmVersion: 'GPT-4 Turbo',
-    status: 'in-review',
-    editPercentage: 42.1,
-    keyChanges: ['Currently being edited'],
-  },
-  {
-    id: 'R-2024-004',
-    clientId: '#2024-1130',
-    dateSubmitted: '2024-01-27 17:00',
-    llmVersion: 'Claude 3 Opus',
-    status: 'pending',
-    editPercentage: 0,
-    keyChanges: [],
-  },
-  {
-    id: 'R-2024-005',
-    clientId: '#2024-1131',
-    dateSubmitted: '2024-01-27 09:15',
-    llmVersion: 'GPT-4 Turbo',
-    status: 'completed',
-    editPercentage: 35.8,
-    keyChanges: ['Restructured formulation', 'Added risk assessment', 'Modified intervention approach'],
-    clinicianNotes: 'Significant improvements needed in ACT conceptualization'
+// Map API Edit status to Review status
+function mapStatus(apiStatus: Edit['status']): Review['status'] {
+  switch (apiStatus) {
+    case 'draft':
+    case 'in_review':
+      return 'pending';
+    case 'submitted':
+      return 'in-review';
+    case 'approved':
+    case 'rejected':
+      return 'completed';
+    default:
+      return 'pending';
   }
-];
+}
+
+// Transform API Edit to frontend Review
+function transformEdit(edit: Edit): Review {
+  return {
+    id: `R-${edit.id.slice(0, 8)}`,
+    clientId: edit.llm_output?.document_id ? `#${edit.llm_output.document_id.slice(0, 8)}` : 'N/A',
+    dateSubmitted: new Date(edit.created_at).toLocaleString(),
+    llmVersion: edit.llm_output?.model_name || 'Unknown',
+    status: mapStatus(edit.status),
+    editPercentage: edit.diff_stats?.change_rate || 0,
+    keyChanges: edit.structural_diff?.map((d: Record<string, unknown>) =>
+      `${d.operation}: ${d.path}` || 'Modified content'
+    ) || [],
+    clinicianNotes: edit.editor_notes || undefined,
+  };
+}
 
 export function ReviewsPanel() {
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
   const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'in-review' | 'completed'>('all');
 
-  const filteredReviews = filterStatus === 'all' 
-    ? mockReviews 
-    : mockReviews.filter(r => r.status === filterStatus);
+  // Fetch edits from API
+  useEffect(() => {
+    async function loadEdits() {
+      try {
+        setLoading(true);
+        setError(null);
+        const edits = await fetchEdits();
+        const transformedReviews = edits.map(transformEdit);
+        setReviews(transformedReviews);
+      } catch (err) {
+        setError(handleApiError(err));
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadEdits();
+  }, []);
+
+  const filteredReviews = filterStatus === 'all'
+    ? reviews
+    : reviews.filter(r => r.status === filterStatus);
 
   const getStatusIcon = (status: Review['status']) => {
     switch (status) {
@@ -108,55 +111,98 @@ export function ReviewsPanel() {
         </p>
       </div>
 
+      {/* Loading State */}
+      {loading && (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 text-zinc-400 animate-spin" />
+          <span className="ml-3 text-zinc-400">Loading reviews...</span>
+        </div>
+      )}
+
+      {/* Error State */}
+      {error && !loading && (
+        <div className="glass-card p-6 border-red-500/50">
+          <div className="flex items-center gap-3 text-red-400">
+            <AlertCircle className="w-5 h-5" />
+            <span>Error loading reviews: {error}</span>
+          </div>
+          <MonochromeButton
+            variant="ghost"
+            size="sm"
+            className="mt-4"
+            onClick={() => window.location.reload()}
+          >
+            Retry
+          </MonochromeButton>
+        </div>
+      )}
+
       {/* Stats Overview */}
-      <CompactCardGrid columns={4}>
-        <CompactCard
-          title="Total Reviews"
-          metric={mockReviews.length}
-          description="This week"
-          icon={<FileText className="w-4 h-4" />}
-          status="default"
-        />
-        <CompactCard
-          title="Avg Edit Rate"
-          metric="27.3%"
-          description="Content modified"
-          icon={<GitCompare className="w-4 h-4" />}
-          status="info"
-        />
-        <CompactCard
-          title="Pending Review"
-          metric={mockReviews.filter(r => r.status === 'pending').length}
-          description="Awaiting review"
-          icon={<Clock className="w-4 h-4" />}
-          status="warning"
-        />
-        <CompactCard
-          title="Completed Today"
-          metric={mockReviews.filter(r => r.status === 'completed').length}
-          description="Reviews finished"
-          icon={<CheckCircle className="w-4 h-4" />}
-          status="success"
-        />
-      </CompactCardGrid>
+      {!loading && !error && (
+        <CompactCardGrid columns={4}>
+          <CompactCard
+            title="Total Reviews"
+            metric={reviews.length}
+            description="All time"
+            icon={<FileText className="w-4 h-4" />}
+            status="default"
+          />
+          <CompactCard
+            title="Avg Edit Rate"
+            metric={`${reviews.length > 0 ? (reviews.reduce((acc, r) => acc + r.editPercentage, 0) / reviews.length).toFixed(1) : '0'}%`}
+            description="Content modified"
+            icon={<GitCompare className="w-4 h-4" />}
+            status="default"
+          />
+          <CompactCard
+            title="Pending Review"
+            metric={reviews.filter(r => r.status === 'pending').length}
+            description="Awaiting review"
+            icon={<Clock className="w-4 h-4" />}
+            status="warning"
+          />
+          <CompactCard
+            title="Completed"
+            metric={reviews.filter(r => r.status === 'completed').length}
+            description="Reviews finished"
+            icon={<CheckCircle className="w-4 h-4" />}
+            status="success"
+          />
+        </CompactCardGrid>
+      )}
 
       {/* Filter Tabs */}
-      <div className="mt-8 mb-6">
-        <div className="flex gap-2">
-          {(['all', 'pending', 'in-review', 'completed'] as const).map((status) => (
-            <MonochromeButton
-              key={status}
-              variant={filterStatus === status ? 'primary' : 'ghost'}
-              size="sm"
-              onClick={() => setFilterStatus(status)}
-            >
-              {status === 'all' ? 'All Reviews' : status.charAt(0).toUpperCase() + status.slice(1).replace('-', ' ')}
-            </MonochromeButton>
-          ))}
+      {!loading && !error && (
+        <div className="mt-8 mb-6">
+          <div className="flex gap-2">
+            {(['all', 'pending', 'in-review', 'completed'] as const).map((status) => (
+              <MonochromeButton
+                key={status}
+                variant={filterStatus === status ? 'primary' : 'ghost'}
+                size="sm"
+                onClick={() => setFilterStatus(status)}
+              >
+                {status === 'all' ? 'All Reviews' : status.charAt(0).toUpperCase() + status.slice(1).replace('-', ' ')}
+              </MonochromeButton>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Empty State */}
+      {!loading && !error && reviews.length === 0 && (
+        <div className="glass-card p-12 text-center">
+          <FileText className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-zinc-300 mb-2">No reviews yet</h3>
+          <p className="text-zinc-500 mb-6">Start by creating your first LLM output review</p>
+          <MonochromeButton variant="primary" size="md">
+            Create Review
+          </MonochromeButton>
+        </div>
+      )}
 
       {/* Reviews Table */}
+      {!loading && !error && reviews.length > 0 && (
       <div className="glass-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -241,6 +287,7 @@ export function ReviewsPanel() {
           </table>
         </div>
       </div>
+      )}
 
       {/* Selected Review Details */}
       {selectedReview && (

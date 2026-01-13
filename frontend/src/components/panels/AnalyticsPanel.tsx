@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { CompactCard, CompactCardGrid } from '@/components/CompactCard';
 import { MonochromeButton } from '@/components/MonochromeButton';
-import { 
-  BarChart3, 
-  TrendingUp, 
-  Brain, 
-  FileText, 
-  Users, 
+import {
+  BarChart3,
+  TrendingUp,
+  Brain,
+  FileText,
+  Users,
   Clock,
   GitCompare,
   AlertTriangle,
   CheckCircle,
-  Info
+  Info,
+  Loader2
 } from 'lucide-react';
+import { fetchAnalytics, type AnalyticsData, handleApiError } from '@/utils/api';
 
 interface EditPattern {
   category: string;
@@ -23,44 +25,6 @@ interface EditPattern {
   examples: string[];
 }
 
-const editPatterns: EditPattern[] = [
-  {
-    category: 'Safety Planning',
-    frequency: 87,
-    percentage: 68.5,
-    trend: 'up',
-    examples: ['Missing crisis intervention', 'Incomplete risk assessment', 'No emergency contacts']
-  },
-  {
-    category: 'Cultural Factors',
-    frequency: 72,
-    percentage: 56.7,
-    trend: 'up',
-    examples: ['Lack of cultural context', 'Missing family dynamics', 'Absent spiritual considerations']
-  },
-  {
-    category: 'Clinical Terminology',
-    frequency: 64,
-    percentage: 50.4,
-    trend: 'stable',
-    examples: ['Incorrect DSM-5 criteria', 'Imprecise clinical language', 'Wrong medication names']
-  },
-  {
-    category: 'Treatment History',
-    frequency: 45,
-    percentage: 35.4,
-    trend: 'down',
-    examples: ['Missing prior interventions', 'Incomplete medication history', 'No previous diagnoses']
-  },
-  {
-    category: 'ACT Conceptualization',
-    frequency: 41,
-    percentage: 32.3,
-    trend: 'up',
-    examples: ['Values not clearly identified', 'Missing psychological flexibility assessment', 'Weak committed action plans']
-  }
-];
-
 interface ModelPerformance {
   model: string;
   totalReviews: number;
@@ -69,33 +33,58 @@ interface ModelPerformance {
   strengths: string[];
 }
 
-const modelPerformance: ModelPerformance[] = [
-  {
-    model: 'GPT-4 Turbo',
-    totalReviews: 89,
-    avgEditRate: 31.2,
-    commonIssues: ['Overgeneralization', 'Missing context', 'Weak safety planning'],
-    strengths: ['Good structure', 'Clear language', 'Comprehensive assessments']
-  },
-  {
-    model: 'Claude 3 Opus',
-    totalReviews: 67,
-    avgEditRate: 24.8,
-    commonIssues: ['Too verbose', 'Complex terminology', 'Limited cultural awareness'],
-    strengths: ['Detailed analysis', 'Strong theoretical grounding', 'Accurate diagnoses']
-  },
-  {
-    model: 'Gemini Pro',
-    totalReviews: 21,
-    avgEditRate: 38.5,
-    commonIssues: ['Inconsistent formatting', 'Missing key details', 'Weak formulations'],
-    strengths: ['Concise summaries', 'Good rapport notes', 'Clear goals']
-  }
-];
+// Transform API labels to edit patterns
+function transformLabelsToPatterns(labels: AnalyticsData['common_labels']): EditPattern[] {
+  return labels.map((label, index) => ({
+    category: label.label_name || 'Unknown',
+    frequency: label.count,
+    percentage: label.percentage,
+    trend: index < 2 ? 'up' : index > labels.length - 2 ? 'down' : 'stable',
+    examples: [],
+  }));
+}
+
+// Transform API model data to model performance
+function transformModelsToPerformance(models: AnalyticsData['edits_by_model']): ModelPerformance[] {
+  return models.map(model => ({
+    model: model.model_name,
+    totalReviews: model.count,
+    avgEditRate: model.avg_change_rate,
+    commonIssues: [],
+    strengths: [],
+  }));
+}
 
 export function AnalyticsPanel() {
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d'>('30d');
   const [selectedPattern, setSelectedPattern] = useState<EditPattern | null>(null);
+  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch analytics from API
+  useEffect(() => {
+    async function loadAnalytics() {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await fetchAnalytics(timeRange);
+        setAnalytics(data);
+      } catch (err) {
+        setError(handleApiError(err));
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadAnalytics();
+  }, [timeRange]);
+
+  // Transform API data to component formats
+  const editPatterns = analytics ? transformLabelsToPatterns(analytics.common_labels) : [];
+  const modelPerformance = analytics ? transformModelsToPerformance(analytics.edits_by_model) : [];
+  const criticalIssues = Object.entries(analytics?.edits_by_status || {})
+    .filter(([status]) => status === 'rejected')
+    .reduce((acc, [, count]) => acc + (count as number), 0);
 
   return (
     <div className="max-w-7xl mx-auto p-6">
@@ -123,41 +112,79 @@ export function AnalyticsPanel() {
         ))}
       </div>
 
+      {/* Loading State */}
+      {loading && (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 text-zinc-400 animate-spin" />
+          <span className="ml-3 text-zinc-400">Loading analytics...</span>
+        </div>
+      )}
+
+      {/* Error State */}
+      {error && !loading && (
+        <div className="glass-card p-6 border-red-500/50">
+          <div className="flex items-center gap-3 text-red-400">
+            <AlertTriangle className="w-5 h-5" />
+            <span>Error loading analytics: {error}</span>
+          </div>
+          <MonochromeButton
+            variant="ghost"
+            size="sm"
+            className="mt-4"
+            onClick={() => window.location.reload()}
+          >
+            Retry
+          </MonochromeButton>
+        </div>
+      )}
+
       {/* Key Metrics */}
-      <CompactCardGrid columns={4}>
-        <CompactCard
-          title="Total Assessments"
-          metric="156"
-          description={`${timeRange} period`}
-          icon={<FileText className="w-4 h-4" />}
-          status="default"
-        />
-        <CompactCard
-          title="Average Edit Rate"
-          metric="31.8%"
-          description="Content modified"
-          icon={<GitCompare className="w-4 h-4" />}
-          status="info"
-          trend="up"
-        />
-        <CompactCard
-          title="Critical Issues"
-          metric="23"
-          description="Safety concerns"
-          icon={<AlertTriangle className="w-4 h-4" />}
-          status="error"
-        />
-        <CompactCard
-          title="Pattern Detection"
-          metric="12"
-          description="New patterns found"
-          icon={<Brain className="w-4 h-4" />}
-          status="success"
-          trend="up"
-        />
-      </CompactCardGrid>
+      {!loading && !error && (
+        <CompactCardGrid columns={4}>
+          <CompactCard
+            title="Total Assessments"
+            metric={analytics?.total_edits.toString() || '0'}
+            description={`${timeRange} period`}
+            icon={<FileText className="w-4 h-4" />}
+            status="default"
+          />
+          <CompactCard
+            title="Average Edit Rate"
+            metric={`${analytics?.average_edit_rate || 0}%`}
+            description="Content modified"
+            icon={<GitCompare className="w-4 h-4" />}
+            status="default"
+            trend="up"
+          />
+          <CompactCard
+            title="Critical Issues"
+            metric={criticalIssues.toString()}
+            description="Rejected edits"
+            icon={<AlertTriangle className="w-4 h-4" />}
+            status="error"
+          />
+          <CompactCard
+            title="Pattern Detection"
+            metric={editPatterns.length.toString()}
+            description="Labels tracked"
+            icon={<Brain className="w-4 h-4" />}
+            status="success"
+            trend="up"
+          />
+        </CompactCardGrid>
+      )}
+
+      {/* Empty State */}
+      {!loading && !error && analytics?.total_edits === 0 && (
+        <div className="mt-8 glass-card p-12 text-center">
+          <BarChart3 className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-zinc-300 mb-2">No data yet</h3>
+          <p className="text-zinc-500">Analytics will appear here once reviews are created</p>
+        </div>
+      )}
 
       {/* Edit Patterns Analysis */}
+      {!loading && !error && editPatterns.length > 0 && (
       <div className="mt-8 glass-card p-6">
         <h2 className="text-xl font-semibold text-zinc-50 mb-4">
           Common Edit Patterns
@@ -206,6 +233,7 @@ export function AnalyticsPanel() {
           ))}
         </div>
       </div>
+      )}
 
       {/* Selected Pattern Details */}
       {selectedPattern && (
@@ -239,6 +267,7 @@ export function AnalyticsPanel() {
       )}
 
       {/* Model Performance Comparison */}
+      {!loading && !error && modelPerformance.length > 0 && (
       <div className="mt-8 glass-card p-6">
         <h2 className="text-xl font-semibold text-zinc-50 mb-4">
           LLM Model Performance
@@ -246,7 +275,7 @@ export function AnalyticsPanel() {
         <p className="text-sm text-zinc-400 mb-6">
           Comparative analysis of different language models
         </p>
-        
+
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -259,12 +288,6 @@ export function AnalyticsPanel() {
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-zinc-400 uppercase">
                   Avg Edit Rate
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-zinc-400 uppercase">
-                  Common Issues
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-zinc-400 uppercase">
-                  Strengths
                 </th>
               </tr>
             </thead>
@@ -280,7 +303,7 @@ export function AnalyticsPanel() {
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-2">
                       <div className="w-12 bg-zinc-800 rounded-full h-2">
-                        <div 
+                        <div
                           className="h-2 bg-blue-500 rounded-full"
                           style={{ width: `${model.avgEditRate}%` }}
                         />
@@ -288,20 +311,16 @@ export function AnalyticsPanel() {
                       <span className="text-sm text-zinc-400">{model.avgEditRate}%</span>
                     </div>
                   </td>
-                  <td className="px-4 py-4 text-xs text-red-400">
-                    {model.commonIssues.join(', ')}
-                  </td>
-                  <td className="px-4 py-4 text-xs text-green-400">
-                    {model.strengths.join(', ')}
-                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
+      )}
 
       {/* Export Section */}
+      {!loading && !error && (
       <div className="mt-8 glass-card p-6">
         <h2 className="text-xl font-semibold text-zinc-50 mb-4">
           Export Research Data
@@ -324,6 +343,7 @@ export function AnalyticsPanel() {
           Note: Pattern analysis by AI is coming soon. Current data represents manual clinical review findings.
         </p>
       </div>
+      )}
     </div>
   );
 }

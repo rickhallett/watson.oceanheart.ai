@@ -13,6 +13,12 @@ import {
   getUserFromToken,
   clearAuthData,
 } from '../utils/auth';
+import {
+  getPassportToken,
+  redirectToLogin,
+  redirectToLogout,
+  deleteCookie,
+} from '../config/auth';
 
 // Initial authentication state
 const initialAuthState: AuthState = {
@@ -95,8 +101,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Initialize authentication state on mount
   useEffect(() => {
     const initializeAuth = () => {
+      // First check for passport token (from redirect or cookie)
+      const passportToken = getPassportToken();
+      if (passportToken && isValidToken(passportToken)) {
+        const user = getUserFromToken(passportToken);
+        if (user) {
+          // Store the token for future use
+          storeToken(passportToken);
+          dispatch({ type: 'AUTH_INIT', payload: { user, token: passportToken } });
+          return;
+        }
+      }
+
+      // Fall back to stored token
       const token = getStoredToken();
-      
       if (token && isValidToken(token)) {
         const user = getUserFromToken(token);
         if (user) {
@@ -104,12 +122,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
           return;
         }
       }
-      
+
       // Clear invalid tokens
       if (token) {
         removeToken();
       }
-      
+
       dispatch({ type: 'AUTH_INIT', payload: { user: null, token: null } });
     };
 
@@ -134,9 +152,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   // Logout function
-  const logout = () => {
+  const logout = (usePassportLogout = true) => {
     clearAuthData();
+    deleteCookie('passport_token');
     dispatch({ type: 'LOGOUT' });
+
+    // Optionally redirect to passport logout
+    if (usePassportLogout) {
+      redirectToLogout();
+    }
   };
 
   // Update user function
