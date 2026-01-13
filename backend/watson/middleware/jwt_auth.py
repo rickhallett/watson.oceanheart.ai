@@ -30,6 +30,10 @@ PASSPORT_AUDIENCE = os.environ.get('PASSPORT_AUDIENCE', 'watson.oceanheart.ai')
 # For development/testing - can be set to skip remote JWKS fetch
 JWT_PUBLIC_KEY = os.environ.get('JWT_PUBLIC_KEY', None)
 
+# Test mode configuration - enables HS256 with shared secret
+JWT_TEST_MODE = os.environ.get('JWT_TEST_MODE', 'false').lower() == 'true'
+JWT_TEST_SECRET = os.environ.get('JWT_TEST_SECRET', 'watson-e2e-test-secret')
+
 # JWKS cache configuration
 JWKS_CACHE_TTL_SECONDS = int(os.environ.get('JWKS_CACHE_TTL_SECONDS', 3600))  # 1 hour default
 
@@ -183,7 +187,7 @@ def get_public_key(token: str) -> Optional[Any]:
 
 def verify_jwt_token(token: str) -> Tuple[bool, Optional[dict], Optional[str]]:
     """
-    Verify a JWT token using RS256.
+    Verify a JWT token using RS256 (or HS256 in test mode).
 
     Returns:
         Tuple of (is_valid, payload, error_message)
@@ -192,6 +196,24 @@ def verify_jwt_token(token: str) -> Tuple[bool, Optional[dict], Optional[str]]:
         return False, None, "No token provided"
 
     try:
+        # Test mode - accept HS256 tokens with shared secret
+        if JWT_TEST_MODE:
+            try:
+                payload = jwt.decode(
+                    token,
+                    JWT_TEST_SECRET,
+                    algorithms=['HS256'],
+                    options={
+                        'verify_aud': False,
+                        'verify_iss': False,
+                    }
+                )
+                logger.debug("Token verified in test mode (HS256)")
+                return True, payload, None
+            except JWTError:
+                # Fall through to try RS256 if HS256 fails
+                pass
+
         # For development/testing with static key
         if JWT_PUBLIC_KEY:
             payload = jwt.decode(

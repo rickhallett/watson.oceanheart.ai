@@ -71,3 +71,9 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': [],
     'DEFAULT_THROTTLE_RATES': {},
 }
+
+# JWT Test Configuration
+# Enable HS256 test mode for E2E tests
+import os
+os.environ['JWT_TEST_MODE'] = 'true'
+os.environ['JWT_TEST_SECRET'] = 'watson-e2e-test-secret'
