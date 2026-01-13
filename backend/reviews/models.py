@@ -240,7 +240,23 @@ class Edit(models.Model):
     def submit(self):
         """Submit the edit and compute diffs."""
         from django.utils import timezone
-        # Diff computation will be implemented in services
+        from .services import compute_all_diffs
+
+        # Get original content from the LLM output
+        original_content = self.llm_output.output_content
+
+        # Compute all diffs
+        token_diff, structural_diff, diff_stats = compute_all_diffs(
+            original_content,
+            self.edited_content
+        )
+
+        # Store diff results
+        self.token_diff = token_diff
+        self.structural_diff = structural_diff
+        self.diff_stats = diff_stats
+
+        # Update status and timestamp
         self.status = self.Status.SUBMITTED
         self.submitted_at = timezone.now()
         self.save()

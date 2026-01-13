@@ -1,9 +1,9 @@
 ---
 active: true
 iteration: 1
-max_iterations: 10
-completion_promise: "OUTPUTS API DONE"
-started_at: "2026-01-12T17:09:57Z"
+max_iterations: 12
+completion_promise: "FRONTEND CONNECTED"
+started_at: "2026-01-12T17:26:29Z"
 ---
 
-Implement DRF serializers and viewsets for Document and LLMOutput models. Create backend/core/serializers.py and backend/reviews/serializers.py. Create viewsets in views.py files. Register routes in backend/watson/urls.py under /api/ prefix. Test endpoints respond to GET requests. Output <promise>OUTPUTS API DONE</promise> when GET /api/documents/ and GET /api/outputs/ return 200 responses.
+Connect frontend React components to real Django API endpoints. Create API client utilities in frontend/src/utils/api.ts. Update ReviewsPanel.tsx to fetch from /api/edits/ instead of mock data. Update AnalyticsPanel.tsx to fetch from /api/analytics/ endpoint (create this endpoint if needed). Handle loading states, error states, and empty states. Ensure Authorization header is sent with requests. Output <promise>FRONTEND CONNECTED</promise> when ReviewsPanel displays data from the real API.
