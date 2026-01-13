@@ -19,7 +19,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from core.views import health_check, readiness_check, DocumentViewSet
-from reviews.views import LLMOutputViewSet, LabelViewSet, EditViewSet, EditLabelViewSet
+from reviews.views import LLMOutputViewSet, LabelViewSet, EditViewSet, EditLabelViewSet, AnalyticsView, ExportView
 
 # Create API router
 router = DefaultRouter()
@@ -34,4 +34,6 @@ urlpatterns = [
     path('health/', health_check, name='health_check'),
     path('ready/', readiness_check, name='readiness_check'),
     path('api/', include(router.urls)),
+    path('api/analytics/', AnalyticsView.as_view(), name='analytics'),
+    path('api/exports/', ExportView.as_view(), name='exports'),
 ]
