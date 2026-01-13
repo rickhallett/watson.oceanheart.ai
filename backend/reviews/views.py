@@ -1,3 +1,4 @@
+import os
 from datetime import timedelta
 
 from django.shortcuts import render
@@ -14,16 +15,31 @@ from rest_framework.views import APIView
 from watson.middleware import JWTAuthentication
 from .models import LLMOutput, Label, Edit, EditLabel
 
+# Check if we're in test mode
+JWT_TEST_MODE = os.environ.get('JWT_TEST_MODE', 'false').lower() == 'true'
+
 
 # Custom throttle classes for sensitive endpoints
 class ExportRateThrottle(UserRateThrottle):
     """Limit export requests to prevent abuse."""
     rate = '10/hour'
 
+    def allow_request(self, request, view):
+        # Disable throttling in test mode
+        if JWT_TEST_MODE:
+            return True
+        return super().allow_request(request, view)
+
 
 class AnalyticsRateThrottle(UserRateThrottle):
     """Limit analytics requests."""
     rate = '60/minute'
+
+    def allow_request(self, request, view):
+        # Disable throttling in test mode
+        if JWT_TEST_MODE:
+            return True
+        return super().allow_request(request, view)
 from .serializers import (
     LLMOutputSerializer,
     LLMOutputListSerializer,
