@@ -100,6 +100,7 @@ export function AppLayout() {
                 return (
                   <motion.button
                     key={tab.id}
+                    data-testid={`nav-${tab.id}`}
                     onClick={() => setActiveView(tab.id as any)}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-all duration-200 ${
                       activeView === tab.id
@@ -166,7 +167,7 @@ export function AppLayout() {
           </header>
 
           {/* Content with page transitions */}
-          <main className="flex-1 p-6">
+          <main className="flex-1 p-6" data-testid="main-content">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeView}

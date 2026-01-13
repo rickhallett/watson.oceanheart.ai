@@ -100,10 +100,10 @@ export function ReviewsPanel() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div className="max-w-7xl mx-auto p-6" data-testid="reviews-panel">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-zinc-50 mb-2">
+        <h1 className="text-3xl font-bold text-zinc-50 mb-2" data-testid="reviews-header">
           LLM Response Reviews
         </h1>
         <p className="text-zinc-400">
