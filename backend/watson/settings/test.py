@@ -65,3 +65,9 @@ COVERAGE_MODULE_EXCLUDES = [
 
 # Disable CORS during tests
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Disable throttling during tests
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': [],
+    'DEFAULT_THROTTLE_RATES': {},
+}
