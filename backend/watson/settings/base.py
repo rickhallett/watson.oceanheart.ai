@@ -56,6 +56,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'watson.middleware.JWTAuthenticationMiddleware',  # JWT auth for passport.oceanheart.ai
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -174,6 +175,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'watson.middleware.JWTAuthentication',  # JWT auth for passport.oceanheart.ai
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_RENDERER_CLASSES': [
@@ -183,6 +185,11 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.JSONParser',
     ],
 }
+
+# JWT Authentication settings for passport.oceanheart.ai
+PASSPORT_ISSUER = os.environ.get('PASSPORT_ISSUER', 'https://passport.oceanheart.ai')
+PASSPORT_JWKS_URL = os.environ.get('PASSPORT_JWKS_URL', f'{PASSPORT_ISSUER}/.well-known/jwks.json')
+PASSPORT_AUDIENCE = os.environ.get('PASSPORT_AUDIENCE', 'watson.oceanheart.ai')
 
 # CORS configuration for development
 CORS_ALLOWED_ORIGINS = [
