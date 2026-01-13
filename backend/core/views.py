@@ -5,8 +5,9 @@ from django.conf import settings
 import time
 
 from rest_framework import viewsets, filters
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 
+from watson.middleware import JWTAuthentication
 from .models import Document
 from .serializers import DocumentSerializer, DocumentListSerializer
 
@@ -77,9 +78,11 @@ class DocumentViewSet(viewsets.ModelViewSet):
     ViewSet for Document model.
 
     Provides CRUD operations for clinical documents.
+    Requires JWT authentication.
     """
     queryset = Document.objects.all()
-    permission_classes = [AllowAny]  # TODO: Add proper auth
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['title', 'source', 'document_type']
     ordering_fields = ['created_at', 'updated_at', 'title']
