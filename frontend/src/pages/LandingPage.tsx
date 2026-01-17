@@ -10,6 +10,7 @@ import { CommandPalette, useCommandPalette, defaultCommands } from '@/components
 import { LogIn, Brain, Shield, Users, Star, ArrowRight, Play } from 'lucide-react';
 import { componentTheme } from '@/config/theme';
 import { redirectToLogin } from '@/config/auth';
+import { isClerkConfigured } from '@/config/clerk';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { generateDemoToken, isDemoMode } from '@/utils/demo-auth';
 import { storeToken } from '@/utils/auth';
@@ -60,7 +61,12 @@ export function LandingPage() {
   }, [authState.isAuthenticated, navigate]);
 
   const handleLogin = () => {
-    redirectToLogin();
+    // Use Clerk sign-in if configured, otherwise use Passport
+    if (isClerkConfigured()) {
+      navigate('/sign-in');
+    } else {
+      redirectToLogin();
+    }
   };
 
   const handleDemoLogin = async () => {
