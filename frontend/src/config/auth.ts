@@ -15,13 +15,20 @@ export interface AuthConfig {
 export function getAuthConfig(): AuthConfig {
   const isDev = import.meta.env.DEV || window.location.hostname === 'localhost';
 
+  // Use VITE_API_URL if set, otherwise use defaults
+  const apiUrl = import.meta.env.VITE_API_URL
+    ? `${import.meta.env.VITE_API_URL}/api`
+    : isDev
+      ? 'http://localhost:8001/api'
+      : 'https://watson-backend-production.up.railway.app/api';
+
   if (isDev) {
     // Passport runs on port 4000 in development
     return {
       authUrl: 'http://passport.lvh.me:4000',
       returnTo: `http://${window.location.host}/app`,
       cookieDomain: '.lvh.me',
-      apiUrl: 'http://localhost:8001/api',
+      apiUrl,
     };
   }
 
@@ -29,7 +36,7 @@ export function getAuthConfig(): AuthConfig {
     authUrl: 'https://passport.oceanheart.ai',
     returnTo: 'https://watson.oceanheart.ai/app',
     cookieDomain: '.oceanheart.ai',
-    apiUrl: 'https://watson.oceanheart.ai/api',
+    apiUrl,
   };
 }
 
