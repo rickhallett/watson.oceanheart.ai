@@ -111,6 +111,9 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 # Expose port
 EXPOSE 8000
 
+# Set default port (Railway overrides via PORT env var)
+ENV PORT=8000
+
 # Use entrypoint script
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["/app/backend/.venv/bin/gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "watson.wsgi:application"]
+CMD ["/bin/sh", "-c", "/app/backend/.venv/bin/gunicorn --bind 0.0.0.0:${PORT} --workers 3 watson.wsgi:application"]
