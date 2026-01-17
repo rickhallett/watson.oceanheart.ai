@@ -1,24 +1,5 @@
-# Watson Multi-Stage Docker Build
-# Supports Django backend, Bun frontend, and Ruby services
-
-FROM oven/bun:1.1 as frontend-builder
-WORKDIR /app
-
-# Copy frontend source and configurations
-COPY package.json bun.lock ./
-COPY tsconfig.json ./
-COPY vite.config.ts ./
-COPY components.json ./
-COPY frontend/ ./frontend/
-
-# Install dependencies 
-RUN bun install
-
-# Create symlink so frontend can find node_modules (since vite root is ./frontend)
-RUN ln -sf /app/node_modules /app/frontend/node_modules
-
-# Build frontend assets
-RUN bun run build:clean && bun run build:frontend
+# Watson Backend API Docker Build
+# Frontend is deployed separately on Vercel
 
 # Python/Django stage
 FROM python:3.11-slim as backend-base
@@ -82,9 +63,6 @@ WORKDIR /app
 # Copy backend source, venv, and project metadata from backend-base
 COPY --from=backend-base /app/backend /app/backend
 COPY --from=backend-base /app/pyproject.toml /app/
-
-# Copy built frontend assets
-COPY --from=frontend-builder /app/dist /app/backend/staticfiles/
 
 # Copy Ruby services (commented out until Ruby stage is enabled)
 # COPY --from=ruby-services /app/vendor /app/vendor
