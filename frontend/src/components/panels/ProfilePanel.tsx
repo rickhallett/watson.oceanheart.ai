@@ -1,15 +1,34 @@
 import React from 'react';
-import { User, Mail, Calendar, LogOut, Shield, Award, Activity, Edit, Settings } from 'lucide-react';
-import { CompactCard, CompactCardGrid } from '@/components/CompactCard';
+import { useNavigate } from 'react-router-dom';
+import { User, Mail, LogOut, Shield, Edit, Settings } from 'lucide-react';
 import { MonochromeButton } from '@/components/MonochromeButton';
 import { SkewedBackground } from '@/components/SkewedBackground';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 export function ProfilePanel() {
+  const navigate = useNavigate();
+  const { authState, logout } = useAuthContext();
+  const { user } = authState;
+
   const handleSignOut = () => {
-    // Clear localStorage auth flag (temporary for testing)
-    localStorage.removeItem('isAuthenticated');
-    // Redirect to landing page
-    window.location.href = '/';
+    logout();
+  };
+
+  // Get user initials from name or email
+  const getInitials = () => {
+    if (user?.name) {
+      return user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    }
+    if (user?.email) {
+      return user.email.slice(0, 2).toUpperCase();
+    }
+    return 'U';
+  };
+
+  // Format role for display
+  const formatRole = (role?: string) => {
+    if (!role) return 'User';
+    return role.charAt(0).toUpperCase() + role.slice(1);
   };
 
   return (
@@ -26,17 +45,19 @@ export function ProfilePanel() {
         <div className="glass-card p-6 mb-6">
           <div className="flex items-center mb-6">
             <div className="w-20 h-20 bg-zinc-800 border border-zinc-700 rounded-full flex items-center justify-center text-zinc-100 text-2xl font-bold">
-              JD
+              {getInitials()}
             </div>
             <div className="ml-6">
-              <h3 className="text-xl font-semibold text-zinc-50">Dr. John Doe</h3>
-              <p className="text-zinc-400">Senior Clinician</p>
+              <h3 className="text-xl font-semibold text-zinc-50">
+                {user?.name || user?.email?.split('@')[0] || 'User'}
+              </h3>
+              <p className="text-zinc-400">{formatRole(user?.role)}</p>
               <div className="flex gap-2 mt-2">
                 <span className="px-2 py-1 bg-zinc-800 rounded text-xs text-zinc-300 border border-zinc-700">
                   Verified
                 </span>
                 <span className="px-2 py-1 bg-zinc-800 rounded text-xs text-zinc-300 border border-zinc-700">
-                  Pro User
+                  {formatRole(user?.role)}
                 </span>
               </div>
             </div>
@@ -50,46 +71,17 @@ export function ProfilePanel() {
           <div className="space-y-4">
             <div className="flex items-center text-zinc-300">
               <Mail className="w-5 h-5 mr-3 text-zinc-400" />
-              <span>john.doe@example.com</span>
+              <span>{user?.email || 'Not available'}</span>
             </div>
             <div className="flex items-center text-zinc-300">
               <User className="w-5 h-5 mr-3 text-zinc-400" />
-              <span>User ID: usr_123456789</span>
+              <span>User ID: {user?.id?.slice(0, 12) || 'N/A'}</span>
             </div>
             <div className="flex items-center text-zinc-300">
-              <Calendar className="w-5 h-5 mr-3 text-zinc-400" />
-              <span>Member since: January 2024</span>
+              <Shield className="w-5 h-5 mr-3 text-zinc-400" />
+              <span>Role: {formatRole(user?.role)}</span>
             </div>
           </div>
-        </div>
-
-        {/* Stats Grid using CompactCard */}
-        <div className="mb-6">
-          <CompactCardGrid columns={3}>
-            <CompactCard
-              title="Documents Reviewed"
-              metric="892"
-              description="All time total"
-              icon={<Activity className="w-5 h-5" />}
-              status="success"
-              trend="up"
-            />
-            <CompactCard
-              title="Accuracy Score"
-              metric="98.4%"
-              description="Quality rating"
-              icon={<Award className="w-5 h-5" />}
-              status="success"
-              trend="up"
-            />
-            <CompactCard
-              title="Security Level"
-              metric="Level 5"
-              description="Clearance status"
-              icon={<Shield className="w-5 h-5" />}
-              status="success"
-            />
-          </CompactCardGrid>
         </div>
 
         {/* Account Settings */}
@@ -103,7 +95,11 @@ export function ProfilePanel() {
           <p className="text-zinc-400 mb-4">
             Manage your account settings and preferences in the Settings tab.
           </p>
-          <MonochromeButton variant="primary" size="md">
+          <MonochromeButton
+            variant="primary"
+            size="md"
+            onClick={() => navigate('/app/settings')}
+          >
             Go to Settings
           </MonochromeButton>
         </div>

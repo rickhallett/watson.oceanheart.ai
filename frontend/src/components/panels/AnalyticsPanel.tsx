@@ -15,7 +15,7 @@ import {
   Info,
   Loader2
 } from 'lucide-react';
-import { fetchAnalytics, type AnalyticsData, handleApiError } from '@/utils/api';
+import { fetchAnalytics, exportData, type AnalyticsData, type ExportFormat, handleApiError } from '@/utils/api';
 
 interface EditPattern {
   category: string;
@@ -61,6 +61,20 @@ export function AnalyticsPanel() {
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [exporting, setExporting] = useState<ExportFormat | null>(null);
+
+  // Handle export
+  const handleExport = async (format: ExportFormat) => {
+    try {
+      setExporting(format);
+      setError(null);
+      await exportData(format, timeRange);
+    } catch (err) {
+      setError(handleApiError(err));
+    } finally {
+      setExporting(null);
+    }
+  };
 
   // Fetch analytics from API
   useEffect(() => {
@@ -329,14 +343,29 @@ export function AnalyticsPanel() {
           Download analyzed data for further research and pattern analysis
         </p>
         <div className="flex gap-3">
-          <MonochromeButton variant="primary" size="md">
-            Export Dataset (CSV)
+          <MonochromeButton
+            variant="primary"
+            size="md"
+            onClick={() => handleExport('csv')}
+            disabled={exporting !== null}
+          >
+            {exporting === 'csv' ? 'Exporting...' : 'Export Dataset (CSV)'}
           </MonochromeButton>
-          <MonochromeButton variant="ghost" size="md">
-            Generate Report (PDF)
+          <MonochromeButton
+            variant="ghost"
+            size="md"
+            onClick={() => handleExport('jsonl')}
+            disabled={exporting !== null}
+          >
+            {exporting === 'jsonl' ? 'Exporting...' : 'Export JSONL'}
           </MonochromeButton>
-          <MonochromeButton variant="ghost" size="md">
-            Export Raw Data (JSON)
+          <MonochromeButton
+            variant="ghost"
+            size="md"
+            onClick={() => handleExport('json')}
+            disabled={exporting !== null}
+          >
+            {exporting === 'json' ? 'Exporting...' : 'Export Raw Data (JSON)'}
           </MonochromeButton>
         </div>
         <p className="text-xs text-zinc-500 mt-4">

@@ -1,62 +1,61 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { LandingPage } from './pages/LandingPage';
 import { AppLayout } from './pages/AppLayout';
-import { LoginPage } from './pages/LoginPage';
-import { DashboardPage } from './pages/DashboardPage';
 import { MonochromeDemo } from './pages/MonochromeDemo';
+import { EditView } from './components/panels/EditView';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
-import { SkewedBackground } from './components/SkewedBackground';
+import { AuthProvider } from './contexts/AuthContext';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 function App() {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
-
-  useEffect(() => {
-    // Handle browser navigation
-    const handlePopState = () => {
-      setCurrentPath(window.location.pathname);
-    };
-
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, []);
-
   // Apply monochrome mode to the entire app
   useEffect(() => {
     document.body.classList.add('monochrome-mode');
   }, []);
 
-  // Simple routing based on pathname
-  if (currentPath === '/login') {
-    return <LoginPage />;
-  }
+  return (
+    <ErrorBoundary>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/demo" element={<MonochromeDemo />} />
 
-  if (currentPath === '/dashboard') {
-    return (
-      <ProtectedRoute>
-        <DashboardPage />
-      </ProtectedRoute>
-    );
-  }
+          {/* Protected app routes */}
+          <Route
+            path="/app"
+            element={
+              <ProtectedRoute>
+                <AppLayout />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/app/edit/:editId"
+            element={
+              <ProtectedRoute>
+                <EditView />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/app/:view"
+            element={
+              <ProtectedRoute>
+                <AppLayout />
+              </ProtectedRoute>
+            }
+          />
 
-  if (currentPath === '/demo') {
-    return <MonochromeDemo />;
-  }
-
-  if (currentPath === '/app' || currentPath.startsWith('/app/')) {
-    return (
-      <ProtectedRoute>
-        <div className="min-h-screen bg-zinc-950">
-          <SkewedBackground opacity={0.02} />
-          <div className="relative z-10">
-            <AppLayout />
-          </div>
-        </div>
-      </ProtectedRoute>
-    );
-  }
-
-  // Default to landing page
-  return <LandingPage />;
+          {/* Catch-all redirect */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </ErrorBoundary>
+  );
 }
 
 export default App;

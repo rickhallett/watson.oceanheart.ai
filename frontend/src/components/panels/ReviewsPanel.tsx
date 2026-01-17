@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CompactCard, CompactCardGrid } from '@/components/CompactCard';
 import { MonochromeButton } from '@/components/MonochromeButton';
@@ -7,6 +8,7 @@ import { fetchEdits, type Edit, handleApiError } from '@/utils/api';
 
 interface Review {
   id: string;
+  editId: string; // Actual UUID for navigation
   clientId: string;
   dateSubmitted: string;
   llmVersion: string;
@@ -34,26 +36,36 @@ function mapStatus(apiStatus: Edit['status']): Review['status'] {
 
 // Transform API Edit to frontend Review
 function transformEdit(edit: Edit): Review {
+  // structural_diff can be an empty object {} or an array
+  const structuralDiff = Array.isArray(edit.structural_diff) ? edit.structural_diff : [];
+
   return {
     id: `R-${edit.id.slice(0, 8)}`,
+    editId: edit.id, // Keep full UUID for navigation
     clientId: edit.llm_output?.document_id ? `#${edit.llm_output.document_id.slice(0, 8)}` : 'N/A',
     dateSubmitted: new Date(edit.created_at).toLocaleString(),
     llmVersion: edit.llm_output?.model_name || 'Unknown',
     status: mapStatus(edit.status),
     editPercentage: edit.diff_stats?.change_rate || 0,
-    keyChanges: edit.structural_diff?.map((d: Record<string, unknown>) =>
+    keyChanges: structuralDiff.map((d: Record<string, unknown>) =>
       `${d.operation}: ${d.path}` || 'Modified content'
-    ) || [],
+    ),
     clinicianNotes: edit.editor_notes || undefined,
   };
 }
 
 export function ReviewsPanel() {
+  const navigate = useNavigate();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
   const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'in-review' | 'completed'>('all');
+
+  // Navigate to edit view
+  const handleOpenEdit = (editId: string) => {
+    navigate(`/app/edit/${editId}`);
+  };
 
   // Fetch edits from API
   useEffect(() => {
@@ -275,7 +287,7 @@ export function ReviewsPanel() {
                       size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
-                        // Handle review action
+                        handleOpenEdit(review.editId);
                       }}
                     >
                       {review.status === 'pending' ? 'Start Review' : 'View Details'}
@@ -337,10 +349,18 @@ export function ReviewsPanel() {
           </div>
 
           <div className="mt-6 flex gap-3">
-            <MonochromeButton variant="primary" size="md">
+            <MonochromeButton
+              variant="primary"
+              size="md"
+              onClick={() => handleOpenEdit(selectedReview.editId)}
+            >
               Open in Editor
             </MonochromeButton>
-            <MonochromeButton variant="ghost" size="md">
+            <MonochromeButton
+              variant="ghost"
+              size="md"
+              onClick={() => handleOpenEdit(selectedReview.editId)}
+            >
               View Diff
             </MonochromeButton>
             <MonochromeButton variant="ghost" size="md">

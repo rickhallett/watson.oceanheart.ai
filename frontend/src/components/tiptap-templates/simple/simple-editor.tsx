@@ -73,7 +73,12 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils"
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss"
 
-import content from "@/components/tiptap-templates/simple/data/content.json"
+import defaultContent from "@/components/tiptap-templates/simple/data/content.json"
+
+interface SimpleEditorProps {
+  initialContent?: string;
+  onChange?: (content: string) => void;
+}
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -183,13 +188,27 @@ const MobileToolbarContent = ({
   </>
 )
 
-export function SimpleEditor() {
+export function SimpleEditor({ initialContent, onChange }: SimpleEditorProps) {
   const isMobile = useIsMobile()
   const { height } = useWindowSize()
   const [mobileView, setMobileView] = React.useState<
     "main" | "highlighter" | "link"
   >("main")
   const toolbarRef = React.useRef<HTMLDivElement>(null)
+
+  // Determine initial content - use prop if provided, else default
+  const editorContent = React.useMemo(() => {
+    if (initialContent) {
+      // If it's a string, try to parse as JSON or use as HTML
+      try {
+        return JSON.parse(initialContent);
+      } catch {
+        // If not JSON, treat as HTML string
+        return initialContent;
+      }
+    }
+    return defaultContent;
+  }, [initialContent]);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -229,8 +248,24 @@ export function SimpleEditor() {
         onError: (error) => console.error("Upload failed:", error),
       }),
     ],
-    content,
+    content: editorContent,
+    onUpdate: ({ editor }) => {
+      if (onChange) {
+        onChange(editor.getHTML());
+      }
+    },
   })
+
+  // Update editor content when initialContent changes (async load)
+  React.useEffect(() => {
+    if (editor && initialContent && !editor.isDestroyed) {
+      const currentContent = editor.getHTML();
+      // Only update if content is different and not just empty/default
+      if (currentContent !== initialContent && initialContent.length > 0) {
+        editor.commands.setContent(editorContent);
+      }
+    }
+  }, [editor, initialContent, editorContent])
 
   const rect = useCursorVisibility({
     editor,

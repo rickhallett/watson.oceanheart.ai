@@ -160,6 +160,15 @@ async function apiFetch<T>(
   });
 
   if (!response.ok) {
+    // Handle 401 Unauthorized - redirect to login
+    if (response.status === 401) {
+      // Clear stored auth data
+      localStorage.removeItem('watson_token');
+      // Redirect to home page (will show login)
+      window.location.href = '/';
+      throw new Error('Session expired. Please log in again.');
+    }
+
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.detail || errorData.error || `HTTP ${response.status}`);
   }
@@ -261,6 +270,45 @@ export async function fetchLabels(): Promise<Label[]> {
   return apiFetch<Label[]>('/labels/');
 }
 
+export interface EditLabel {
+  id: string;
+  edit_id: string;
+  label_id: string;
+  label: Label;
+  created_at: string;
+  notes: string;
+}
+
+/**
+ * Fetch labels applied to an edit
+ */
+export async function fetchEditLabels(editId: string): Promise<EditLabel[]> {
+  return apiFetch<EditLabel[]>(`/edit-labels/?edit_id=${editId}`);
+}
+
+/**
+ * Apply a label to an edit
+ */
+export async function applyLabel(editId: string, labelId: string, notes?: string): Promise<EditLabel> {
+  return apiFetch<EditLabel>('/edit-labels/', {
+    method: 'POST',
+    body: JSON.stringify({
+      edit_id: editId,
+      label_id: labelId,
+      notes: notes || '',
+    }),
+  });
+}
+
+/**
+ * Remove a label from an edit
+ */
+export async function removeLabel(editLabelId: string): Promise<void> {
+  await apiFetch<void>(`/edit-labels/${editLabelId}/`, {
+    method: 'DELETE',
+  });
+}
+
 // =============================================================================
 // Analytics API
 // =============================================================================
@@ -270,6 +318,52 @@ export async function fetchLabels(): Promise<Label[]> {
  */
 export async function fetchAnalytics(timeRange: '7d' | '30d' | '90d' = '30d'): Promise<AnalyticsData> {
   return apiFetch<AnalyticsData>(`/analytics/?range=${timeRange}`);
+}
+
+// =============================================================================
+// Export API
+// =============================================================================
+
+export type ExportFormat = 'csv' | 'jsonl' | 'json';
+
+/**
+ * Request data export and download file
+ */
+export async function exportData(format: ExportFormat, timeRange?: string): Promise<void> {
+  const token = getStoredToken();
+  const config = getAuthConfig();
+
+  const params = new URLSearchParams();
+  params.set('export_format', format);
+  if (timeRange) params.set('range', timeRange);
+
+  const response = await fetch(`${config.apiUrl}/exports/?${params.toString()}`, {
+    headers: token ? { 'Authorization': getAuthHeader(token) } : {},
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || errorData.error || `HTTP ${response.status}`);
+  }
+
+  // Get filename from Content-Disposition header or generate one
+  const disposition = response.headers.get('Content-Disposition');
+  let filename = `watson_export_${new Date().toISOString().split('T')[0]}.${format}`;
+  if (disposition) {
+    const match = disposition.match(/filename="?(.+?)"?$/);
+    if (match) filename = match[1];
+  }
+
+  // Download the file
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
 }
 
 // =============================================================================

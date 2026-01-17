@@ -1,27 +1,39 @@
 import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AppHeader } from '@/components/layout/AppHeader';
 import { AppFooter } from '@/components/layout/AppFooter';
 import { MainPanel } from '@/components/layout/MainPanel';
 import { SkewedBackground } from '@/components/SkewedBackground';
-import { TabNav } from '@/components/TabNav';
 import { Toast } from '@/components/Toast';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { CommandPalette, useCommandPalette, defaultCommands } from '@/components/CommandPalette';
 import { MonochromeButton } from '@/components/MonochromeButton';
 import { Home, BarChart3, Settings, User, FileText, Search } from 'lucide-react';
 
+type ViewType = 'dashboard' | 'reviews' | 'analytics' | 'profile' | 'settings';
+
 export function AppLayout() {
-  const [activeView, setActiveView] = useState<'dashboard' | 'reviews' | 'analytics' | 'profile' | 'settings'>('dashboard');
+  const { view } = useParams<{ view?: string }>();
+  const navigate = useNavigate();
+
+  // Parse view from URL, default to dashboard
+  const activeView: ViewType = (['dashboard', 'reviews', 'analytics', 'profile', 'settings'].includes(view || '')
+    ? view as ViewType
+    : 'dashboard');
+
+  const setActiveView = (newView: ViewType) => {
+    navigate(`/app/${newView}`);
+  };
+
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' | 'warning' | 'info' }>({ 
-    show: false, message: '', type: 'info' 
+  const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' | 'warning' | 'info' }>({
+    show: false, message: '', type: 'info'
   });
   const commandPalette = useCommandPalette();
 
   const navigationTabs = [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
-    { id: 'reviews', label: 'Reviews', icon: FileText, count: 12 },
+    { id: 'reviews', label: 'Reviews', icon: FileText },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'profile', label: 'Profile', icon: User },
     { id: 'settings', label: 'Settings', icon: Settings }

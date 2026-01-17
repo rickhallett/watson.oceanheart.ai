@@ -16,8 +16,9 @@ export function getAuthConfig(): AuthConfig {
   const isDev = import.meta.env.DEV || window.location.hostname === 'localhost';
 
   if (isDev) {
+    // Passport runs on port 4000 in development
     return {
-      authUrl: 'http://passport.lvh.me:3001',
+      authUrl: 'http://passport.lvh.me:4000',
       returnTo: `http://${window.location.host}/app`,
       cookieDomain: '.lvh.me',
       apiUrl: 'http://localhost:8001/api',

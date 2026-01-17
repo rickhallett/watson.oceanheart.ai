@@ -2,7 +2,7 @@ services:
   database:
     image: postgres:15-alpine
     environment:
-      POSTG-RES_DB: watson_dev
+      POSTGRES_DB: watson_dev
       POSTGRES_USER: watson
       POSTGRES_PASSWORD: watson_dev_password
     ports:

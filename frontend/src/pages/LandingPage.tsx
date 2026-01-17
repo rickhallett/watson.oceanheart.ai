@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { SkewedBackground } from '@/components/SkewedBackground';
 import { Spotlight } from '@/components/ui/spotlight-new';
 import { BackgroundGradient } from '@/components/ui/background-gradient';
@@ -6,8 +7,12 @@ import { InfiniteMovingCards } from '@/components/ui/infinite-moving-cards';
 import { MonochromeButton } from '@/components/MonochromeButton';
 import { CompactCard } from '@/components/CompactCard';
 import { CommandPalette, useCommandPalette, defaultCommands } from '@/components/CommandPalette';
-import { LogIn, Brain, Shield, Users, Star, ArrowRight } from 'lucide-react';
+import { LogIn, Brain, Shield, Users, Star, ArrowRight, Play } from 'lucide-react';
 import { componentTheme } from '@/config/theme';
+import { redirectToLogin } from '@/config/auth';
+import { useAuthContext } from '@/contexts/AuthContext';
+import { generateDemoToken, isDemoMode } from '@/utils/demo-auth';
+import { storeToken } from '@/utils/auth';
 
 const testimonials = [
   {
@@ -44,6 +49,30 @@ const testimonials = [
 
 export function LandingPage() {
   const commandPalette = useCommandPalette();
+  const navigate = useNavigate();
+  const { authState } = useAuthContext();
+
+  // If already authenticated, redirect to app
+  React.useEffect(() => {
+    if (authState.isAuthenticated) {
+      navigate('/app');
+    }
+  }, [authState.isAuthenticated, navigate]);
+
+  const handleLogin = () => {
+    redirectToLogin();
+  };
+
+  const handleDemoLogin = async () => {
+    try {
+      const token = await generateDemoToken();
+      storeToken(token);
+      // Force a page reload to pick up the new auth state
+      window.location.href = '/app';
+    } catch (error) {
+      console.error('Demo login failed:', error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-zinc-950 antialiased relative overflow-hidden">
@@ -62,18 +91,25 @@ export function LandingPage() {
               <p className="text-zinc-400 text-xl mb-8 max-w-2xl mx-auto text-center">
                 Collect and analyze differences between LLM responses and clinical evaluations to build research datasets for improving AI in healthcare.
               </p>
-              <div className="flex gap-4 justify-center">
+              <div className="flex gap-4 justify-center flex-wrap">
                 <MonochromeButton
                   variant="primary"
                   size="lg"
                   icon={<LogIn className="w-5 h-5" />}
-                  onClick={() => {
-                    localStorage.setItem('isAuthenticated', 'true');
-                    window.location.href = '/app';
-                  }}
+                  onClick={handleLogin}
                 >
                   Get Started
                 </MonochromeButton>
+                {isDemoMode() && (
+                  <MonochromeButton
+                    variant="secondary"
+                    size="lg"
+                    icon={<Play className="w-5 h-5" />}
+                    onClick={handleDemoLogin}
+                  >
+                    Demo Login
+                  </MonochromeButton>
+                )}
                 <MonochromeButton
                   variant="ghost"
                   size="lg"
@@ -131,26 +167,32 @@ export function LandingPage() {
               <p className="text-zinc-400 text-lg mb-12">
                 Join our research effort to improve AI clinical response quality
               </p>
-              <div className="flex gap-4 justify-center">
+              <div className="flex gap-4 justify-center flex-wrap">
                 <MonochromeButton
                   variant="primary"
                   size="lg"
                   icon={<LogIn className="w-5 h-5" />}
-                  onClick={() => {
-                    // Set localStorage flag and redirect to app
-                    localStorage.setItem('isAuthenticated', 'true');
-                    window.location.href = '/app';
-                  }}
+                  onClick={handleLogin}
                 >
                   Start Research Session
                 </MonochromeButton>
+                {isDemoMode() && (
+                  <MonochromeButton
+                    variant="secondary"
+                    size="lg"
+                    icon={<Play className="w-5 h-5" />}
+                    onClick={handleDemoLogin}
+                  >
+                    Try Demo
+                  </MonochromeButton>
+                )}
                 <MonochromeButton
                   variant="ghost"
                   size="lg"
                   icon={<ArrowRight className="w-5 h-5" />}
-                  onClick={() => window.location.href = '/demo'}
+                  onClick={() => navigate('/demo')}
                 >
-                  View Demo
+                  View Components
                 </MonochromeButton>
               </div>
             </div>
@@ -194,10 +236,7 @@ export function LandingPage() {
             description: 'Access your Watson account',
             icon: LogIn,
             shortcut: '⌘L',
-            action: () => {
-              localStorage.setItem('isAuthenticated', 'true');
-              window.location.href = '/app';
-            }
+            action: handleLogin
           },
           {
             id: 'demo',
@@ -205,7 +244,7 @@ export function LandingPage() {
             description: 'Explore monochrome components',
             icon: Star,
             shortcut: '⌘D',
-            action: () => window.location.href = '/demo'
+            action: () => navigate('/demo')
           }
         ]}
       />
