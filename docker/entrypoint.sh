@@ -33,6 +33,10 @@ echo "🔄 Running database migrations..."
 # Skip collectstatic at runtime - done during build
 echo "📁 Static files already collected during build"
 
+# Seed demo data (idempotent - skips if already exists)
+echo "🌱 Checking for demo data..."
+"$VENV_PY" manage.py seed_demo_data
+
 # Create superuser if specified
 if [[ $DJANGO_SUPERUSER_EMAIL ]]; then
     echo "👤 Creating superuser..."
