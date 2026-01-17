@@ -191,14 +191,18 @@ PASSPORT_ISSUER = os.environ.get('PASSPORT_ISSUER', 'https://passport.oceanheart
 PASSPORT_JWKS_URL = os.environ.get('PASSPORT_JWKS_URL', f'{PASSPORT_ISSUER}/.well-known/jwks.json')
 PASSPORT_AUDIENCE = os.environ.get('PASSPORT_AUDIENCE', 'watson.oceanheart.ai')
 
-# CORS configuration for development
+# CORS configuration
+# Read allowed origins from environment, with defaults for development
+_cors_origins_env = os.environ.get('CORS_ALLOWED_ORIGINS', '')
 CORS_ALLOWED_ORIGINS = [
+    origin.strip() for origin in _cors_origins_env.split(',') if origin.strip()
+] if _cors_origins_env else [
     "http://localhost:3001",  # Vite frontend dev port
     "http://127.0.0.1:3001",
+    "https://watson.oceanheart.ai",  # Production frontend
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
-# Development-specific settings
-if DEBUG:
-    CORS_ALLOW_ALL_ORIGINS = True
+# Allow all origins if explicitly set or in development
+CORS_ALLOW_ALL_ORIGINS = os.environ.get('CORS_ALLOW_ALL_ORIGINS', '').lower() == 'true' or DEBUG
