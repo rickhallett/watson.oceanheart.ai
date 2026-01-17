@@ -1,11 +1,11 @@
 # Railway configuration for Watson API backend
 
 [build]
-builder = "dockerfile"
-dockerfilePath = "Dockerfile"
+builder = "nixpacks"
+nixpacksConfigPath = "nixpacks.toml"
 
 [deploy]
 healthcheckPath = "/health/"
-healthcheckTimeout = 120
+healthcheckTimeout = 180
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 5
