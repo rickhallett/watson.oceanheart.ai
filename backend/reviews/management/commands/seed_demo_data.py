@@ -21,6 +21,11 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        # Check if demo data already exists
+        if Document.objects.filter(title__startswith='Intake Assessment').exists():
+            self.stdout.write(self.style.SUCCESS('Demo data already exists, skipping...'))
+            return
+
         if options['clear']:
             self.stdout.write('Clearing existing data...')
             Edit.objects.all().delete()
