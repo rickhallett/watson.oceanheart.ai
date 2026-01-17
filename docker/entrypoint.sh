@@ -30,9 +30,8 @@ done
 echo "🔄 Running database migrations..."
 "$VENV_PY" manage.py migrate --noinput
 
-# Collect static files
-echo "📁 Collecting static files..."
-"$VENV_PY" manage.py collectstatic --noinput --clear --verbosity 0
+# Skip collectstatic at runtime - done during build
+echo "📁 Static files already collected during build"
 
 # Create superuser if specified
 if [[ $DJANGO_SUPERUSER_EMAIL ]]; then
